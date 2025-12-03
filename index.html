@@ -240,15 +240,243 @@
       display: flex;
     }
     
+    /* Mobile-responsive table wrapper with scroll indicators */
+    .table-wrapper {
+      position: relative;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch; /* Smooth scroll momentum on iOS */
+      scrollbar-width: thin;
+      scrollbar-color: #667eea #f0f0f0;
+    }
+    
+    .table-wrapper::-webkit-scrollbar {
+      height: 8px;
+    }
+    
+    .table-wrapper::-webkit-scrollbar-track {
+      background: #f0f0f0;
+      border-radius: 4px;
+    }
+    
+    .table-wrapper::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 4px;
+    }
+    
+    /* Scroll shadow indicators */
+    .table-wrapper::before,
+    .table-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 8px;
+      width: 30px;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .table-wrapper::before {
+      left: 0;
+      background: linear-gradient(to right, rgba(102, 126, 234, 0.15), transparent);
+    }
+    
+    .table-wrapper::after {
+      right: 0;
+      background: linear-gradient(to left, rgba(102, 126, 234, 0.15), transparent);
+    }
+    
+    .table-wrapper.scroll-right::after {
+      opacity: 1;
+    }
+    
+    .table-wrapper.scroll-left::before {
+      opacity: 1;
+    }
+    
+    /* Scroll hint for mobile */
+    .scroll-hint {
+      display: none;
+      text-align: center;
+      font-size: 12px;
+      color: #667eea;
+      padding: 8px;
+      background: rgba(102, 126, 234, 0.1);
+      border-radius: 4px;
+      margin-bottom: 8px;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    
+    /* Sticky first column for tables on mobile */
+    .sticky-table td:first-child,
+    .sticky-table th:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      background: inherit;
+    }
+    
+    .sticky-table th:first-child {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      z-index: 3;
+    }
+    
+    .sticky-table td:first-child {
+      background: white;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+    
+    .sticky-table .group-header {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+    }
+    
+    /* Preserve drug row colors on sticky column */
+    .sticky-table tr.inotrope-vasopressor td:first-child { background-color: #e6d5f0; }
+    .sticky-table tr.vasodilator td:first-child { background-color: #d3d3d3; }
+    .sticky-table tr.midazolam td:first-child { background-color: #ffa500; }
+    .sticky-table tr.ketamine td:first-child { background-color: #ffff99; }
+    .sticky-table tr.morphine td:first-child { background-color: #add8e6; }
+    .sticky-table tr.cisatracurium td:first-child { background-color: #ff6347; }
+    .sticky-table tr.heparin td:first-child { background-color: #20b2aa; }
+    .sticky-table tr.protamine td:first-child { background-color: #20b2aa; }
+    .sticky-table tr.adrenaline-bolus td:first-child { background-color: #ff0000; }
+    .sticky-table tr.phenylephrine-bolus td:first-child { background-color: #ffb6c1; }
+    
     @media (max-width: 768px) {
       body { padding: 10px; }
       .container { border-radius: 8px; }
       .header { padding: 20px; }
-      h1 { font-size: 22px; }
-      .content { padding: 15px; }
+      h1 { font-size: 20px; }
+      .subtitle { font-size: 13px; }
+      .content { padding: 12px; }
       .input-section { padding: 15px; }
       table { font-size: 11px; }
       th, td { padding: 8px 6px; }
+      
+      /* Show scroll hint on mobile */
+      .scroll-hint {
+        display: block;
+      }
+      
+      /* Better button layout for mobile */
+      .nav-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+      }
+      
+      .nav-buttons button {
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 14px;
+        min-height: 48px; /* Minimum touch target size */
+      }
+      
+      /* Enhanced touch feedback for buttons */
+      button {
+        min-height: 44px;
+        padding: 12px 24px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: rgba(102, 126, 234, 0.3);
+      }
+      
+      button:active {
+        transform: scale(0.98);
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+      }
+      
+      /* Improve input fields for mobile */
+      input[type="number"] {
+        min-height: 44px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        width: 100%;
+      }
+      
+      select {
+        min-height: 44px;
+        font-size: 16px;
+      }
+      
+      /* Table improvements for mobile */
+      .table-wrapper {
+        margin: 0 -12px;
+        padding: 0 12px;
+        width: calc(100% + 24px);
+      }
+      
+      /* Sticky column width adjustment for mobile */
+      .sticky-table td:first-child,
+      .sticky-table th:first-child {
+        min-width: 100px;
+        max-width: 120px;
+        word-wrap: break-word;
+      }
+      
+      /* Section title adjustments */
+      .section-title {
+        font-size: 20px;
+        margin: 25px 0 12px 0;
+      }
+      
+      .subsection-title {
+        font-size: 16px;
+        margin: 20px 0 10px 0;
+      }
+      
+      /* Input group stacking on mobile */
+      .input-group {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .input-group > div {
+        width: 100%;
+      }
+      
+      /* Back to top button mobile adjustments */
+      #backToTop {
+        bottom: 20px;
+        right: 20px;
+        width: 48px;
+        height: 48px;
+      }
+      
+      /* Note boxes mobile adjustments */
+      .note {
+        font-size: 12px;
+        padding: 10px 12px;
+      }
+    }
+    
+    /* Extra small devices */
+    @media (max-width: 480px) {
+      body { padding: 6px; }
+      .header { padding: 15px; }
+      h1 { font-size: 18px; }
+      .content { padding: 10px; }
+      table { font-size: 10px; }
+      th, td { padding: 6px 4px; }
+      
+      .sticky-table td:first-child,
+      .sticky-table th:first-child {
+        min-width: 80px;
+        max-width: 100px;
+        font-size: 10px;
+      }
+      
+      .nav-buttons button {
+        padding: 12px 16px;
+        font-size: 13px;
+      }
     }
   </style>
 </head>
@@ -260,14 +488,14 @@
     </div>
     
     <div class="content">
-      <div style="margin-bottom: 15px; text-align: right; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
-        <button type="button" onclick="showAcidosisCalculator()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">Metabolic Acidosis Calculator →</button>
-        <button type="button" onclick="showElectrolyteCalculator()" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">Electrolyte Calculator →</button>
-        <button type="button" onclick="showArrhythmiaCalculator()" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">Anti-arrhythmic Calculator →</button>
-        <button type="button" onclick="showHemostaticCalculator()" style="background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);">Hemostatic Agents →</button>
-      </div>
+      <nav class="nav-buttons" style="margin-bottom: 15px; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;" aria-label="Calculator navigation">
+        <button type="button" onclick="showAcidosisCalculator()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" aria-label="Go to Metabolic Acidosis Calculator">Metabolic Acidosis Calculator →</button>
+        <button type="button" onclick="showElectrolyteCalculator()" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);" aria-label="Go to Electrolyte Calculator">Electrolyte Calculator →</button>
+        <button type="button" onclick="showArrhythmiaCalculator()" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" aria-label="Go to Anti-arrhythmic Calculator">Anti-arrhythmic Calculator →</button>
+        <button type="button" onclick="showHemostaticCalculator()" style="background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);" aria-label="Go to Hemostatic Agents Calculator">Hemostatic Agents →</button>
+      </nav>
 
-      <div class="input-section">
+      <div class="input-section" role="form" aria-label="Drug dosage calculator input">
         <div class="input-group">
           <div>
             <label for="weight">Body weight (kg):</label>
@@ -277,7 +505,7 @@
             <input type="checkbox" id="fluidRestriction">
             <span>>10 kg fluid restriction regime</span>
           </label>
-          <button type="button" onclick="calculateInfusions()">Calculate Dosages</button>
+          <button type="button" onclick="calculateInfusions()" aria-label="Calculate drug dosages based on entered weight">Calculate Dosages</button>
         </div>
       </div>
 
@@ -292,7 +520,9 @@
       <h2 class="section-title">Infusions</h2>
   
       <h3 class="subsection-title">Commonly used drugs</h3>
-  <table id="infusionTable">
+      <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
+      <div class="table-wrapper" role="region" aria-label="Commonly used drugs infusion table">
+  <table id="infusionTable" class="sticky-table">
     <thead>
       <tr>
         <th>Drug</th>
@@ -347,9 +577,12 @@
       </tr>
     </tbody>
   </table>
+      </div>
 
       <h3 class="subsection-title">Other infusion drugs</h3>
-  <table id="otherInfusionTable">
+      <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
+      <div class="table-wrapper" role="region" aria-label="Other infusion drugs table">
+  <table id="otherInfusionTable" class="sticky-table">
     <thead>
       <tr>
         <th>Drug</th>
@@ -476,13 +709,16 @@
       </tr>
     </tbody>
   </table>
+      </div>
 
       <div class="note" style="background: #ffebee; border-left-color: #f44336;">
         <strong>Aprotinin:</strong> Reserved for special cases. Consult cardiac anesthetist in charge before use.
       </div>
 
       <h2 class="section-title">Cardiopulmonary bypass</h2>
-  <table id="cpbTable">
+      <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
+      <div class="table-wrapper" role="region" aria-label="Cardiopulmonary bypass drugs table">
+  <table id="cpbTable" class="sticky-table">
     <thead>
       <tr>
         <th>Drug</th>
@@ -509,13 +745,16 @@
       </tr>
     </tbody>
   </table>
+      </div>
 
       <div class="note">
         <strong>Note:</strong> Do not draw up protamine until rewarming
       </div>
 
       <h2 class="section-title">Deep hypothermic circulatory arrest</h2>
-  <table id="dhcaTable">
+      <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
+      <div class="table-wrapper" role="region" aria-label="Deep hypothermic circulatory arrest drugs table">
+  <table id="dhcaTable" class="sticky-table">
     <thead>
       <tr>
         <th>Drug</th>
@@ -535,9 +774,12 @@
       </tr>
     </tbody>
   </table>
+      </div>
 
       <h2 class="section-title">Emergency drugs (Bolus)</h2>
-  <table id="emergencyTable">
+      <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
+      <div class="table-wrapper" role="region" aria-label="Emergency drugs table">
+  <table id="emergencyTable" class="sticky-table">
     <thead>
       <tr>
         <th>Drug</th>
@@ -587,6 +829,7 @@
       </tr>
     </tbody>
       </table>
+      </div>
 
       <div class="note">
         <strong>Note:</strong> Prepare 100 mcg/ml phenylephrine for use by perfusionist: 10 mg phenylephrine into 100 ml NS
@@ -602,12 +845,12 @@
     </div>
     
     <div class="content">
-      <div style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-        <button type="button" onclick="showDrugCalculator()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">Drug Calculator</button>
-        <button type="button" onclick="showElectrolyteCalculator()" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">Electrolyte</button>
-        <button type="button" onclick="showArrhythmiaCalculator()" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">Anti-arrhythmic</button>
-        <button type="button" onclick="showHemostaticCalculator()" style="background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);">Hemostatic</button>
-      </div>
+      <nav class="nav-buttons" style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;" aria-label="Calculator navigation">
+        <button type="button" onclick="showDrugCalculator()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" aria-label="Go to Drug Calculator">Drug Calculator</button>
+        <button type="button" onclick="showElectrolyteCalculator()" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" aria-label="Go to Electrolyte Calculator">Electrolyte</button>
+        <button type="button" onclick="showArrhythmiaCalculator()" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" aria-label="Go to Anti-arrhythmic Calculator">Anti-arrhythmic</button>
+        <button type="button" onclick="showHemostaticCalculator()" style="background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);" aria-label="Go to Hemostatic Agents Calculator">Hemostatic</button>
+      </nav>
 
       <div class="input-section">
         <div class="input-group" style="flex-direction: column; align-items: stretch;">
@@ -695,12 +938,12 @@
     </div>
     
     <div class="content">
-      <div style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-        <button type="button" onclick="showDrugCalculator()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">Drug Calculator</button>
-        <button type="button" onclick="showAcidosisCalculator()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">Acidosis</button>
-        <button type="button" onclick="showArrhythmiaCalculator()" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">Anti-arrhythmic</button>
-        <button type="button" onclick="showHemostaticCalculator()" style="background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);">Hemostatic</button>
-      </div>
+      <nav class="nav-buttons" style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;" aria-label="Calculator navigation">
+        <button type="button" onclick="showDrugCalculator()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" aria-label="Go to Drug Calculator">Drug Calculator</button>
+        <button type="button" onclick="showAcidosisCalculator()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" aria-label="Go to Acidosis Calculator">Acidosis</button>
+        <button type="button" onclick="showArrhythmiaCalculator()" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" aria-label="Go to Anti-arrhythmic Calculator">Anti-arrhythmic</button>
+        <button type="button" onclick="showHemostaticCalculator()" style="background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);" aria-label="Go to Hemostatic Agents Calculator">Hemostatic</button>
+      </nav>
 
       <h2 style="text-align: center; color: #333; margin-bottom: 20px;">IV KCl Replacement</h2>
 
@@ -911,12 +1154,12 @@
     </div>
     
     <div class="content">
-      <div style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-        <button type="button" onclick="showDrugCalculator()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">Drug Calculator</button>
-        <button type="button" onclick="showAcidosisCalculator()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">Acidosis</button>
-        <button type="button" onclick="showElectrolyteCalculator()" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">Electrolyte</button>
-        <button type="button" onclick="showHemostaticCalculator()" style="background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);">Hemostatic</button>
-      </div>
+      <nav class="nav-buttons" style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;" aria-label="Calculator navigation">
+        <button type="button" onclick="showDrugCalculator()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" aria-label="Go to Drug Calculator">Drug Calculator</button>
+        <button type="button" onclick="showAcidosisCalculator()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" aria-label="Go to Acidosis Calculator">Acidosis</button>
+        <button type="button" onclick="showElectrolyteCalculator()" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" aria-label="Go to Electrolyte Calculator">Electrolyte</button>
+        <button type="button" onclick="showHemostaticCalculator()" style="background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);" aria-label="Go to Hemostatic Agents Calculator">Hemostatic</button>
+      </nav>
 
       <div class="input-section">
         <div class="input-group" style="flex-direction: column; align-items: stretch;">
@@ -1035,12 +1278,12 @@
     </div>
     
     <div class="content">
-      <div style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-        <button type="button" onclick="showDrugCalculator()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">Drug Calculator</button>
-        <button type="button" onclick="showAcidosisCalculator()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">Acidosis</button>
-        <button type="button" onclick="showElectrolyteCalculator()" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">Electrolyte</button>
-        <button type="button" onclick="showArrhythmiaCalculator()" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">Anti-arrhythmic</button>
-      </div>
+      <nav class="nav-buttons" style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;" aria-label="Calculator navigation">
+        <button type="button" onclick="showDrugCalculator()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" aria-label="Go to Drug Calculator">Drug Calculator</button>
+        <button type="button" onclick="showAcidosisCalculator()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" aria-label="Go to Acidosis Calculator">Acidosis</button>
+        <button type="button" onclick="showElectrolyteCalculator()" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" aria-label="Go to Electrolyte Calculator">Electrolyte</button>
+        <button type="button" onclick="showArrhythmiaCalculator()" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" aria-label="Go to Anti-arrhythmic Calculator">Anti-arrhythmic</button>
+      </nav>
 
       <div class="input-section">
         <div class="input-group" style="flex-direction: column; align-items: stretch;">
@@ -1208,7 +1451,7 @@
   </div>
 
   <!-- Back to Top Button -->
-  <button id="backToTop" title="Back to top">↑</button>
+  <button id="backToTop" title="Back to top" aria-label="Back to top of page">↑</button>
 
   <script>
     // Concentrations by weight band from HKCH table. [file:11]
@@ -2152,6 +2395,72 @@
         top: 0,
         behavior: 'smooth'
       });
+    });
+
+    // Table scroll shadow indicators
+    function updateScrollShadows(wrapper) {
+      const scrollLeft = wrapper.scrollLeft;
+      const scrollWidth = wrapper.scrollWidth;
+      const clientWidth = wrapper.clientWidth;
+      const maxScroll = scrollWidth - clientWidth;
+      
+      // Remove both classes first
+      wrapper.classList.remove('scroll-left', 'scroll-right');
+      
+      // Add classes based on scroll position
+      if (scrollLeft > 5) {
+        wrapper.classList.add('scroll-left');
+      }
+      if (scrollLeft < maxScroll - 5) {
+        wrapper.classList.add('scroll-right');
+      }
+    }
+
+    // Initialize scroll shadows for all table wrappers
+    function initScrollShadows() {
+      const wrappers = document.querySelectorAll('.table-wrapper');
+      wrappers.forEach(wrapper => {
+        // Initial check
+        updateScrollShadows(wrapper);
+        
+        // Update on scroll
+        wrapper.addEventListener('scroll', function() {
+          updateScrollShadows(this);
+        });
+        
+        // Update on window resize
+        window.addEventListener('resize', function() {
+          updateScrollShadows(wrapper);
+        });
+      });
+    }
+
+    // Hide scroll hint after first scroll
+    function hideScrollHints() {
+      const wrappers = document.querySelectorAll('.table-wrapper');
+      wrappers.forEach(wrapper => {
+        // Find the associated scroll hint by checking previous siblings
+        let sibling = wrapper.previousElementSibling;
+        let scrollHint = null;
+        while (sibling && !scrollHint) {
+          if (sibling.classList && sibling.classList.contains('scroll-hint')) {
+            scrollHint = sibling;
+          }
+          sibling = sibling.previousElementSibling;
+        }
+        
+        if (scrollHint) {
+          wrapper.addEventListener('scroll', function() {
+            scrollHint.style.display = 'none';
+          }, { once: true });
+        }
+      });
+    }
+
+    // Initialize on DOM ready
+    document.addEventListener('DOMContentLoaded', function() {
+      initScrollShadows();
+      hideScrollHints();
     });
   </script>
 </body>
