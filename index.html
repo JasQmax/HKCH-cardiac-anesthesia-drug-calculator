@@ -1,47 +1,2508 @@
-    /* Enhanced mobile touch feedback for table rows */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HKCH Cardiac Anesthesia Drug Calculator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .subtitle {
+      font-size: 14px;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+    
+    .content {
+      padding: 30px;
+    }
+    
+    .input-section {
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .input-group {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    label {
+      font-weight: 500;
+      color: #2c3e50;
+      font-size: 14px;
+    }
+    
+    input[type="number"] {
+      padding: 10px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      width: 120px;
+      transition: all 0.3s;
+    }
+    
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    /* Table Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+      vertical-align: middle;
+    }
+
+    th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    tbody tr:hover {
+      background-color: #f0f2f5;
+    }
+
+    @media (hover: none) {
+      tbody tr:active {
+        background-color: #e0e4e8;
+      }
+    }
+    
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    .note {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 12px 16px;
+      margin: 15px 0;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #856404;
+      line-height: 1.5;
+    }
+    
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1e3c72;
+      margin: 30px 0 15px 0;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #667eea;
+    }
+    
+    .subsection-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2a5298;
+      margin: 25px 0 12px 0;
+    }
+    
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 15px;
+      font-size: 13px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    
+    th, td {
+      border: 1px solid #e0e0e0;
+      padding: 12px 10px;
+      text-align: center;
+    }
+    
+    th {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+    
     tbody tr {
       transition: all 0.2s ease;
-      -webkit-tap-highlight-color: rgba(102, 126, 234, 0.2);
     }
     
-    /* Desktop hover effects */
-    @media (hover: hover) {
-      tbody tr:hover {
-        background-color: #fffbea !important;
-        transform: scale(1.01);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        cursor: pointer;
+    tbody tr:hover {
+      background-color: #fffbea !important;
+      transform: scale(1.01);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      cursor: pointer;
+    }
+    
+    tbody tr:hover td {
+      border-color: #ffc107;
+      color: #000 !important;
+    }
+    
+    .group-header {
+      background: linear-gradient(135deg, #e0eaff 0%, #d0dfff 100%);
+      font-weight: 600;
+      text-align: left;
+      color: #1e3c72;
+      font-size: 14px;
+    }
+    
+    /* Drug color classes */
+    .inotrope-vasopressor { background-color: #e6d5f0; }
+    .vasodilator { background-color: #d3d3d3; }
+    .midazolam { background-color: #ffa500; color: white; }
+    .ketamine { background-color: #ffff99; }
+    .morphine { background-color: #add8e6; }
+    .cisatracurium { background-color: #ff6347; color: white; }
+    .heparin { background-color: #20b2aa; color: white; }
+    .protamine { background-color: #20b2aa; color: white; border: 2px dashed #000; }
+    .adrenaline-bolus { background-color: #ff0000; color: white; font-weight: 600; }
+    .phenylephrine-bolus { background-color: #ffb6c1; }
+    
+    /* Back to Top Button */
+    #backToTop {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 24px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+    
+    #backToTop:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+    
+    #backToTop.show {
+      display: flex;
+    }
+    
+    /* Mobile-responsive table wrapper with scroll indicators */
+    .table-wrapper {
+      position: relative;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch; /* Smooth scroll momentum on iOS */
+      scrollbar-width: thin;
+      scrollbar-color: #667eea #f0f0f0;
+    }
+    
+    .table-wrapper::-webkit-scrollbar {
+      height: 8px;
+    }
+    
+    .table-wrapper::-webkit-scrollbar-track {
+      background: #f0f0f0;
+      border-radius: 4px;
+    }
+    
+    .table-wrapper::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 4px;
+    }
+    
+    /* Scroll shadow indicators */
+    .table-wrapper::before,
+    .table-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 8px;
+      width: 30px;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .table-wrapper::before {
+      left: 0;
+      background: linear-gradient(to right, rgba(102, 126, 234, 0.15), transparent);
+    }
+    
+    .table-wrapper::after {
+      right: 0;
+      background: linear-gradient(to left, rgba(102, 126, 234, 0.15), transparent);
+    }
+    
+    .table-wrapper.scroll-right::after {
+      opacity: 1;
+    }
+    
+    .table-wrapper.scroll-left::before {
+      opacity: 1;
+    }
+    
+    /* Scroll hint for mobile */
+    .scroll-hint {
+      display: none;
+      text-align: center;
+      font-size: 12px;
+      color: #667eea;
+      padding: 8px;
+      background: rgba(102, 126, 234, 0.1);
+      border-radius: 4px;
+      margin-bottom: 8px;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    
+    /* Sticky first column for tables on mobile */
+    .sticky-table td:first-child,
+    .sticky-table th:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      background: inherit;
+    }
+    
+    .sticky-table th:first-child {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      z-index: 3;
+    }
+    
+    .sticky-table td:first-child {
+      background: white;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+    
+    .sticky-table .group-header {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+    }
+    
+    /* Preserve drug row colors on sticky column */
+    .sticky-table tr.inotrope-vasopressor td:first-child { background-color: #e6d5f0; }
+    .sticky-table tr.vasodilator td:first-child { background-color: #d3d3d3; }
+    .sticky-table tr.midazolam td:first-child { background-color: #ffa500; }
+    .sticky-table tr.ketamine td:first-child { background-color: #ffff99; }
+    .sticky-table tr.morphine td:first-child { background-color: #add8e6; }
+    .sticky-table tr.cisatracurium td:first-child { background-color: #ff6347; }
+    .sticky-table tr.heparin td:first-child { background-color: #20b2aa; }
+    .sticky-table tr.protamine td:first-child { background-color: #20b2aa; }
+    .sticky-table tr.adrenaline-bolus td:first-child { background-color: #ff0000; }
+    .sticky-table tr.phenylephrine-bolus td:first-child { background-color: #ffb6c1; }
+    
+    @media (max-width: 768px) {
+      body { padding: 10px; }
+      .container { border-radius: 8px; }
+      .header { padding: 20px; }
+      h1 { font-size: 20px; }
+      .subtitle { font-size: 13px; }
+      .content { padding: 12px; }
+      .input-section { padding: 15px; }
+      table { font-size: 11px; }
+      th, td { padding: 8px 6px; }
+      
+      /* Show scroll hint on mobile */
+      .scroll-hint {
+        display: block;
       }
       
-      tbody tr:hover td {
-        border-color: #ffc107;
-        color: #000 !important;
+      /* Better button layout for mobile */
+      .nav-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+      }
+      
+      .nav-buttons button {
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 14px;
+        min-height: 48px; /* Minimum touch target size */
+      }
+      
+      /* Enhanced touch feedback for buttons */
+      button {
+        min-height: 44px;
+        padding: 12px 24px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: rgba(102, 126, 234, 0.3);
+      }
+      
+      button:active {
+        transform: scale(0.98);
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+      }
+      
+      /* Improve input fields for mobile */
+      input[type="number"] {
+        min-height: 44px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        width: 100%;
+      }
+      
+      select {
+        min-height: 44px;
+        font-size: 16px;
+      }
+      
+      /* Table improvements for mobile */
+      .table-wrapper {
+        margin: 0 -12px;
+        padding: 0 12px;
+        width: calc(100% + 24px);
+      }
+      
+      /* Sticky column width adjustment for mobile */
+      .sticky-table td:first-child,
+      .sticky-table th:first-child {
+        min-width: 100px;
+        max-width: 120px;
+        word-wrap: break-word;
+      }
+      
+      /* Section title adjustments */
+      .section-title {
+        font-size: 20px;
+        margin: 25px 0 12px 0;
+      }
+      
+      .subsection-title {
+        font-size: 16px;
+        margin: 20px 0 10px 0;
+      }
+      
+      /* Input group stacking on mobile */
+      .input-group {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .input-group > div {
+        width: 100%;
+      }
+      
+      /* Back to top button mobile adjustments */
+      #backToTop {
+        bottom: 20px;
+        right: 20px;
+        width: 48px;
+        height: 48px;
+      }
+      
+      /* Note boxes mobile adjustments */
+      .note {
+        font-size: 12px;
+        padding: 10px 12px;
       }
     }
     
-    /* Mobile and touch device active states */
-    @media (hover: none), (pointer: coarse) {
-      tbody tr:active {
-        background-color: #e3f2fd !important;
-        transform: scale(0.99);
-        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+    /* Extra small devices */
+    @media (max-width: 480px) {
+      body { padding: 6px; }
+      .header { padding: 15px; }
+      h1 { font-size: 18px; }
+      .content { padding: 10px; }
+      table { font-size: 10px; }
+      th, td { padding: 6px 4px; }
+      
+      .sticky-table td:first-child,
+      .sticky-table th:first-child {
+        min-width: 80px;
+        max-width: 100px;
+        font-size: 10px;
       }
       
-      tbody tr:active td {
-        border-color: #2196f3 !important;
-        color: #000 !important;
-      }
-      
-      /* Enhanced tap feedback for mobile */
-      tbody tr {
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        user-select: none;
-      }
-      
-      tbody tr:focus {
-        background-color: #e8f5e9 !important;
-        outline: 2px solid #4caf50;
-        outline-offset: -2px;
+      .nav-buttons button {
+        padding: 12px 16px;
+        font-size: 13px;
       }
     }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>HKCH Cardiac Anesthesia Drug Calculator</h1>
+      <div class="subtitle">Dosage and Dilution Calculator</div>
+    </div>
+    
+    <div class="content">
+      <nav class="nav-buttons" style="margin-bottom: 15px; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;" aria-label="Calculator navigation">
+        <button type="button" onclick="showAcidosisCalculator()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" aria-label="Go to Metabolic Acidosis Calculator">Metabolic Acidosis Calculator →</button>
+        <button type="button" onclick="showElectrolyteCalculator()" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);" aria-label="Go to Electrolyte Calculator">Electrolyte Calculator →</button>
+        <button type="button" onclick="showArrhythmiaCalculator()" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" aria-label="Go to Anti-arrhythmic Calculator">Anti-arrhythmic Calculator →</button>
+        <button type="button" onclick="showHemostaticCalculator()" style="background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);" aria-label="Go to Hemostatic Agents Calculator">Hemostatic Agents →</button>
+      </nav>
+
+      <div class="input-section" role="form" aria-label="Drug dosage calculator input">
+        <div class="input-group">
+          <div>
+            <label for="weight">Body weight (kg):</label>
+            <input type="number" id="weight" min="0" step="0.1" placeholder="Enter weight">
+          </div>
+          <label class="checkbox-label">
+            <input type="checkbox" id="fluidRestriction">
+            <span>>10 kg fluid restriction regime</span>
+          </label>
+          <button type="button" onclick="calculateInfusions()" aria-label="Calculate drug dosages based on entered weight">Calculate Dosages</button>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>Note:</strong> Uses HKCH standardized continuous infusion table: picks the correct standard concentration per weight band and shows protocol minimum and maximum dose and the corresponding pump rate in ml/hr. Always check against current hospital guidelines before prescribing.
+      </div>
+
+      <div class="note">
+        <strong>Disclaimer:</strong> Stock concentrations shown are according to current stock available in pharmacy. Please verify availability before preparation.
+      </div>
+
+      <h2 class="section-title">Infusions</h2>
+  
+      <h3 class="subsection-title">Commonly used drugs</h3>
+      <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
+      <div class="table-wrapper" role="region" aria-label="Commonly used drugs infusion table">
+  <table id="infusionTable" class="sticky-table">
+    <thead>
+      <tr>
+        <th>Drug</th>
+        <th>Standard conc. used</th>
+        <th>Dilution instructions</th>
+        <th>Protocol dose range</th>
+        <th>Min rate (ml/hr)</th>
+        <th>Max rate (ml/hr)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="6" class="group-header">Inotropes / Vasopressors</td></tr>
+      <tr data-drug="adrenaline" class="inotrope-vasopressor">
+        <td>Adrenaline</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>0.05–2 mcg/kg/min</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+      <tr data-drug="noradrenaline" class="inotrope-vasopressor">
+        <td>Noradrenaline</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>0.05–2 mcg/kg/min</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+      <tr data-drug="dopamine" class="inotrope-vasopressor">
+        <td>Dopamine</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>2–20 mcg/kg/min</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+      <tr data-drug="milrinone" class="inotrope-vasopressor">
+        <td>Milrinone</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>0.25–1 mcg/kg/min</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+      <tr data-drug="phenylephrine" class="inotrope-vasopressor">
+        <td>Phenylephrine</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>0.1–5 mcg/kg/min</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+    </tbody>
+  </table>
+      </div>
+
+      <h3 class="subsection-title">Other infusion drugs</h3>
+      <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
+      <div class="table-wrapper" role="region" aria-label="Other infusion drugs table">
+  <table id="otherInfusionTable" class="sticky-table">
+    <thead>
+      <tr>
+        <th>Drug</th>
+        <th>Standard conc. used</th>
+        <th>Dilution instructions</th>
+        <th>Protocol dose range</th>
+        <th>Min rate (ml/hr)</th>
+        <th>Max rate (ml/hr)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="6" class="group-header">Inotropes / Vasopressors</td></tr>
+      <tr data-drug="dobutamine" class="inotrope-vasopressor">
+        <td>Dobutamine</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>2–20 mcg/kg/min</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+      <tr data-drug="isoprenaline" class="inotrope-vasopressor">
+        <td>Isoprenaline</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>0.05–2 mcg/kg/min</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+      <tr data-drug="vasopressin" class="inotrope-vasopressor">
+        <td>Vasopressin</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>0.02–0.12 units/kg/hr</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+
+      <tr><td colspan="6" class="group-header">Vasodilators</td></tr>
+      <tr data-drug="nitroglycerin" class="vasodilator">
+        <td>Nitroglycerin</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>0.5–20 mcg/kg/min</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+      <tr data-drug="nitroprusside" class="vasodilator">
+        <td>Nitroprusside</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>0.5–10 mcg/kg/min</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+
+      <tr><td colspan="6" class="group-header">Sedatives / Analgesics</td></tr>
+      <tr data-drug="midazolam" class="midazolam">
+        <td>Midazolam</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>1–5 mcg/kg/min</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+      <tr data-drug="morphine" class="morphine">
+        <td>Morphine</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>5–40 mcg/kg/hr</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+      <tr data-drug="ketamine" class="ketamine">
+        <td>Ketamine</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>10–45 mcg/kg/min</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+
+      <tr><td colspan="6" class="group-header">Muscle relaxants</td></tr>
+      <tr data-drug="cisatracurium" class="cisatracurium">
+        <td>Cisatracurium</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>0.5–3 mcg/kg/min</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+
+      <tr><td colspan="6" class="group-header">Others</td></tr>
+      <tr data-drug="amiodarone">
+        <td>Amiodarone</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>5–15 mcg/kg/min</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+      <tr data-drug="insulin">
+        <td>Actrapid (Insulin)</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>0.01–1 unit/kg/hr</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+      <tr data-drug="tranexamic">
+        <td>Tranexamic acid</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>Not applicable</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+      <tr data-drug="aprotinin">
+        <td>Aprotinin</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td>Loading: 5 ml/kg over 1 hr<br>Infusion: 1 ml/kg/hr</td>
+        <td class="rateMin"></td>
+        <td class="rateMax"></td>
+      </tr>
+    </tbody>
+  </table>
+      </div>
+
+      <div class="note" style="background: #ffebee; border-left-color: #f44336;">
+        <strong>Aprotinin:</strong> Reserved for special cases. Consult cardiac anesthetist in charge before use.
+      </div>
+
+      <h2 class="section-title">Cardiopulmonary bypass</h2>
+      <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
+      <div class="table-wrapper" role="region" aria-label="Cardiopulmonary bypass drugs table">
+  <table id="cpbTable" class="sticky-table">
+    <thead>
+      <tr>
+        <th>Drug</th>
+        <th>Dose</th>
+        <th>Standard concentration</th>
+        <th>Calculated dose</th>
+        <th>Volume to give (ml)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-drug="heparin" class="heparin">
+        <td>Heparin</td>
+        <td>300 units/kg</td>
+        <td>1000 units/ml</td>
+        <td class="calcDose"></td>
+        <td class="volume"></td>
+      </tr>
+      <tr data-drug="protamine" class="protamine">
+        <td>Protamine</td>
+        <td>4 mg/kg</td>
+        <td>10 mg/ml</td>
+        <td class="calcDose"></td>
+        <td class="volume"></td>
+      </tr>
+    </tbody>
+  </table>
+      </div>
+
+      <div class="note">
+        <strong>Note:</strong> Do not draw up protamine until rewarming
+      </div>
+
+      <h2 class="section-title">Deep hypothermic circulatory arrest</h2>
+      <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
+      <div class="table-wrapper" role="region" aria-label="Deep hypothermic circulatory arrest drugs table">
+  <table id="dhcaTable" class="sticky-table">
+    <thead>
+      <tr>
+        <th>Drug</th>
+        <th>Dose</th>
+        <th>Standard concentration</th>
+        <th>Calculated dose</th>
+        <th>Volume to give (ml)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-drug="methylprednisolone">
+        <td>Methylprednisolone</td>
+        <td>30 mg/kg</td>
+        <td>100 mg/ml<br><small>(Reconstitute 500 mg powder stock into 5mL NS)</small></td>
+        <td class="calcDose"></td>
+        <td class="volume"></td>
+      </tr>
+    </tbody>
+  </table>
+      </div>
+
+      <h2 class="section-title">Emergency drugs (Bolus)</h2>
+      <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
+      <div class="table-wrapper" role="region" aria-label="Emergency drugs table">
+  <table id="emergencyTable" class="sticky-table">
+    <thead>
+      <tr>
+        <th>Drug</th>
+        <th>Indication</th>
+        <th>Dose</th>
+        <th>Standard concentration</th>
+        <th>Dilution instructions</th>
+        <th>Calculated dose</th>
+        <th>Volume to give (ml)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-drug="adrenaline-arrest" class="adrenaline-bolus">
+        <td rowspan="2">Adrenaline</td>
+        <td>Cardiac arrest</td>
+        <td>10 mcg/kg</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td class="calcDose"></td>
+        <td class="volume"></td>
+      </tr>
+      <tr data-drug="adrenaline-hypotension" class="adrenaline-bolus">
+        <td>Hypotension</td>
+        <td>1 mcg/kg</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td class="calcDose"></td>
+        <td class="volume"></td>
+      </tr>
+      <tr data-drug="phenylephrine" class="phenylephrine-bolus">
+        <td>Phenylephrine</td>
+        <td>Emergency use</td>
+        <td>1–2 mcg/kg</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td class="calcDose"></td>
+        <td class="volume"></td>
+      </tr>
+      <tr data-drug="calcium-chloride">
+        <td>Calcium chloride 10%</td>
+        <td>Emergency use</td>
+        <td>0.2 ml/kg</td>
+        <td class="conc"></td>
+        <td class="dilution"></td>
+        <td class="calcDose"></td>
+        <td class="volume"></td>
+      </tr>
+    </tbody>
+      </table>
+      </div>
+
+      <div class="note">
+        <strong>Note:</strong> Prepare 100 mcg/ml phenylephrine for use by perfusionist: 10 mg phenylephrine into 100 ml NS
+      </div>
+    </div>
+  </div>
+
+  <!-- Metabolic Acidosis Calculator Card -->
+  <div class="container" id="acidosisCalculator" style="display: none; margin-top: 20px;">
+    <div class="header">
+      <h1>Metabolic Acidosis Correction Calculator</h1>
+      <div class="subtitle">Sodium Bicarbonate Dosing</div>
+    </div>
+    
+    <div class="content">
+      <nav class="nav-buttons" style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;" aria-label="Calculator navigation">
+        <button type="button" onclick="showDrugCalculator()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" aria-label="Go to Drug Calculator">Drug Calculator</button>
+        <button type="button" onclick="showElectrolyteCalculator()" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" aria-label="Go to Electrolyte Calculator">Electrolyte</button>
+        <button type="button" onclick="showArrhythmiaCalculator()" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" aria-label="Go to Anti-arrhythmic Calculator">Anti-arrhythmic</button>
+        <button type="button" onclick="showHemostaticCalculator()" style="background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);" aria-label="Go to Hemostatic Agents Calculator">Hemostatic</button>
+      </nav>
+
+      <div class="input-section">
+        <div class="input-group" style="flex-direction: column; align-items: stretch;">
+          <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+            <div style="flex: 1; min-width: 200px;">
+              <label for="acidosisWeight">Body weight (kg):</label>
+              <input type="number" id="acidosisWeight" min="0" step="0.1" placeholder="Enter weight" style="width: 100%;">
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+              <label for="baseDeficit">Base deficit (mEq/L):</label>
+              <input type="number" id="baseDeficit" step="0.1" placeholder="Enter base deficit" style="width: 100%;">
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+              <label for="bicarbonateCon">NaHCO₃ concentration:</label>
+              <select id="bicarbonateCon" style="padding: 10px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; width: 100%;">
+                <option value="8.4">8.4% (1 mEq/mL)</option>
+                <option value="4.2">4.2% (0.5 mEq/mL)</option>
+                <option value="2.1">2.1% (0.25 mEq/mL)</option>
+              </select>
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px; justify-content: center;">
+            <button type="button" onclick="calculateAcidosis()">Calculate</button>
+            <button type="button" onclick="resetAcidosis()" style="background: linear-gradient(135deg, #f44336 0%, #e91e63 100%); padding: 12px 20px; font-size: 14px;">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>Formula:</strong> mL of NaHCO₃ = Body Weight (kg) × Base Deficit (mEq/L) ÷ 6<br>
+        <small>For 8.4% solution. Other concentrations adjusted accordingly.</small>
+      </div>
+
+      <div id="acidosisResult" style="display: none; margin-top: 20px;">
+        <table style="max-width: 600px; margin: 0 auto;">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Body Weight</td>
+              <td id="resultWeight"></td>
+            </tr>
+            <tr>
+              <td>Base Deficit</td>
+              <td id="resultDeficit"></td>
+            </tr>
+            <tr>
+              <td>Concentration Selected</td>
+              <td id="resultConcentration"></td>
+            </tr>
+            <tr>
+              <td style="background-color: #e8f5e9; font-weight: 600;">Volume Required</td>
+              <td id="resultVolume" style="background-color: #e8f5e9; font-weight: 600; font-size: 16px;"></td>
+            </tr>
+            <tr id="dilutionRow" style="display: none;">
+              <td style="background-color: #fff3e0; font-weight: 600;">Dilution Instructions</td>
+              <td id="resultDilution" style="background-color: #fff3e0; font-weight: 600; text-align: left; padding-left: 15px;"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="note" style="margin-top: 20px; background: #e3f2fd; border-left-color: #2196f3;">
+          <strong>Clinical Note:</strong> 
+          <ul style="margin: 10px 0 0 20px; text-align: left;">
+            <li><strong>This calculation is for HALF CORRECTION</strong> </li>
+            <li>Give slowly over 10-30 minutes</li>
+            <li>Maximum rate: 1 mEq/kg/hr (approximately 0.12 mL/kg/hr of 8.4%)</li>
+            <li><strong>Monitor for IV extravasation</strong></li>
+            <li><strong>Monitor ABG and electrolytes</strong> after administration and before considering additional doses</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Electrolyte Calculator Card -->
+  <div class="container" id="electrolyteCalculator" style="display: none; margin-top: 20px;">
+    <div class="header">
+      <h1>Electrolyte Replacement Calculator</h1>
+      <div class="subtitle">IV Electrolyte Dosing and Dilution</div>
+    </div>
+    
+    <div class="content">
+      <nav class="nav-buttons" style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;" aria-label="Calculator navigation">
+        <button type="button" onclick="showDrugCalculator()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" aria-label="Go to Drug Calculator">Drug Calculator</button>
+        <button type="button" onclick="showAcidosisCalculator()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" aria-label="Go to Acidosis Calculator">Acidosis</button>
+        <button type="button" onclick="showArrhythmiaCalculator()" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" aria-label="Go to Anti-arrhythmic Calculator">Anti-arrhythmic</button>
+        <button type="button" onclick="showHemostaticCalculator()" style="background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);" aria-label="Go to Hemostatic Agents Calculator">Hemostatic</button>
+      </nav>
+
+      <h2 style="text-align: center; color: #333; margin-bottom: 20px;">IV KCl Replacement</h2>
+
+      <div class="input-section">
+        <div class="input-group" style="flex-direction: column; align-items: stretch;">
+          <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+            <div style="flex: 1; min-width: 200px;">
+              <label for="electrolyteWeight">Body weight (kg):</label>
+              <input type="number" id="electrolyteWeight" min="0" step="0.1" placeholder="Enter weight" style="width: 100%;">
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+              <label for="kclFactor">Replacement factor (mmol/kg):</label>
+              <select id="kclFactor" style="padding: 10px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; width: 100%;">
+                <option value="0.2">0.2 mmol/kg (Low)</option>
+                <option value="0.25" selected>0.25 mmol/kg (Standard)</option>
+                <option value="0.3">0.3 mmol/kg (High)</option>
+              </select>
+            </div>
+          </div>
+          <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+            <div style="flex: 1; min-width: 200px;">
+              <label for="kclStockConc">Stock concentration (mmol/mL):</label>
+              <input type="number" id="kclStockConc" min="0" step="0.1" placeholder="e.g., 2 for KCl 15%" style="width: 100%;">
+              <small style="color: #666;">Common: 20, 1, 0.2</small>
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+              <label for="kclDesiredConc">Desired concentration (mmol/mL):</label>
+              <input type="number" id="kclDesiredConc" min="0" step="0.01" placeholder="e.g., 0.04 for peripheral" style="width: 100%;">
+              <small style="color: #666;">Max: 0.04 (peripheral), 0.08 (central)</small>
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px; justify-content: center;">
+            <button type="button" onclick="calculateElectrolyte()">Calculate</button>
+            <button type="button" onclick="resetElectrolyte()" style="background: linear-gradient(135deg, #f44336 0%, #e91e63 100%); padding: 12px 20px; font-size: 14px;">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>Formula:</strong> mmol of KCl = Body Weight (kg) × Replacement Factor (0.2–0.3 mmol/kg)
+      </div>
+
+      <div id="electrolyteResult" style="display: none; margin-top: 20px;">
+        <table style="max-width: 700px; margin: 0 auto;">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Body Weight</td>
+              <td id="electResultWeight"></td>
+            </tr>
+            <tr>
+              <td>Replacement Factor</td>
+              <td id="electResultFactor"></td>
+            </tr>
+            <tr>
+              <td style="background-color: #e8f5e9; font-weight: 600;">Total KCl Required</td>
+              <td id="electResultTotal" style="background-color: #e8f5e9; font-weight: 600; font-size: 16px;"></td>
+            </tr>
+            <tr>
+              <td>Stock Concentration</td>
+              <td id="electResultStock"></td>
+            </tr>
+            <tr>
+              <td>Desired Concentration</td>
+              <td id="electResultDesired"></td>
+            </tr>
+            <tr>
+              <td style="background-color: #fff3e0; font-weight: 600;">Volume of Stock KCl</td>
+              <td id="electResultStockVol" style="background-color: #fff3e0; font-weight: 600; font-size: 16px;"></td>
+            </tr>
+            <tr>
+              <td style="background-color: #fff3e0; font-weight: 600;">Diluent (NS or D5) to Add</td>
+              <td id="electResultDiluent" style="background-color: #fff3e0; font-weight: 600; font-size: 16px;"></td>
+            </tr>
+            <tr>
+              <td style="background-color: #e3f2fd; font-weight: 600;">Total Volume</td>
+              <td id="electResultTotalVol" style="background-color: #e3f2fd; font-weight: 600; font-size: 16px;"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="note" style="margin-top: 20px; background: #e3f2fd; border-left-color: #2196f3;">
+          <strong>Clinical Note:</strong> 
+          <ul style="margin: 10px 0 0 20px; text-align: left;">
+            <li><strong>Suggested dose:</strong> 0.2-0.3 mmol/kg/hr up to max 10 mmol/hr for 3 hours</li>
+            <li><strong>Suggested dilution - Peripheral IV:</strong> 0.04 mmol/mL</li>
+            <li><strong>Suggested dilution - Central line:</strong> 0.08 mmol/mL</li>
+            <li><strong>Never give IV KCl as a bolus</strong> - must be diluted and infused slowly</li>
+            <li><strong>Monitoring during infusion:</strong> Consider continuous ECG monitoring, monitor PEWS (if appropriate), urine output and biochemistry</li>
+            <li><strong>Post infusion checks:</strong> Check serum K+ 1 hour after the infusion is completed</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- MgSO4 Calculator Section -->
+      <div style="margin-top: 40px; border-top: 3px solid #4facfe; padding-top: 30px;">
+        <h2 style="text-align: center; color: #333; margin-bottom: 20px;">IV Magnesium Sulphate (MgSO₄) Replacement</h2>
+        
+        <div class="input-section">
+          <div class="input-group" style="flex-direction: column; align-items: stretch;">
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+              <div style="flex: 1; min-width: 200px;">
+                <label for="mgso4Weight">Body weight (kg):</label>
+                <input type="number" id="mgso4Weight" min="0" step="0.1" placeholder="Enter weight" style="width: 100%;">
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <label for="mgso4Dose">Dose (mL/kg):</label>
+                <select id="mgso4Dose" style="padding: 10px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; width: 100%;">
+                  <option value="0.1">0.1 mL/kg (Low)</option>
+                  <option value="0.15" selected>0.15 mL/kg (Standard)</option>
+                  <option value="0.2">0.2 mL/kg (High)</option>
+                </select>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <label for="mgso4DesiredConc">Desired concentration (%):</label>
+                <input type="number" id="mgso4DesiredConc" min="0" step="1" placeholder="e.g., 10 for peripheral" style="width: 100%;">
+                <small style="color: #666;">Max: 5-10% (peripheral), 20% (central)</small>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+              <button type="button" onclick="calculateMgSO4()">Calculate</button>
+              <button type="button" onclick="resetMgSO4()" style="background: linear-gradient(135deg, #f44336 0%, #e91e63 100%); padding: 12px 20px; font-size: 14px;">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="note">
+          <strong>Stock concentration:</strong> MgSO₄ 50% (2.5 g/5 mL = 0.5 g/mL)
+        </div>
+
+        <div id="mgso4Result" style="display: none; margin-top: 20px;">
+          <table style="max-width: 700px; margin: 0 auto;">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Body Weight</td>
+                <td id="mgso4ResultWeight"></td>
+              </tr>
+              <tr>
+                <td>Dose</td>
+                <td id="mgso4ResultDose"></td>
+              </tr>
+              <tr>
+                <td style="background-color: #e8f5e9; font-weight: 600;">Volume of MgSO₄ 50%</td>
+                <td id="mgso4ResultVolume" style="background-color: #e8f5e9; font-weight: 600; font-size: 16px;"></td>
+              </tr>
+              <tr>
+                <td style="background-color: #fff3e0; font-weight: 600;">Magnesium Dose</td>
+                <td id="mgso4ResultMgDose" style="background-color: #fff3e0; font-weight: 600; font-size: 16px;"></td>
+              </tr>
+              <tr id="mgso4DilutionRow" style="display: none;">
+                <td>Desired Concentration</td>
+                <td id="mgso4ResultDesiredConc"></td>
+              </tr>
+              <tr id="mgso4DiluentRow" style="display: none;">
+                <td style="background-color: #e3f2fd; font-weight: 600;">Diluent (NS or D5W) to Add</td>
+                <td id="mgso4ResultDiluent" style="background-color: #e3f2fd; font-weight: 600; font-size: 16px;"></td>
+              </tr>
+              <tr id="mgso4TotalVolRow" style="display: none;">
+                <td style="background-color: #e3f2fd; font-weight: 600;">Total Volume</td>
+                <td id="mgso4ResultTotalVol" style="background-color: #e3f2fd; font-weight: 600; font-size: 16px;"></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="note" style="margin-top: 20px; background: #fff3e0; border-left-color: #ff9800;">
+            <strong>Clinical Note:</strong> 
+            <ul style="margin: 10px 0 0 20px; text-align: left;">
+              <li><strong>Maximum dose:</strong> 2 g (4 mL of 50% solution)</li>
+              <li><strong>Concentration limits:</strong>
+                <ul style="margin: 5px 0 0 20px;">
+                  <li>Peripheral line: Do not exceed 5-10%</li>
+                  <li>Central line: Do not exceed 20%</li>
+                </ul>
+              </li>
+              <li><strong>Administration:</strong> 
+                <ul style="margin: 5px 0 0 20px;">
+                  <li>Hypomagnesemia/Torsades with pulse: Administer over 10-20 minutes</li>
+                  <li>Pulseless Torsades: IV push</li>
+                </ul>
+              </li>
+              <li><strong>Dilution:</strong> Dilute with NS or D5W to achieve desired concentration</li>
+              <li><strong>Monitor:</strong> Deep tendon reflexes, respiratory rate, blood pressure</li>
+              <li><strong>Caution:</strong> Risk of hypotension with rapid administration</li>
+              <li>Check serum magnesium levels before and after administration</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Anti-arrhythmic Calculator Card -->
+  <div class="container" id="arrhythmiaCalculator" style="display: none; margin-top: 20px;">
+    <div class="header">
+      <h1>Anti-arrhythmic Calculator</h1>
+      <div class="subtitle">Defibrillation, Cardioversion & Antiarrhythmic Dosing</div>
+    </div>
+    
+    <div class="content">
+      <nav class="nav-buttons" style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;" aria-label="Calculator navigation">
+        <button type="button" onclick="showDrugCalculator()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" aria-label="Go to Drug Calculator">Drug Calculator</button>
+        <button type="button" onclick="showAcidosisCalculator()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" aria-label="Go to Acidosis Calculator">Acidosis</button>
+        <button type="button" onclick="showElectrolyteCalculator()" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" aria-label="Go to Electrolyte Calculator">Electrolyte</button>
+        <button type="button" onclick="showHemostaticCalculator()" style="background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);" aria-label="Go to Hemostatic Agents Calculator">Hemostatic</button>
+      </nav>
+
+      <div class="input-section">
+        <div class="input-group" style="flex-direction: column; align-items: stretch;">
+          <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+            <div style="flex: 1; min-width: 200px;">
+              <label for="arrhythmiaWeight">Body weight (kg):</label>
+              <input type="number" id="arrhythmiaWeight" min="0" step="0.1" placeholder="Enter weight" onkeyup="calculateArrhythmia()" onchange="calculateArrhythmia()" style="width: 100%;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="arrhythmiaResult" style="margin-top: 20px;">
+        <!-- Defibrillation Section -->
+        <h3 style="text-align: center; color: #333; margin-bottom: 15px; border-bottom: 2px solid #667eea; padding-bottom: 10px;">Defibrillation</h3>
+        <table style="max-width: 700px; margin: 0 auto 30px;">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Energy (Joules)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Initial (2 J/kg)</td>
+              <td id="defibInitial" style="font-weight: 600;"></td>
+            </tr>
+            <tr>
+              <td>Second (4 J/kg)</td>
+              <td id="defibSecond" style="font-weight: 600;"></td>
+            </tr>
+            <tr>
+              <td>Maximum (10 J/kg)</td>
+              <td id="defibMax" style="font-weight: 600;"></td>
+            </tr>
+            <tr id="defibAdultRow" style="display: none; background-color: #e3f2fd;">
+              <td colspan="2" style="font-weight: 600;">For adults (>50 kg): 120-200 J biphasic</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Cardioversion Section -->
+        <h3 style="text-align: center; color: #333; margin-bottom: 15px; border-bottom: 2px solid #f093fb; padding-bottom: 10px;">Synchronized Cardioversion</h3>
+        <table style="max-width: 700px; margin: 0 auto 30px;">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Energy (Joules)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Initial (0.5 J/kg)</td>
+              <td id="cardioInitial" style="font-weight: 600;"></td>
+            </tr>
+            <tr>
+              <td>Second (1 J/kg)</td>
+              <td id="cardioSecond" style="font-weight: 600;"></td>
+            </tr>
+            <tr>
+              <td>Third (Double second dose)</td>
+              <td id="cardioThird" style="font-weight: 600;"></td>
+            </tr>
+            <tr id="cardioAdultRow" style="display: none; background-color: #e3f2fd;">
+              <td colspan="2" style="font-weight: 600;">For adults (>50 kg): 120-150 J</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Antiarrhythmic Drugs Section -->
+        <h3 style="text-align: center; color: #333; margin-bottom: 15px; border-bottom: 2px solid #4facfe; padding-bottom: 10px;">Antiarrhythmic Drugs</h3>
+        <table style="max-width: 700px; margin: 0 auto;">
+          <thead>
+            <tr>
+              <th>Drug</th>
+              <th>Dose</th>
+              <th>Volume</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Amiodarone<br><small>Stock: 50 mg/mL</small></td>
+              <td id="amioDose" style="font-weight: 600;"></td>
+              <td id="amioVolume" style="font-weight: 600; background-color: #e8f5e9;"></td>
+            </tr>
+            <tr id="amioAdultRow" style="display: none; background-color: #e3f2fd;">
+              <td colspan="3" style="font-weight: 600;">For adults (>50 kg): 150 mg (3 mL)</td>
+            </tr>
+            <tr>
+              <td>Lignocaine<br><small>Stock: 2% (20 mg/mL)</small></td>
+              <td id="lignoDose" style="font-weight: 600;"></td>
+              <td id="lignoVolume" style="font-weight: 600; background-color: #e8f5e9;"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="note" style="margin-top: 20px; background: #ffebee; border-left-color: #f44336;">
+          <strong>Clinical Note:</strong> 
+          <ul style="margin: 10px 0 0 20px; text-align: left;">
+            <li><strong>Defibrillation:</strong> For VF/pulseless VT. Start at 2 J/kg, increase to 4 J/kg, max 10 J/kg or adult dose</li>
+            <li><strong>Cardioversion:</strong> For unstable SVT/VT with pulse. Ensure synchronized mode. Sedate if conscious</li>
+            <li><strong>Amiodarone:</strong> Dilute in D5W, infuse over 10-20 minutes. Can repeat dose if needed</li>
+            <li><strong>Lignocaine:</strong> Give as slow IV bolus over 2-3 minutes. Monitor for CNS toxicity</li>
+            <li><strong>Safety:</strong> Ensure oxygen, suction, airway equipment available. Monitor ECG continuously</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hemostatic Agents Calculator Card -->
+  <div class="container" id="hemostaticCalculator" style="display: none; margin-top: 20px;">
+    <div class="header">
+      <h1>Hemostatic Agents Calculator</h1>
+      <div class="subtitle">Prothrombinex & Fibrinogen Dosing</div>
+    </div>
+    
+    <div class="content">
+      <nav class="nav-buttons" style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;" aria-label="Calculator navigation">
+        <button type="button" onclick="showDrugCalculator()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" aria-label="Go to Drug Calculator">Drug Calculator</button>
+        <button type="button" onclick="showAcidosisCalculator()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" aria-label="Go to Acidosis Calculator">Acidosis</button>
+        <button type="button" onclick="showElectrolyteCalculator()" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" aria-label="Go to Electrolyte Calculator">Electrolyte</button>
+        <button type="button" onclick="showArrhythmiaCalculator()" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" aria-label="Go to Anti-arrhythmic Calculator">Anti-arrhythmic</button>
+      </nav>
+
+      <div class="input-section">
+        <div class="input-group" style="flex-direction: column; align-items: stretch;">
+          <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+            <div style="flex: 1; min-width: 200px;">
+              <label for="hemostaticWeight">Body weight (kg):</label>
+              <input type="number" id="hemostaticWeight" min="0" step="0.1" placeholder="Enter weight" onkeyup="calculateHemostatic()" onchange="calculateHemostatic()" style="width: 100%;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="hemostaticResult" style="margin-top: 20px;">
+        <!-- Prothrombinex Section -->
+        <h3 style="text-align: center; color: #333; margin-bottom: 15px; border-bottom: 2px solid #667eea; padding-bottom: 10px;">Prothrombinex</h3>
+        <div style="max-width: 700px; margin: 0 auto 20px;">
+          <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+            <div style="flex: 1; min-width: 200px;">
+              <label for="prothrombinexDose">Dose (units/kg):</label>
+              <input type="number" id="prothrombinexDose" min="0" step="1" placeholder="e.g., 25-50" onkeyup="calculateHemostatic()" onchange="calculateHemostatic()" style="width: 100%; padding: 10px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px;">
+              <small style="color: #666;">Typical: 25-50 units/kg</small>
+            </div>
+          </div>
+        </div>
+        
+        <table style="max-width: 700px; margin: 0 auto 30px;">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Body Weight</td>
+              <td id="prothrombinexResultWeight">—</td>
+            </tr>
+            <tr>
+              <td>Dose</td>
+              <td id="prothrombinexResultDose">—</td>
+            </tr>
+            <tr>
+              <td style="background-color: #e8f5e9; font-weight: 600;">Total Units Required</td>
+              <td id="prothrombinexResultTotal" style="background-color: #e8f5e9; font-weight: 600; font-size: 16px;">—</td>
+            </tr>
+            <tr>
+              <td>Stock Concentration</td>
+              <td>25 units/mL</td>
+            </tr>
+            <tr>
+              <td style="background-color: #fff3e0; font-weight: 600;">Volume to Give</td>
+              <td id="prothrombinexResultVolume" style="background-color: #fff3e0; font-weight: 600; font-size: 16px;">—</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="note" style="margin-bottom: 30px; background: #e3f2fd; border-left-color: #2196f3;">
+          <strong>Clinical Note:</strong> 
+          <ul style="margin: 10px 0 0 20px; text-align: left;">
+            <li><strong>Indication:</strong> Warfarin reversal, coagulopathy with prolonged PT/INR</li>
+            <li><strong>Dose:</strong> 25-50 units/kg (typical), check local protocol</li>
+            <li><strong>Administration:</strong> Give as slow IV injection (max 2-3 mL/min)</li>
+            <li><strong>Monitoring:</strong> Check PT/INR before and after administration</li>
+            <li><strong>Caution:</strong> Risk of thrombosis - use minimum effective dose</li>
+          </ul>
+        </div>
+
+        <!-- Fibrinogen Section -->
+        <h3 style="text-align: center; color: #333; margin-bottom: 15px; border-bottom: 2px solid #f093fb; padding-bottom: 10px;">Fibrinogen</h3>
+        <div style="max-width: 700px; margin: 0 auto 20px;">
+          <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+            <div style="flex: 1; min-width: 200px;">
+              <label for="fibrinogenDose">Dose (mg/kg):</label>
+              <input type="number" id="fibrinogenDose" min="0" step="1" placeholder="e.g., 30-70" onkeyup="calculateHemostatic()" onchange="calculateHemostatic()" style="width: 100%; padding: 10px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px;">
+              <small style="color: #666;">Typical: 30-70 mg/kg</small>
+            </div>
+          </div>
+        </div>
+
+        <table style="max-width: 700px; margin: 0 auto;">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Body Weight</td>
+              <td id="fibrinogenResultWeight">—</td>
+            </tr>
+            <tr>
+              <td>Dose</td>
+              <td id="fibrinogenResultDose">—</td>
+            </tr>
+            <tr>
+              <td style="background-color: #e8f5e9; font-weight: 600;">Total mg Required</td>
+              <td id="fibrinogenResultTotal" style="background-color: #e8f5e9; font-weight: 600; font-size: 16px;">—</td>
+            </tr>
+            <tr>
+              <td>Stock Concentration</td>
+              <td>20 mg/mL</td>
+            </tr>
+            <tr>
+              <td style="background-color: #fff3e0; font-weight: 600;">Volume to Give</td>
+              <td id="fibrinogenResultVolume" style="background-color: #fff3e0; font-weight: 600; font-size: 16px;">—</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="note" style="margin-top: 20px; background: #fff3e0; border-left-color: #ff9800;">
+          <strong>Clinical Note:</strong> 
+          <ul style="margin: 10px 0 0 20px; text-align: left;">
+            <li><strong>Indication:</strong> Low fibrinogen (<1.5-2 g/L), significant bleeding</li>
+            <li><strong>Dose:</strong> 30-70 mg/kg (aim to increase fibrinogen by 0.5-1 g/L)</li>
+            <li><strong>Reconstitution:</strong> Reconstitute with sterile water as per manufacturer instructions</li>
+            <li><strong>Administration:</strong> Give as slow IV infusion</li>
+            <li><strong>Monitoring:</strong> Check fibrinogen levels before and after administration</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- General Disclaimer -->
+  <div style="max-width: 900px; margin: 40px auto 20px; padding: 20px; background: linear-gradient(135deg, #fff5f5 0%, #ffe9e9 100%); border: 2px solid #ff6b6b; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h2 style="text-align: center; color: #c92a2a; margin-top: 0; margin-bottom: 15px; font-size: 20px;">⚠️ Important Disclaimer ⚠️</h2>
+    <div style="color: #333; line-height: 1.6; font-size: 13px;">
+      <p style="margin: 0 0 12px 0; font-weight: 600;">This calculator is provided for educational and reference purposes only.</p>
+      
+      <ul style="margin: 10px 0 12px 20px; padding-left: 20px;">
+        <li style="margin-bottom: 8px;"><strong>HKCH-Specific Guidelines:</strong> The dosing recommendations, drug concentrations, and protocols in this calculator are specific to Hong Kong Children's Hospital (HKCH) and may not be applicable to other institutions.</li>
+        
+        <li style="margin-bottom: 8px;"><strong>Local Protocols Required:</strong> Always verify all calculations and dosing recommendations against your local institutional guidelines, protocols, and formulary before administration.</li>
+        
+        <li style="margin-bottom: 8px;"><strong>Clinical Judgment:</strong> This tool is intended to assist with calculations only. Clinical decisions should always be based on individual patient assessment, clinical judgment, and current evidence-based practice.</li>
+        
+        <li style="margin-bottom: 8px;"><strong>Verification Required:</strong> All calculations and drug doses must be independently verified by qualified healthcare professionals before administration. Double-check all entries, calculations, and results.</li>
+        
+        <li style="margin-bottom: 8px;"><strong>Stock Availability:</strong> Drug concentrations and stock preparations shown are based on current HKCH pharmacy stock. Always verify availability and concentration with your local pharmacy.</li>
+        
+        <li style="margin-bottom: 8px;"><strong>No Liability:</strong> The creators and distributors of this calculator assume no liability for any errors, omissions, or adverse outcomes resulting from the use of this tool.</li>
+        
+        <li style="margin-bottom: 8px;"><strong>Updates:</strong> Medical guidelines and protocols are subject to change. Ensure you are following the most current institutional policies and clinical guidelines.</li>
+      </ul>
+      
+      <p style="margin: 12px 0 0 0; font-weight: 600; text-align: center; color: #c92a2a; font-size: 13px;">When in doubt, always consult with senior clinicians, pharmacists, or refer to your institution's drug guidelines.</p>
+      
+      <hr style="margin: 15px 0; border: none; border-top: 1px solid #ff6b6b;">
+      
+      <div style="text-align: center; margin-top: 12px;">
+        <p style="margin: 5px 0; font-size: 12px;"><strong>Created by:</strong> Jasmin Tong (2025)</p>
+        <p style="margin: 8px 0; font-size: 12px;">
+          <strong>License:</strong> 
+          <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" style="color: #c92a2a; text-decoration: none; font-weight: 600;">
+            CC BY-NC-ND 4.0
+          </a>
+        </p>
+        <p style="margin: 5px 0; font-size: 11px; color: #666;">
+          This work is licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.<br>
+          You may share this work for non-commercial purposes with appropriate credit, but may not modify or create derivatives.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to Top Button -->
+  <button id="backToTop" title="Back to top" aria-label="Back to top of page">↑</button>
+
+  <script>
+    // Concentrations by weight band from HKCH table. [file:11]
+    // conc: mg/ml or mcg/ml or units/ml; unit fields are defined per drug below.
+    const concTable = {
+      // inotropes / vasopressors
+      adrenaline: {
+        lt2:   { amount: 0.5, vol: 25 },   // 0.5mg/25ml = 0.02mg/ml
+        k2_5:  { amount: 1,   vol: 25 },   // 1mg/25ml
+        k5_10: { amount: 2,   vol: 50 },   // 2mg/50ml
+        gt10:  { amount: 3,   vol: 50 },   // 3mg/50ml
+        gt10FR:{ amount: 3,   vol: 50 }    // adjust if different
+      },
+      noradrenaline: {
+        lt2:   { amount: 0.5, vol: 25 },
+        k2_5:  { amount: 1,   vol: 25 },
+        k5_10: { amount: 2,   vol: 50 },
+        gt10:  { amount: 4,   vol: 50 },
+        gt10FR:{ amount: 4,   vol: 50 }
+      },
+      dopamine: {
+        lt2:   { amount: 25,  vol: 25 },   // 1mg/ml
+        k2_5:  { amount: 50,  vol: 25 },   // 2mg/ml
+        k5_10: { amount: 100, vol: 50 },   // 2mg/ml (table shows blank but same total)
+        gt10:  { amount: 200, vol: 50 },   // 4mg/ml
+        gt10FR:{ amount: 300, vol: 50 }    // 6mg/ml
+      },
+      dobutamine: {
+        lt2:   { amount: 25,  vol: 25 },   // 1mg/ml
+        k2_5:  { amount: 50,  vol: 25 },   // 2mg/ml
+        k5_10: { amount: 100, vol: 50 },   // 2mg/ml
+        gt10:  { amount: 250, vol: 50 },   // 5mg/ml
+        gt10FR:{ amount: 250, vol: 50 }    // 5mg/ml
+      },
+      phenylephrine: {
+        lt2:   null,
+        k2_5:  null,
+        k5_10: { amount: 2,   vol: 50 },   // 0.04mg/ml
+        gt10:  { amount: 5,   vol: 50 },   // 0.1mg/ml
+        gt10FR:{ amount: 5,   vol: 50 }
+      },
+      nitroglycerin: {
+        lt2:   { amount: 0.5, vol: 25 },
+        k2_5:  { amount: 1,   vol: 25 },
+        k5_10: { amount: 2,   vol: 50 },
+        gt10:  { amount: 20,  vol: 50 },   // 1mg/ml
+        gt10FR:{ amount: 50,  vol: 50 }    // 1mg/ml, fluid restriction
+      },
+      nitroprusside: {
+        lt2:   { amount: 5,   vol: 25 },   // 0.2mg/ml
+        k2_5:  { amount: 5,   vol: 25 },   // 0.2mg/ml
+        k5_10: { amount: 5,   vol: 25 },   // 0.2mg/ml
+        gt10:  { amount: 20,  vol: 50 },   // 0.4mg/ml
+        gt10FR:{ amount: 50,  vol: 50 }    // 1mg/ml
+      },
+      milrinone: {
+        lt2:   { amount: 1,   vol: 25 },   // 0.04mg/ml
+        k2_5:  { amount: 2.5, vol: 25 },
+        k5_10: { amount: 5,   vol: 50 },
+        gt10:  { amount: 10,  vol: 50 },   // 0.2mg/ml
+        gt10FR:{ amount: 30,  vol: 50 }    // 0.6mg/ml
+      },
+      isoprenaline: {
+        lt2:   null,
+        k2_5:  null,
+        k5_10: { amount: 1,   vol: 50 },   // 0.02mg/ml
+        gt10:  { amount: 3,   vol: 50 },   // 0.06mg/ml
+        gt10FR:{ amount: 3,   vol: 50 }
+      },
+      vasopressin: {
+        lt2:   { amount: 5,   vol: 25 },   // 0.2unit/ml
+        k2_5:  { amount: 5,   vol: 25 },   // 0.2unit/ml
+        k5_10: { amount: 10,  vol: 50 },   // 0.2unit/ml
+        gt10:  { amount: 40,  vol: 50 },   // 0.8unit/ml
+        gt10FR:{ amount: 40,  vol: 50 }
+      },
+      // sedatives / analgesics
+      midazolam: {
+        lt2:   { amount: 5,   vol: 25 },   // 0.2mg/ml
+        k2_5:  { amount: 15,  vol: 25 },   // 0.6mg/ml
+        k5_10: { amount: 30,  vol: 50 },   // 0.6mg/ml
+        gt10:  { amount: 50,  vol: 50 },   // 1mg/ml
+        gt10FR:{ amount: 150, vol: 50 }    // 3mg/ml
+      },
+      morphine: {
+        lt2:   { amount: 1,   vol: 25 },   // 0.04mg/ml
+        k2_5:  { amount: 2,   vol: 25 },   // 0.08mg/ml
+        k5_10: { amount: 5,   vol: 50 },   // 0.1mg/ml
+        gt10:  { amount: 10,  vol: 50 },   // 0.2mg/ml
+        gt10FR:{ amount: 30,  vol: 50 }    // 0.6mg/ml
+      },
+      ketamine: {
+        lt2:   { amount: 25,  vol: 25 },   // 1mg/ml
+        k2_5:  { amount: 15,  vol: 25 },   // 0.6mg/ml
+        k5_10: { amount: 50,  vol: 50 },   // 1mg/ml
+        gt10:  { amount: 100, vol: 50 },   // 2mg/ml
+        gt10FR:{ amount: 100, vol: 50 }
+      },
+      // muscle relaxants
+      cisatracurium: {
+        lt2:   null,
+        k2_5:  { amount: 20,  vol: 50 },   // 0.4mg/ml
+        k5_10: { amount: 50,  vol: 50 },   // 1mg/ml
+        gt10:  { amount: 100, vol: 50 },   // 2mg/ml
+        gt10FR:{ amount: 100, vol: 50 }
+      },
+      // others
+      amiodarone: {
+        lt2:   { amount: 25,  vol: 25 },   // 1mg/ml
+        k2_5:  { amount: 50,  vol: 25 },   // 2mg/ml
+        k5_10: { amount: 100, vol: 50 },   // 2mg/ml
+        gt10:  { amount: 100, vol: 50 },   // 2mg/ml
+        gt10FR:{ amount: 125, vol: 50 }    // 2.5mg/ml
+      },
+      insulin: {
+        lt2:   { amount: 5,   vol: 50 },   // 0.1unit/ml
+        k2_5:  { amount: 10,  vol: 50 },   // 0.2unit/ml
+        k5_10: { amount: 10,  vol: 50 },   // assume 0.2unit/ml
+        gt10:  { amount: 50,  vol: 50 },   // 1unit/ml
+        gt10FR:{ amount: 50,  vol: 50 }
+      },
+      tranexamic: {
+        lt2:   { amount: 2500, vol: 50 },   // 50mg/ml
+        k2_5:  { amount: 2500, vol: 50 },   // 50mg/ml
+        k5_10: { amount: 2500, vol: 50 },   // 50mg/ml
+        gt10:  { amount: 2500, vol: 50 },   // 50mg/ml
+        gt10FR:{ amount: 2500, vol: 50 }    // 50mg/ml
+      },
+      aprotinin: {
+        lt2:   { amount: 10000, vol: 1 },   // 10,000 KIU/ml (undiluted)
+        k2_5:  { amount: 10000, vol: 1 },   // 10,000 KIU/ml (undiluted)
+        k5_10: { amount: 10000, vol: 1 },   // 10,000 KIU/ml (undiluted)
+        gt10:  { amount: 10000, vol: 1 },   // 10,000 KIU/ml (undiluted)
+        gt10FR:{ amount: 10000, vol: 1 }    // 10,000 KIU/ml (undiluted)
+      }
+    };
+
+    // Protocol dose ranges per drug (min / max and unit). [file:11]
+    const doseRanges = {
+      adrenaline:   { min: 0.05, max: 2,   unit: "mcg/kg/min" },
+      noradrenaline:{ min: 0.05, max: 2,   unit: "mcg/kg/min" },
+      dopamine:     { min: 2,    max: 20,  unit: "mcg/kg/min" },
+      dobutamine:   { min: 2,    max: 20,  unit: "mcg/kg/min" },
+      phenylephrine:{ min: 0.1,  max: 5,   unit: "mcg/kg/min" },
+      nitroglycerin:{ min: 0.2,  max: 5,   unit: "mcg/kg/min" },
+      nitroprusside:{ min: 0.5,  max: 5,   unit: "mcg/kg/min" },
+      milrinone:    { min: 0.25, max: 1,   unit: "mcg/kg/min" },
+      isoprenaline: { min: 0.05, max: 2,   unit: "mcg/kg/min" },
+      vasopressin:  { min: 0.02, max: 0.12,unit: "unit/kg/hr" },
+      midazolam:    { min: 1,    max: 5,   unit: "mcg/kg/min" },
+      morphine:     { min: 5,    max: 40,  unit: "mcg/kg/hr" },
+      ketamine:     { min: 10,   max: 45,  unit: "mcg/kg/min" },
+      cisatracurium:{ min: 1,    max: 10,  unit: "mcg/kg/min" },
+      amiodarone:   { min: 5,    max: 15,  unit: "mcg/kg/min" },
+      insulin:      { min: 0.01, max: 1,   unit: "unit/kg/hr" },
+      tranexamic:   { min: 10,   max: 10,  unit: "mg/kg/hr" },
+      aprotinin:    { min: 1,    max: 1,   unit: "ml/kg/hr" }
+    };
+
+    function getBand(weight, fluidRestriction) {
+      if (weight < 2) return "lt2";
+      if (weight >= 2 && weight <= 5) return "k2_5";
+      if (weight > 5 && weight <= 10) return "k5_10";
+      if (weight > 10 && fluidRestriction) return "gt10FR";
+      if (weight > 10) return "gt10";
+      return "gt10";
+    }
+
+    function calculateInfusions() {
+      const wt = parseFloat(document.getElementById('weight').value);
+      const fluidRestriction = document.getElementById('fluidRestriction').checked;
+
+      if (isNaN(wt) || wt <= 0) {
+        alert('Please enter a valid body weight.');
+        return;
+      }
+
+      const band = getBand(wt, fluidRestriction);
+
+      // Stock concentrations at HKCH
+      const stockConc = {
+        adrenaline: '100 mcg/ml (1:10,000)',
+        noradrenaline: '1 mg/ml',
+        dopamine: '40 mg/ml',
+        milrinone: '1 mg/ml',
+        phenylephrine: '100 mcg/ml (diluted stock)',
+        dobutamine: '12.5 mg/ml',
+        nitroglycerin: '1 mg/ml',
+        nitroprusside: '25 mg/ml',
+        vasopressin: '20 units/ml',
+        amiodarone: '50 mg/ml',
+        isoprenaline: '0.2 mg/ml',
+        midazolam: '5 mg/ml',
+        morphine: '1 mg/ml (diluted stock)',
+        ketamine: '50 mg/ml',
+        cisatracurium: '2 mg/ml',
+        insulin: '100 units/ml',
+        tranexamic: '50 mg/ml (use undiluted)',
+        aprotinin: '10,000 KIU/mL'
+      };
+
+      // Calculate continuous infusions (commonly used drugs)
+      const rows = document.querySelectorAll('#infusionTable tbody tr[data-drug]');
+      rows.forEach(row => {
+        const drugKey = row.getAttribute('data-drug');
+        const concRow = concTable[drugKey];
+        const doseRange = doseRanges[drugKey];
+
+        const concCell = row.querySelector('.conc');
+        const dilutionCell = row.querySelector('.dilution');
+        const rateMinCell = row.querySelector('.rateMin');
+        const rateMaxCell = row.querySelector('.rateMax');
+
+        if (!concRow || !doseRange) {
+          concCell.textContent = dilutionCell.textContent = rateMinCell.textContent = rateMaxCell.textContent = '';
+          return;
+        }
+
+        const entry = concRow[band];
+        if (!entry) {
+          concCell.textContent = 'Not applicable';
+          dilutionCell.textContent = '';
+          rateMinCell.textContent = rateMaxCell.textContent = '';
+          return;
+        }
+
+        // Determine concentration (amount / vol); units depend on drug (mg, mcg, unit).
+        const conc = entry.amount / entry.vol; // "amount" per ml, in table units
+        // Build a label like "3mg in 50ml (0.06mg/ml)".
+        let concLabel;
+        if (drugKey === 'aprotinin') {
+          concLabel = '10,000 KIU in 1 mL (10,000 KIU/mL)';
+        } else {
+          concLabel = entry.amount + (doseRange.unit.includes('unit') ? ' units' : ' mg') +
+            ' in ' + entry.vol + ' ml (' + conc.toFixed(2) +
+            (doseRange.unit.includes('unit') ? ' unit/ml)' : ' mg/ml)');
+        }
+
+        concCell.textContent = concLabel;
+
+        // Build dilution instructions - calculate ml of stock + ml of diluent
+        let dilutionText = '';
+        const targetAmount = entry.amount;
+        const targetVol = entry.vol;
+        
+        if (drugKey === 'adrenaline') {
+          const stockMgPerMl = 0.1; // 100 mcg/ml
+          const mlOfStock = targetAmount / stockMgPerMl;
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (100 mcg/ml) + ${diluent.toFixed(2)} ml NS`;
+        } else if (drugKey === 'noradrenaline') {
+          const mlOfStock = targetAmount / 1; // 1 mg/ml stock
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (1 mg/ml) + ${diluent.toFixed(2)} ml NS`;
+        } else if (drugKey === 'dopamine') {
+          const mlOfStock = targetAmount / 40; // 40 mg/ml stock
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (40 mg/ml) + ${diluent.toFixed(2)} ml NS`;
+        } else if (drugKey === 'milrinone') {
+          const mlOfStock = targetAmount / 1; // 1 mg/ml stock
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (1 mg/ml) + ${diluent.toFixed(2)} ml NS`;
+        } else if (drugKey === 'phenylephrine') {
+          const stockMgPerMl = 0.1; // 100 mcg/ml
+          const mlOfStock = targetAmount / stockMgPerMl;
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of diluted stock (100 mcg/ml) + ${diluent.toFixed(2)} ml NS`;
+        } else if (drugKey === 'vasopressin') {
+          const mlOfStock = targetAmount / 20; // 20 units/ml stock
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (20 units/ml) + ${diluent.toFixed(2)} ml NS`;
+        } else {
+          dilutionText = `Stock: ${stockConc[drugKey] || 'Not specified'}`;
+        }
+        
+        dilutionCell.textContent = dilutionText;
+
+        // Convert to mg or units per kg per hour, then to ml/hr:
+        // If 'per min' -> multiply by 60; if in mcg -> divide by 1000 to get mg.
+        // If 'unit' use units directly.
+        function doseToMlHr(dose, unitStr) {
+          let perHour = dose;
+          if (unitStr.includes('/min')) perHour *= 60; // mcg/kg/min or mg/kg/min -> /hr
+          // determine base units and concentration units
+          let isUnit = unitStr.includes('unit');
+          let isMg = unitStr.includes('mg');
+          let isMcg = unitStr.includes('mcg');
+
+          let concInBase; // base unit per ml
+
+          if (isUnit) {
+            concInBase = conc; // conc is already units/ml
+          } else if (isMg) {
+            concInBase = conc; // mg/ml
+          } else if (isMcg) {
+            // conc is mg/ml; convert to mcg/ml
+            concInBase = conc * 1000; // mcg/ml
+          }
+
+          const totalPerHrPerKg = perHour; // still in mcg/mg/unit per kg per hr
+          const totalPerHr = totalPerHrPerKg * wt; // per hr for that weight
+
+          // ml/hr = totalPerHr / (base per ml)
+          const mlHr = totalPerHr / concInBase;
+          return mlHr;
+        }
+
+        const mlHrMin = doseToMlHr(doseRange.min, doseRange.unit);
+        const mlHrMax = doseToMlHr(doseRange.max, doseRange.unit);
+
+        rateMinCell.textContent = mlHrMin.toFixed(2) + ' ml/hr';
+        rateMaxCell.textContent = mlHrMax.toFixed(2) + ' ml/hr';
+      });
+
+      // Calculate other infusion drugs
+      const otherRows = document.querySelectorAll('#otherInfusionTable tbody tr[data-drug]');
+      otherRows.forEach(row => {
+        const drugKey = row.getAttribute('data-drug');
+        const concRow = concTable[drugKey];
+        const doseRange = doseRanges[drugKey];
+
+        const concCell = row.querySelector('.conc');
+        const dilutionCell = row.querySelector('.dilution');
+        const rateMinCell = row.querySelector('.rateMin');
+        const rateMaxCell = row.querySelector('.rateMax');
+
+        if (!concRow || !doseRange) {
+          concCell.textContent = dilutionCell.textContent = rateMinCell.textContent = rateMaxCell.textContent = '';
+          return;
+        }
+
+        const entry = concRow[band];
+        if (!entry) {
+          concCell.textContent = 'Not applicable';
+          dilutionCell.textContent = '';
+          rateMinCell.textContent = rateMaxCell.textContent = '';
+          return;
+        }
+
+        // Determine concentration (amount / vol); units depend on drug (mg, mcg, unit).
+        const conc = entry.amount / entry.vol; // "amount" per ml, in table units
+        // Build a label like "3mg in 50ml (0.06mg/ml)".
+        let concLabel;
+        if (drugKey === 'aprotinin') {
+          concLabel = '10,000 KIU in 1 mL (10,000 KIU/mL)';
+        } else {
+          concLabel = entry.amount + (doseRange.unit.includes('unit') ? ' units' : ' mg') +
+            ' in ' + entry.vol + ' ml (' + conc.toFixed(2) +
+            (doseRange.unit.includes('unit') ? ' unit/ml)' : ' mg/ml)');
+        }
+
+        concCell.textContent = concLabel;
+        
+        // Build dilution instructions - calculate ml of stock + ml of diluent
+        let dilutionText = '';
+        const targetAmount = entry.amount;
+        const targetVol = entry.vol;
+        
+        if (drugKey === 'dobutamine') {
+          const mlOfStock = targetAmount / 12.5; // 12.5 mg/ml stock
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (12.5 mg/ml) + ${diluent.toFixed(2)} ml NS`;
+        } else if (drugKey === 'isoprenaline') {
+          const mlOfStock = targetAmount / 0.2; // 0.2 mg/ml stock
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (0.2 mg/ml) + ${diluent.toFixed(2)} ml D5`;
+        } else if (drugKey === 'nitroglycerin') {
+          const mlOfStock = targetAmount / 1; // 1 mg/ml stock
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (1 mg/ml) + ${diluent.toFixed(2)} ml NS`;
+        } else if (drugKey === 'nitroprusside') {
+          const mlOfStock = targetAmount / 25; // 25 mg/ml stock
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (25 mg/ml) + ${diluent.toFixed(2)} ml D5`;
+        } else if (drugKey === 'midazolam') {
+          const mlOfStock = targetAmount / 5; // 5 mg/ml stock
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (5 mg/ml) + ${diluent.toFixed(2)} ml NS`;
+        } else if (drugKey === 'morphine') {
+          const mlOfStock = targetAmount / 1; // 1 mg/ml diluted stock
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of diluted stock (1 mg/ml) + ${diluent.toFixed(2)} ml NS`;
+        } else if (drugKey === 'ketamine') {
+          const mlOfStock = targetAmount / 50; // 50 mg/ml stock
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (50 mg/ml) + ${diluent.toFixed(2)} ml NS`;
+        } else if (drugKey === 'cisatracurium') {
+          const mlOfStock = targetAmount / 2; // 2 mg/ml stock
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (2 mg/ml) + ${diluent.toFixed(2)} ml NS`;
+        } else if (drugKey === 'vasopressin') {
+          const mlOfStock = targetAmount / 20; // 20 units/ml stock
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (20 units/ml) + ${diluent.toFixed(2)} ml NS`;
+        } else if (drugKey === 'amiodarone') {
+          const mlOfStock = targetAmount / 50; // 50 mg/ml stock
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (50 mg/ml) + ${diluent.toFixed(2)} ml D5`;
+        } else if (drugKey === 'insulin') {
+          const mlOfStock = targetAmount / 100; // 100 units/ml stock
+          const diluent = targetVol - mlOfStock;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (100 units/ml) + ${diluent.toFixed(2)} ml NS`;
+        } else if (drugKey === 'tranexamic') {
+          dilutionText = `No dilution required, stock conc is 50 mg/ml`;
+        } else if (drugKey === 'aprotinin') {
+          dilutionText = `No dilution needed`;
+        } else {
+          dilutionText = `Stock: ${stockConc[drugKey] || 'Not specified'}`;
+        }
+        
+        dilutionCell.textContent = dilutionText;
+
+        // For tranexamic acid, leave rate cells empty
+        if (drugKey === 'tranexamic') {
+          rateMinCell.textContent = '';
+          rateMaxCell.textContent = '';
+          return;
+        }
+
+        // For aprotinin, show loading and infusion rates
+        if (drugKey === 'aprotinin') {
+          const loadingRate = (5 * wt).toFixed(2); // 5 ml/kg over 1 hr = 5 ml/kg/hr
+          const infusionRate = (1 * wt).toFixed(2); // 1 ml/kg/hr
+          rateMinCell.textContent = `Loading: ${loadingRate} ml/hr`;
+          rateMaxCell.textContent = `Infusion: ${infusionRate} ml/hr`;
+          return;
+        }
+
+        // Convert to mg or units per kg per hour, then to ml/hr:
+        // If 'per min' -> multiply by 60; if in mcg -> divide by 1000 to get mg.
+        // If 'unit' use units directly.
+        function doseToMlHr(dose, unitStr) {
+          let perHour = dose;
+          if (unitStr.includes('/min')) perHour *= 60; // mcg/kg/min or mg/kg/min -> /hr
+          // determine base units and concentration units
+          let isUnit = unitStr.includes('unit');
+          let isMg = unitStr.includes('mg');
+          let isMcg = unitStr.includes('mcg');
+
+          let concInBase; // base unit per ml
+
+          if (isUnit) {
+            concInBase = conc; // conc is already units/ml
+          } else if (isMg) {
+            concInBase = conc; // mg/ml
+          } else if (isMcg) {
+            // conc is mg/ml; convert to mcg/ml
+            concInBase = conc * 1000; // mcg/ml
+          }
+
+          const totalPerHrPerKg = perHour; // still in mcg/mg/unit per kg per hr
+          const totalPerHr = totalPerHrPerKg * wt; // per hr for that weight
+
+          // ml/hr = totalPerHr / (base per ml)
+          const mlHr = totalPerHr / concInBase;
+          return mlHr;
+        }
+
+        const mlHrMin = doseToMlHr(doseRange.min, doseRange.unit);
+        const mlHrMax = doseToMlHr(doseRange.max, doseRange.unit);
+
+        rateMinCell.textContent = mlHrMin.toFixed(2) + ' ml/hr';
+        rateMaxCell.textContent = mlHrMax.toFixed(2) + ' ml/hr';
+      });
+
+      // Calculate CPB bolus drugs
+      const cpbRows = document.querySelectorAll('#cpbTable tbody tr[data-drug]');
+      cpbRows.forEach(row => {
+        const drugKey = row.getAttribute('data-drug');
+        const calcDoseCell = row.querySelector('.calcDose');
+        const volumeCell = row.querySelector('.volume');
+
+        let dose, conc, unit;
+        if (drugKey === 'heparin') {
+          dose = 300 * wt; // units
+          conc = 1000; // units/ml
+          unit = 'units';
+        } else if (drugKey === 'protamine') {
+          dose = 4 * wt; // mg
+          conc = 10; // mg/ml
+          unit = 'mg';
+        }
+
+        const volume = dose / conc;
+        calcDoseCell.textContent = dose.toFixed(1) + ' ' + unit;
+        volumeCell.textContent = volume.toFixed(2) + ' ml';
+      });
+
+      // Calculate DHCA drugs
+      const dhcaRows = document.querySelectorAll('#dhcaTable tbody tr[data-drug]');
+      dhcaRows.forEach(row => {
+        const drugKey = row.getAttribute('data-drug');
+        const calcDoseCell = row.querySelector('.calcDose');
+        const volumeCell = row.querySelector('.volume');
+
+        let dose, conc, unit;
+        if (drugKey === 'methylprednisolone') {
+          dose = 30 * wt; // mg
+          conc = 100; // mg/ml
+          unit = 'mg';
+        }
+
+        const volume = dose / conc;
+        calcDoseCell.textContent = dose.toFixed(1) + ' ' + unit;
+        volumeCell.textContent = volume.toFixed(2) + ' ml';
+      });
+
+      // Calculate emergency drugs
+      const emergencyRows = document.querySelectorAll('#emergencyTable tbody tr[data-drug]');
+      emergencyRows.forEach(row => {
+        const drugKey = row.getAttribute('data-drug');
+        const concCell = row.querySelector('.conc');
+        const dilutionCell = row.querySelector('.dilution');
+        const calcDoseCell = row.querySelector('.calcDose');
+        const volumeCell = row.querySelector('.volume');
+
+        if (drugKey === 'adrenaline-arrest') {
+          let dose = 10 * wt; // mcg
+          const maxDose = 1000; // mcg (1 mg)
+          if (dose > maxDose) dose = maxDose;
+          
+          let conc, dilution;
+          
+          if (wt <= 10) {
+            conc = 10; // mcg/ml
+            dilution = '100 mcg (1 ml of 1:10,000) + 9 ml diluent';
+          } else {
+            conc = 100; // mcg/ml
+            dilution = '1 mg (1 ml of 1:1,000) + 9 ml diluent';
+          }
+          
+          const volume = dose / conc;
+          concCell.textContent = conc + ' mcg/ml';
+          dilutionCell.textContent = dilution;
+          calcDoseCell.textContent = dose.toFixed(1) + ' mcg' + (dose === maxDose ? ' (max)' : '');
+          volumeCell.textContent = volume.toFixed(2) + ' ml';
+        } else if (drugKey === 'adrenaline-hypotension') {
+          const dose = 1 * wt; // mcg
+          let conc, dilution;
+          
+          if (wt <= 10) {
+            conc = 10; // mcg/ml
+            dilution = '100 mcg (1 ml of 1:10,000) + 9 ml diluent';
+          } else {
+            conc = 10; // mcg/ml
+            dilution = '100 mcg (1 ml of 1:10,000) + 9 ml diluent';
+          }
+          
+          const volume = dose / conc;
+          concCell.textContent = conc + ' mcg/ml';
+          dilutionCell.textContent = dilution;
+          calcDoseCell.textContent = dose.toFixed(1) + ' mcg';
+          volumeCell.textContent = volume.toFixed(2) + ' ml';
+        } else if (drugKey === 'phenylephrine') {
+          const doseMin = 1 * wt; // mcg
+          const doseMax = 2 * wt; // mcg
+          let conc, dilution;
+          
+          if (wt <= 10) {
+            conc = 10; // mcg/ml
+            dilution = '100 mcg (1 ml of 100 mcg/ml) + 9 ml diluent';
+          } else {
+            conc = 100; // mcg/ml
+            dilution = 'Use standard 100 mcg/ml solution';
+          }
+          
+          const volMin = doseMin / conc;
+          const volMax = doseMax / conc;
+
+          concCell.textContent = conc + ' mcg/ml';
+          dilutionCell.textContent = dilution;
+          calcDoseCell.textContent = `${doseMin.toFixed(1)}–${doseMax.toFixed(1)} mcg`;
+          volumeCell.textContent = `${volMin.toFixed(2)}–${volMax.toFixed(2)} ml`;
+        } else if (drugKey === 'calcium-chloride') {
+          const volume = 0.2 * wt; // ml/kg
+          
+          concCell.textContent = '10% solution';
+          dilutionCell.textContent = 'No dilution needed';
+          calcDoseCell.textContent = '—';
+          volumeCell.textContent = volume.toFixed(2) + ' ml';
+        }
+      });
+    }
+
+    // Calculator Navigation functions
+    function showAcidosisCalculator() {
+      document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
+      document.getElementById('acidosisCalculator').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showElectrolyteCalculator() {
+      document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
+      document.getElementById('electrolyteCalculator').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showDrugCalculator() {
+      document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
+      document.querySelectorAll('.container')[0].style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showArrhythmiaCalculator() {
+      document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
+      document.getElementById('arrhythmiaCalculator').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showHemostaticCalculator() {
+      document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
+      document.getElementById('hemostaticCalculator').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Metabolic Acidosis Calculator functions
+
+    function calculateAcidosis() {
+      const weight = parseFloat(document.getElementById('acidosisWeight').value);
+      const baseDeficitInput = parseFloat(document.getElementById('baseDeficit').value);
+      const concentration = parseFloat(document.getElementById('bicarbonateCon').value);
+
+      if (!weight || weight <= 0 || isNaN(baseDeficitInput) || baseDeficitInput === 0) {
+        alert('Please enter valid body weight and base deficit values.');
+        return;
+      }
+
+      // Convert base deficit to positive value (in case negative BE is entered)
+      const baseDeficit = Math.abs(baseDeficitInput);
+
+      // Formula: mL of 8.4% NaHCO3 = BW × base deficit / 6
+      // For other concentrations, adjust volume proportionally
+      const volumeBase = (weight * baseDeficit) / 6; // Volume for 8.4%
+      const volumeRequired = volumeBase * (8.4 / concentration); // Adjust for selected concentration
+
+      // Prepare dilution instructions
+      let dilutionText = '';
+      let showDilution = false;
+
+      if (concentration === 4.2) {
+        // 4.2% = dilute 8.4% with equal volume of water for injection or D5
+        const volume84 = volumeBase;
+        const volumeWater = volumeBase;
+        dilutionText = `Mix ${volume84.toFixed(1)} mL of 8.4% NaHCO₃ + ${volumeWater.toFixed(1)} mL water for injection or D5`;
+        showDilution = true;
+      } else if (concentration === 2.1) {
+        // 2.1% = dilute 8.4% with 3x volume of water for injection or D5 (1:3 ratio)
+        const volume84 = volumeBase;
+        const volumeWater = volumeBase * 3;
+        dilutionText = `Mix ${volume84.toFixed(1)} mL of 8.4% NaHCO₃ + ${volumeWater.toFixed(1)} mL water for injection or D5`;
+        showDilution = true;
+      }
+
+      // Display results
+      document.getElementById('resultWeight').textContent = weight.toFixed(1) + ' kg';
+      document.getElementById('resultDeficit').textContent = baseDeficit.toFixed(1) + ' mEq/L';
+      document.getElementById('resultConcentration').textContent = concentration + '% NaHCO₃';
+      document.getElementById('resultVolume').textContent = volumeRequired.toFixed(1) + ' mL';
+      
+      if (showDilution) {
+        document.getElementById('resultDilution').textContent = dilutionText;
+        document.getElementById('dilutionRow').style.display = 'table-row';
+      } else {
+        document.getElementById('dilutionRow').style.display = 'none';
+      }
+      
+      document.getElementById('acidosisResult').style.display = 'block';
+    }
+
+    function resetAcidosis() {
+      document.getElementById('acidosisWeight').value = '';
+      document.getElementById('baseDeficit').value = '';
+      document.getElementById('bicarbonateCon').value = '8.4';
+      document.getElementById('acidosisResult').style.display = 'none';
+    }
+
+    // Electrolyte Calculator functions
+    function calculateElectrolyte() {
+      const weight = parseFloat(document.getElementById('electrolyteWeight').value);
+      const factor = parseFloat(document.getElementById('kclFactor').value);
+      const stockConc = parseFloat(document.getElementById('kclStockConc').value);
+      const desiredConc = parseFloat(document.getElementById('kclDesiredConc').value);
+
+      if (!weight || weight <= 0) {
+        alert('Please enter a valid body weight.');
+        return;
+      }
+
+      if (!stockConc || stockConc <= 0) {
+        alert('Please enter a valid stock concentration.');
+        return;
+      }
+
+      if (!desiredConc || desiredConc <= 0) {
+        alert('Please enter a valid desired concentration.');
+        return;
+      }
+
+      if (desiredConc > stockConc) {
+        alert('Desired concentration cannot be greater than stock concentration.');
+        return;
+      }
+
+      // Calculate total mmol of KCl needed
+      const totalKCl = weight * factor;
+
+      // Calculate volume of stock needed
+      const stockVolume = totalKCl / stockConc;
+
+      // Calculate total volume for desired concentration
+      const totalVolume = totalKCl / desiredConc;
+
+      // Calculate diluent needed
+      const diluentVolume = totalVolume - stockVolume;
+
+      // Display results
+      document.getElementById('electResultWeight').textContent = weight.toFixed(1) + ' kg';
+      document.getElementById('electResultFactor').textContent = factor + ' mmol/kg';
+      document.getElementById('electResultTotal').textContent = totalKCl.toFixed(1) + ' mmol';
+      document.getElementById('electResultStock').textContent = stockConc + ' mmol/mL';
+      document.getElementById('electResultDesired').textContent = desiredConc + ' mmol/mL';
+      document.getElementById('electResultStockVol').textContent = stockVolume.toFixed(1) + ' mL';
+      document.getElementById('electResultDiluent').textContent = diluentVolume.toFixed(1) + ' mL';
+      document.getElementById('electResultTotalVol').textContent = totalVolume.toFixed(1) + ' mL';
+      
+      document.getElementById('electrolyteResult').style.display = 'block';
+    }
+
+    function resetElectrolyte() {
+      document.getElementById('electrolyteWeight').value = '';
+      document.getElementById('kclFactor').value = '0.25';
+      document.getElementById('kclStockConc').value = '';
+      document.getElementById('kclDesiredConc').value = '';
+      document.getElementById('electrolyteResult').style.display = 'none';
+    }
+
+    // MgSO4 Calculator functions
+    function calculateMgSO4() {
+      const weight = parseFloat(document.getElementById('mgso4Weight').value);
+      const dose = parseFloat(document.getElementById('mgso4Dose').value);
+      const desiredConc = parseFloat(document.getElementById('mgso4DesiredConc').value);
+
+      if (!weight || weight <= 0) {
+        alert('Please enter a valid body weight.');
+        return;
+      }
+
+      // Calculate volume of MgSO4 50% needed
+      let volume = weight * dose;
+      
+      // Calculate magnesium dose in grams (0.5 g/mL)
+      let mgDose = volume * 0.5;
+      
+      // Check maximum dose (2g = 4mL)
+      if (mgDose > 2) {
+        alert('Calculated dose exceeds maximum of 2 g. Volume will be capped at 4 mL (2 g).');
+        volume = 4;
+        mgDose = 2;
+      }
+
+      // Display basic results
+      document.getElementById('mgso4ResultWeight').textContent = weight.toFixed(1) + ' kg';
+      document.getElementById('mgso4ResultDose').textContent = dose + ' mL/kg';
+      document.getElementById('mgso4ResultVolume').textContent = volume.toFixed(1) + ' mL';
+      document.getElementById('mgso4ResultMgDose').textContent = mgDose.toFixed(2) + ' g';
+      
+      // Calculate dilution if desired concentration is provided
+      if (desiredConc && desiredConc > 0) {
+        if (desiredConc > 50) {
+          alert('Desired concentration cannot exceed 50% (stock concentration).');
+          document.getElementById('mgso4DesiredConc').value = '';
+          document.getElementById('mgso4DilutionRow').style.display = 'none';
+          document.getElementById('mgso4DiluentRow').style.display = 'none';
+          document.getElementById('mgso4TotalVolRow').style.display = 'none';
+        } else {
+          // Check concentration limits and warn
+          if (desiredConc > 20) {
+            alert('Warning: Concentration > 20% should only be used via central line.');
+          } else if (desiredConc > 10) {
+            alert('Warning: Concentration > 10% should be used with caution via peripheral line (max 10%).');
+          }
+          
+          // Calculate total volume needed for desired concentration
+          // mgDose (g) / desiredConc (%) * 100 = total volume (mL)
+          const totalVolume = (mgDose / desiredConc) * 100;
+          const diluentVolume = totalVolume - volume;
+          
+          document.getElementById('mgso4ResultDesiredConc').textContent = desiredConc + '%';
+          document.getElementById('mgso4ResultDiluent').textContent = diluentVolume.toFixed(1) + ' mL';
+          document.getElementById('mgso4ResultTotalVol').textContent = totalVolume.toFixed(1) + ' mL';
+          
+          document.getElementById('mgso4DilutionRow').style.display = '';
+          document.getElementById('mgso4DiluentRow').style.display = '';
+          document.getElementById('mgso4TotalVolRow').style.display = '';
+        }
+      } else {
+        // Hide dilution rows if no concentration specified
+        document.getElementById('mgso4DilutionRow').style.display = 'none';
+        document.getElementById('mgso4DiluentRow').style.display = 'none';
+        document.getElementById('mgso4TotalVolRow').style.display = 'none';
+      }
+      
+      document.getElementById('mgso4Result').style.display = 'block';
+    }
+
+    function resetMgSO4() {
+      document.getElementById('mgso4Weight').value = '';
+      document.getElementById('mgso4Dose').value = '0.15';
+      document.getElementById('mgso4DesiredConc').value = '';
+      document.getElementById('mgso4Result').style.display = 'none';
+      document.getElementById('mgso4DilutionRow').style.display = 'none';
+      document.getElementById('mgso4DiluentRow').style.display = 'none';
+      document.getElementById('mgso4TotalVolRow').style.display = 'none';
+    }
+
+    // Anti-arrhythmic Calculator functions
+    function calculateArrhythmia() {
+      const weight = parseFloat(document.getElementById('arrhythmiaWeight').value);
+
+      // If no weight entered, show placeholder values
+      if (!weight || weight <= 0) {
+        document.getElementById('defibInitial').textContent = '—';
+        document.getElementById('defibSecond').textContent = '—';
+        document.getElementById('defibMax').textContent = '—';
+        document.getElementById('defibAdultRow').style.display = 'none';
+        
+        document.getElementById('cardioInitial').textContent = '—';
+        document.getElementById('cardioSecond').textContent = '—';
+        document.getElementById('cardioThird').textContent = '—';
+        document.getElementById('cardioAdultRow').style.display = 'none';
+        
+        document.getElementById('amioDose').textContent = '—';
+        document.getElementById('amioVolume').textContent = '—';
+        document.getElementById('amioAdultRow').style.display = 'none';
+        
+        document.getElementById('lignoDose').textContent = '—';
+        document.getElementById('lignoVolume').textContent = '—';
+        return;
+      }
+
+      const isAdult = weight > 50;
+
+      // Defibrillation calculations
+      const defibInitial = weight * 2;
+      const defibSecond = weight * 4;
+      const defibMax = weight * 10;
+
+      document.getElementById('defibInitial').textContent = defibInitial.toFixed(0) + ' J';
+      document.getElementById('defibSecond').textContent = defibSecond.toFixed(0) + ' J';
+      document.getElementById('defibMax').textContent = defibMax.toFixed(0) + ' J';
+      document.getElementById('defibAdultRow').style.display = isAdult ? '' : 'none';
+
+      // Cardioversion calculations
+      const cardioInitial = weight * 0.5;
+      const cardioSecond = weight * 1;
+      const cardioThird = cardioSecond * 2;
+
+      document.getElementById('cardioInitial').textContent = cardioInitial.toFixed(0) + ' J';
+      document.getElementById('cardioSecond').textContent = cardioSecond.toFixed(0) + ' J';
+      document.getElementById('cardioThird').textContent = cardioThird.toFixed(0) + ' J';
+      document.getElementById('cardioAdultRow').style.display = isAdult ? '' : 'none';
+
+      // Amiodarone calculation (5 mg/kg, stock 50 mg/mL)
+      let amioDose, amioVolume;
+      if (isAdult) {
+        amioDose = 150;
+        amioVolume = 3;
+      } else {
+        amioDose = weight * 5;
+        amioVolume = amioDose / 50;
+      }
+
+      document.getElementById('amioDose').textContent = amioDose.toFixed(0) + ' mg';
+      document.getElementById('amioVolume').textContent = amioVolume.toFixed(1) + ' mL';
+      document.getElementById('amioAdultRow').style.display = isAdult ? '' : 'none';
+
+      // Lignocaine calculation (1 mg/kg, stock 2% = 20 mg/mL)
+      const lignoDose = weight * 1;
+      const lignoVolume = lignoDose / 20;
+
+      document.getElementById('lignoDose').textContent = lignoDose.toFixed(0) + ' mg';
+      document.getElementById('lignoVolume').textContent = lignoVolume.toFixed(1) + ' mL';
+    }
+
+    function resetArrhythmia() {
+      document.getElementById('arrhythmiaWeight').value = '';
+      calculateArrhythmia();
+    }
+
+    // Hemostatic Agents Calculator functions
+    function calculateHemostatic() {
+      const weight = parseFloat(document.getElementById('hemostaticWeight').value);
+      const prothrombinexDose = parseFloat(document.getElementById('prothrombinexDose').value);
+      const fibrinogenDose = parseFloat(document.getElementById('fibrinogenDose').value);
+
+      // Prothrombinex calculations
+      if (weight && weight > 0 && prothrombinexDose && prothrombinexDose > 0) {
+        const totalUnits = weight * prothrombinexDose;
+        const volume = totalUnits / 25; // Stock concentration 25 units/mL
+        
+        document.getElementById('prothrombinexResultWeight').textContent = weight.toFixed(1) + ' kg';
+        document.getElementById('prothrombinexResultDose').textContent = prothrombinexDose.toFixed(0) + ' units/kg';
+        document.getElementById('prothrombinexResultTotal').textContent = totalUnits.toFixed(0) + ' units';
+        document.getElementById('prothrombinexResultVolume').textContent = volume.toFixed(1) + ' mL';
+      } else {
+        document.getElementById('prothrombinexResultWeight').textContent = weight && weight > 0 ? weight.toFixed(1) + ' kg' : '—';
+        document.getElementById('prothrombinexResultDose').textContent = '—';
+        document.getElementById('prothrombinexResultTotal').textContent = '—';
+        document.getElementById('prothrombinexResultVolume').textContent = '—';
+      }
+
+      // Fibrinogen calculations
+      if (weight && weight > 0 && fibrinogenDose && fibrinogenDose > 0) {
+        const totalMg = weight * fibrinogenDose;
+        const volume = totalMg / 20; // Stock concentration 20 mg/mL
+        
+        document.getElementById('fibrinogenResultWeight').textContent = weight.toFixed(1) + ' kg';
+        document.getElementById('fibrinogenResultDose').textContent = fibrinogenDose.toFixed(0) + ' mg/kg';
+        document.getElementById('fibrinogenResultTotal').textContent = totalMg.toFixed(0) + ' mg (' + (totalMg/1000).toFixed(1) + ' g)';
+        document.getElementById('fibrinogenResultVolume').textContent = volume.toFixed(1) + ' mL';
+      } else {
+        document.getElementById('fibrinogenResultWeight').textContent = weight && weight > 0 ? weight.toFixed(1) + ' kg' : '—';
+        document.getElementById('fibrinogenResultDose').textContent = '—';
+        document.getElementById('fibrinogenResultTotal').textContent = '—';
+        document.getElementById('fibrinogenResultVolume').textContent = '—';
+      }
+    }
+
+    function resetHemostatic() {
+      document.getElementById('hemostaticWeight').value = '';
+      document.getElementById('prothrombinexDose').value = '';
+      document.getElementById('fibrinogenDose').value = '';
+      calculateHemostatic();
+    }
+
+    // Back to Top Button functionality
+    const backToTopButton = document.getElementById('backToTop');
+    
+    // Show button when user scrolls down 300px
+    window.addEventListener('scroll', function() {
+      if (window.pageYOffset > 300) {
+        backToTopButton.classList.add('show');
+      } else {
+        backToTopButton.classList.remove('show');
+      }
+    });
+    
+    // Scroll to top when button is clicked
+    backToTopButton.addEventListener('click', function() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+
+    // Table scroll shadow indicators
+    function updateScrollShadows(wrapper) {
+      const scrollLeft = wrapper.scrollLeft;
+      const scrollWidth = wrapper.scrollWidth;
+      const clientWidth = wrapper.clientWidth;
+      const maxScroll = scrollWidth - clientWidth;
+      
+      // Remove both classes first
+      wrapper.classList.remove('scroll-left', 'scroll-right');
+      
+      // Add classes based on scroll position
+      if (scrollLeft > 5) {
+        wrapper.classList.add('scroll-left');
+      }
+      if (scrollLeft < maxScroll - 5) {
+        wrapper.classList.add('scroll-right');
+      }
+    }
+
+    // Initialize scroll shadows for all table wrappers
+    function initScrollShadows() {
+      const wrappers = document.querySelectorAll('.table-wrapper');
+      wrappers.forEach(wrapper => {
+        // Initial check
+        updateScrollShadows(wrapper);
+        
+        // Update on scroll
+        wrapper.addEventListener('scroll', function() {
+          updateScrollShadows(this);
+        });
+        
+        // Update on window resize
+        window.addEventListener('resize', function() {
+          updateScrollShadows(wrapper);
+        });
+      });
+    }
+
+    // Hide scroll hint after first scroll
+    function hideScrollHints() {
+      const wrappers = document.querySelectorAll('.table-wrapper');
+      wrappers.forEach(wrapper => {
+        // Find the associated scroll hint by checking previous siblings
+        let sibling = wrapper.previousElementSibling;
+        let scrollHint = null;
+        while (sibling && !scrollHint) {
+          if (sibling.classList && sibling.classList.contains('scroll-hint')) {
+            scrollHint = sibling;
+          }
+          sibling = sibling.previousElementSibling;
+        }
+        
+        if (scrollHint) {
+          wrapper.addEventListener('scroll', function() {
+            scrollHint.style.display = 'none';
+          }, { once: true });
+        }
+      });
+    }
+
+    // Initialize on DOM ready
+    document.addEventListener('DOMContentLoaded', function() {
+      initScrollShadows();
+      hideScrollHints();
+    });
+  </script>
+</body>
+</html>
