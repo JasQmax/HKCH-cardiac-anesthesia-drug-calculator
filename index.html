@@ -499,11 +499,11 @@
         <div class="input-group">
           <div>
             <label for="weight">Body weight (kg):</label>
-            <input type="number" id="weight" min="0" step="0.1" placeholder="Enter weight" aria-describedby="weight-help">
+            <input type="number" id="weight" min="0" step="0.1" placeholder="Enter weight">
           </div>
           <label class="checkbox-label">
-            <input type="checkbox" id="fluidRestriction" aria-describedby="fluid-help">
-            <span id="fluid-help">>10 kg fluid restriction regime</span>
+            <input type="checkbox" id="fluidRestriction">
+            <span>>10 kg fluid restriction regime</span>
           </label>
           <button type="button" onclick="calculateInfusions()" aria-label="Calculate drug dosages based on entered weight">Calculate Dosages</button>
         </div>
@@ -521,7 +521,7 @@
   
       <h3 class="subsection-title">Commonly used drugs</h3>
       <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
-      <div class="table-wrapper" role="region" aria-label="Commonly used drugs infusion table" tabindex="0">
+      <div class="table-wrapper" role="region" aria-label="Commonly used drugs infusion table">
   <table id="infusionTable" class="sticky-table">
     <thead>
       <tr>
@@ -581,7 +581,7 @@
 
       <h3 class="subsection-title">Other infusion drugs</h3>
       <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
-      <div class="table-wrapper" role="region" aria-label="Other infusion drugs table" tabindex="0">
+      <div class="table-wrapper" role="region" aria-label="Other infusion drugs table">
   <table id="otherInfusionTable" class="sticky-table">
     <thead>
       <tr>
@@ -717,7 +717,7 @@
 
       <h2 class="section-title">Cardiopulmonary bypass</h2>
       <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
-      <div class="table-wrapper" role="region" aria-label="Cardiopulmonary bypass drugs table" tabindex="0">
+      <div class="table-wrapper" role="region" aria-label="Cardiopulmonary bypass drugs table">
   <table id="cpbTable" class="sticky-table">
     <thead>
       <tr>
@@ -753,7 +753,7 @@
 
       <h2 class="section-title">Deep hypothermic circulatory arrest</h2>
       <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
-      <div class="table-wrapper" role="region" aria-label="Deep hypothermic circulatory arrest drugs table" tabindex="0">
+      <div class="table-wrapper" role="region" aria-label="Deep hypothermic circulatory arrest drugs table">
   <table id="dhcaTable" class="sticky-table">
     <thead>
       <tr>
@@ -778,7 +778,7 @@
 
       <h2 class="section-title">Emergency drugs (Bolus)</h2>
       <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
-      <div class="table-wrapper" role="region" aria-label="Emergency drugs table" tabindex="0">
+      <div class="table-wrapper" role="region" aria-label="Emergency drugs table">
   <table id="emergencyTable" class="sticky-table">
     <thead>
       <tr>
@@ -2439,12 +2439,21 @@
     function hideScrollHints() {
       const wrappers = document.querySelectorAll('.table-wrapper');
       wrappers.forEach(wrapper => {
-        wrapper.addEventListener('scroll', function() {
-          const hint = this.previousElementSibling;
-          if (hint && hint.classList.contains('scroll-hint')) {
-            hint.style.display = 'none';
+        // Find the associated scroll hint by checking previous siblings
+        let sibling = wrapper.previousElementSibling;
+        let scrollHint = null;
+        while (sibling && !scrollHint) {
+          if (sibling.classList && sibling.classList.contains('scroll-hint')) {
+            scrollHint = sibling;
           }
-        }, { once: true });
+          sibling = sibling.previousElementSibling;
+        }
+        
+        if (scrollHint) {
+          wrapper.addEventListener('scroll', function() {
+            scrollHint.style.display = 'none';
+          }, { once: true });
+        }
       });
     }
 
