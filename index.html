@@ -98,6 +98,37 @@
       gap: 8px;
       cursor: pointer;
     }
+
+    /* Table Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+      vertical-align: middle;
+    }
+
+    th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    tbody tr:hover {
+      background-color: #f0f2f5;
+    }
+
+    @media (hover: none) {
+      tbody tr:active {
+        background-color: #e0e4e8;
+      }
+    }
     
     button {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -1410,39 +1441,39 @@
 
   <!-- General Disclaimer -->
   <div style="max-width: 900px; margin: 40px auto 20px; padding: 20px; background: linear-gradient(135deg, #fff5f5 0%, #ffe9e9 100%); border: 2px solid #ff6b6b; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-    <h2 style="text-align: center; color: #c92a2a; margin-top: 0; margin-bottom: 15px; font-size: 24px;">⚠️ Important Disclaimer ⚠️</h2>
-    <div style="color: #333; line-height: 1.8; font-size: 15px;">
-      <p style="margin: 0 0 15px 0; font-weight: 600;">This calculator is provided for educational and reference purposes only.</p>
+    <h2 style="text-align: center; color: #c92a2a; margin-top: 0; margin-bottom: 15px; font-size: 20px;">⚠️ Important Disclaimer ⚠️</h2>
+    <div style="color: #333; line-height: 1.6; font-size: 13px;">
+      <p style="margin: 0 0 12px 0; font-weight: 600;">This calculator is provided for educational and reference purposes only.</p>
       
-      <ul style="margin: 10px 0 15px 20px; padding-left: 20px;">
-        <li style="margin-bottom: 10px;"><strong>HKCH-Specific Guidelines:</strong> The dosing recommendations, drug concentrations, and protocols in this calculator are specific to Hong Kong Children's Hospital (HKCH) and may not be applicable to other institutions.</li>
+      <ul style="margin: 10px 0 12px 20px; padding-left: 20px;">
+        <li style="margin-bottom: 8px;"><strong>HKCH-Specific Guidelines:</strong> The dosing recommendations, drug concentrations, and protocols in this calculator are specific to Hong Kong Children's Hospital (HKCH) and may not be applicable to other institutions.</li>
         
-        <li style="margin-bottom: 10px;"><strong>Local Protocols Required:</strong> Always verify all calculations and dosing recommendations against your local institutional guidelines, protocols, and formulary before administration.</li>
+        <li style="margin-bottom: 8px;"><strong>Local Protocols Required:</strong> Always verify all calculations and dosing recommendations against your local institutional guidelines, protocols, and formulary before administration.</li>
         
-        <li style="margin-bottom: 10px;"><strong>Clinical Judgment:</strong> This tool is intended to assist with calculations only. Clinical decisions should always be based on individual patient assessment, clinical judgment, and current evidence-based practice.</li>
+        <li style="margin-bottom: 8px;"><strong>Clinical Judgment:</strong> This tool is intended to assist with calculations only. Clinical decisions should always be based on individual patient assessment, clinical judgment, and current evidence-based practice.</li>
         
-        <li style="margin-bottom: 10px;"><strong>Verification Required:</strong> All calculations and drug doses must be independently verified by qualified healthcare professionals before administration. Double-check all entries, calculations, and results.</li>
+        <li style="margin-bottom: 8px;"><strong>Verification Required:</strong> All calculations and drug doses must be independently verified by qualified healthcare professionals before administration. Double-check all entries, calculations, and results.</li>
         
-        <li style="margin-bottom: 10px;"><strong>Stock Availability:</strong> Drug concentrations and stock preparations shown are based on current HKCH pharmacy stock. Always verify availability and concentration with your local pharmacy.</li>
+        <li style="margin-bottom: 8px;"><strong>Stock Availability:</strong> Drug concentrations and stock preparations shown are based on current HKCH pharmacy stock. Always verify availability and concentration with your local pharmacy.</li>
         
-        <li style="margin-bottom: 10px;"><strong>No Liability:</strong> The creators and distributors of this calculator assume no liability for any errors, omissions, or adverse outcomes resulting from the use of this tool.</li>
+        <li style="margin-bottom: 8px;"><strong>No Liability:</strong> The creators and distributors of this calculator assume no liability for any errors, omissions, or adverse outcomes resulting from the use of this tool.</li>
         
-        <li style="margin-bottom: 10px;"><strong>Updates:</strong> Medical guidelines and protocols are subject to change. Ensure you are following the most current institutional policies and clinical guidelines.</li>
+        <li style="margin-bottom: 8px;"><strong>Updates:</strong> Medical guidelines and protocols are subject to change. Ensure you are following the most current institutional policies and clinical guidelines.</li>
       </ul>
       
-      <p style="margin: 15px 0 0 0; font-weight: 600; text-align: center; color: #c92a2a;">When in doubt, always consult with senior clinicians, pharmacists, or refer to your institution's drug guidelines.</p>
+      <p style="margin: 12px 0 0 0; font-weight: 600; text-align: center; color: #c92a2a; font-size: 13px;">When in doubt, always consult with senior clinicians, pharmacists, or refer to your institution's drug guidelines.</p>
       
-      <hr style="margin: 20px 0; border: none; border-top: 1px solid #ff6b6b;">
+      <hr style="margin: 15px 0; border: none; border-top: 1px solid #ff6b6b;">
       
-      <div style="text-align: center; margin-top: 15px;">
-        <p style="margin: 5px 0; font-size: 14px;"><strong>Created by:</strong> Jasmin Tong (2025)</p>
-        <p style="margin: 10px 0; font-size: 14px;">
+      <div style="text-align: center; margin-top: 12px;">
+        <p style="margin: 5px 0; font-size: 12px;"><strong>Created by:</strong> Jasmin Tong (2025)</p>
+        <p style="margin: 8px 0; font-size: 12px;">
           <strong>License:</strong> 
           <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" style="color: #c92a2a; text-decoration: none; font-weight: 600;">
             CC BY-NC-ND 4.0
           </a>
         </p>
-        <p style="margin: 5px 0; font-size: 13px; color: #666;">
+        <p style="margin: 5px 0; font-size: 11px; color: #666;">
           This work is licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.<br>
           You may share this work for non-commercial purposes with appropriate credit, but may not modify or create derivatives.
         </p>
@@ -1650,7 +1681,7 @@
         cisatracurium: '2 mg/ml',
         insulin: '100 units/ml',
         tranexamic: '50 mg/ml (use undiluted)',
-        aprotinin: '10,000 KIU/ml (use undiluted)'
+        aprotinin: '10,000 KIU/mL'
       };
 
       // Calculate continuous infusions (commonly used drugs)
@@ -1681,9 +1712,14 @@
         // Determine concentration (amount / vol); units depend on drug (mg, mcg, unit).
         const conc = entry.amount / entry.vol; // "amount" per ml, in table units
         // Build a label like "3mg in 50ml (0.06mg/ml)".
-        const concLabel = entry.amount + (doseRange.unit.includes('unit') ? ' units' : ' mg') +
-          ' in ' + entry.vol + ' ml (' + conc.toFixed(3) +
-          (doseRange.unit.includes('unit') ? ' unit/ml)' : ' mg/ml)');
+        let concLabel;
+        if (drugKey === 'aprotinin') {
+          concLabel = '10,000 KIU in 1 mL (10,000 KIU/mL)';
+        } else {
+          concLabel = entry.amount + (doseRange.unit.includes('unit') ? ' units' : ' mg') +
+            ' in ' + entry.vol + ' ml (' + conc.toFixed(2) +
+            (doseRange.unit.includes('unit') ? ' unit/ml)' : ' mg/ml)');
+        }
 
         concCell.textContent = concLabel;
 
@@ -1696,28 +1732,28 @@
           const stockMgPerMl = 0.1; // 100 mcg/ml
           const mlOfStock = targetAmount / stockMgPerMl;
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of stock (100 mcg/ml) + ${diluent.toFixed(1)} ml NS`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (100 mcg/ml) + ${diluent.toFixed(2)} ml NS`;
         } else if (drugKey === 'noradrenaline') {
           const mlOfStock = targetAmount / 1; // 1 mg/ml stock
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of stock (1 mg/ml) + ${diluent.toFixed(1)} ml NS`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (1 mg/ml) + ${diluent.toFixed(2)} ml NS`;
         } else if (drugKey === 'dopamine') {
           const mlOfStock = targetAmount / 40; // 40 mg/ml stock
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of stock (40 mg/ml) + ${diluent.toFixed(1)} ml NS`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (40 mg/ml) + ${diluent.toFixed(2)} ml NS`;
         } else if (drugKey === 'milrinone') {
           const mlOfStock = targetAmount / 1; // 1 mg/ml stock
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of stock (1 mg/ml) + ${diluent.toFixed(1)} ml NS`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (1 mg/ml) + ${diluent.toFixed(2)} ml NS`;
         } else if (drugKey === 'phenylephrine') {
           const stockMgPerMl = 0.1; // 100 mcg/ml
           const mlOfStock = targetAmount / stockMgPerMl;
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of diluted stock (100 mcg/ml) + ${diluent.toFixed(1)} ml NS`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of diluted stock (100 mcg/ml) + ${diluent.toFixed(2)} ml NS`;
         } else if (drugKey === 'vasopressin') {
           const mlOfStock = targetAmount / 20; // 20 units/ml stock
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of stock (20 units/ml) + ${diluent.toFixed(1)} ml NS`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (20 units/ml) + ${diluent.toFixed(2)} ml NS`;
         } else {
           dilutionText = `Stock: ${stockConc[drugKey] || 'Not specified'}`;
         }
@@ -1789,9 +1825,14 @@
         // Determine concentration (amount / vol); units depend on drug (mg, mcg, unit).
         const conc = entry.amount / entry.vol; // "amount" per ml, in table units
         // Build a label like "3mg in 50ml (0.06mg/ml)".
-        const concLabel = entry.amount + (doseRange.unit.includes('unit') ? ' units' : ' mg') +
-          ' in ' + entry.vol + ' ml (' + conc.toFixed(3) +
-          (doseRange.unit.includes('unit') ? ' unit/ml)' : ' mg/ml)');
+        let concLabel;
+        if (drugKey === 'aprotinin') {
+          concLabel = '10,000 KIU in 1 mL (10,000 KIU/mL)';
+        } else {
+          concLabel = entry.amount + (doseRange.unit.includes('unit') ? ' units' : ' mg') +
+            ' in ' + entry.vol + ' ml (' + conc.toFixed(2) +
+            (doseRange.unit.includes('unit') ? ' unit/ml)' : ' mg/ml)');
+        }
 
         concCell.textContent = concLabel;
         
@@ -1803,51 +1844,51 @@
         if (drugKey === 'dobutamine') {
           const mlOfStock = targetAmount / 12.5; // 12.5 mg/ml stock
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of stock (12.5 mg/ml) + ${diluent.toFixed(1)} ml NS`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (12.5 mg/ml) + ${diluent.toFixed(2)} ml NS`;
         } else if (drugKey === 'isoprenaline') {
           const mlOfStock = targetAmount / 0.2; // 0.2 mg/ml stock
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of stock (0.2 mg/ml) + ${diluent.toFixed(1)} ml D5`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (0.2 mg/ml) + ${diluent.toFixed(2)} ml D5`;
         } else if (drugKey === 'nitroglycerin') {
           const mlOfStock = targetAmount / 1; // 1 mg/ml stock
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of stock (1 mg/ml) + ${diluent.toFixed(1)} ml NS`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (1 mg/ml) + ${diluent.toFixed(2)} ml NS`;
         } else if (drugKey === 'nitroprusside') {
           const mlOfStock = targetAmount / 25; // 25 mg/ml stock
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of stock (25 mg/ml) + ${diluent.toFixed(1)} ml D5`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (25 mg/ml) + ${diluent.toFixed(2)} ml D5`;
         } else if (drugKey === 'midazolam') {
           const mlOfStock = targetAmount / 5; // 5 mg/ml stock
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of stock (5 mg/ml) + ${diluent.toFixed(1)} ml NS`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (5 mg/ml) + ${diluent.toFixed(2)} ml NS`;
         } else if (drugKey === 'morphine') {
           const mlOfStock = targetAmount / 1; // 1 mg/ml diluted stock
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of diluted stock (1 mg/ml) + ${diluent.toFixed(1)} ml NS`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of diluted stock (1 mg/ml) + ${diluent.toFixed(2)} ml NS`;
         } else if (drugKey === 'ketamine') {
           const mlOfStock = targetAmount / 50; // 50 mg/ml stock
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of stock (50 mg/ml) + ${diluent.toFixed(1)} ml NS`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (50 mg/ml) + ${diluent.toFixed(2)} ml NS`;
         } else if (drugKey === 'cisatracurium') {
           const mlOfStock = targetAmount / 2; // 2 mg/ml stock
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of stock (2 mg/ml) + ${diluent.toFixed(1)} ml NS`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (2 mg/ml) + ${diluent.toFixed(2)} ml NS`;
         } else if (drugKey === 'vasopressin') {
           const mlOfStock = targetAmount / 20; // 20 units/ml stock
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of stock (20 units/ml) + ${diluent.toFixed(1)} ml NS`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (20 units/ml) + ${diluent.toFixed(2)} ml NS`;
         } else if (drugKey === 'amiodarone') {
           const mlOfStock = targetAmount / 50; // 50 mg/ml stock
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of stock (50 mg/ml) + ${diluent.toFixed(1)} ml D5`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (50 mg/ml) + ${diluent.toFixed(2)} ml D5`;
         } else if (drugKey === 'insulin') {
           const mlOfStock = targetAmount / 100; // 100 units/ml stock
           const diluent = targetVol - mlOfStock;
-          dilutionText = `${mlOfStock.toFixed(1)} ml of stock (100 units/ml) + ${diluent.toFixed(1)} ml NS`;
+          dilutionText = `${mlOfStock.toFixed(2)} ml of stock (100 units/ml) + ${diluent.toFixed(2)} ml NS`;
         } else if (drugKey === 'tranexamic') {
           dilutionText = `No dilution required, stock conc is 50 mg/ml`;
         } else if (drugKey === 'aprotinin') {
-          dilutionText = `Use undiluted, stock conc is 10,000 KIU/ml`;
+          dilutionText = `No dilution needed`;
         } else {
           dilutionText = `Stock: ${stockConc[drugKey] || 'Not specified'}`;
         }
@@ -2465,4 +2506,3 @@
   </script>
 </body>
 </html>
-
