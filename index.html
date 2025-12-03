@@ -129,6 +129,10 @@
         background-color: #e0e4e8;
       }
     }
+
+    .selected-row {
+      background-color: #e8f0fe !important;
+    }
     
     button {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -2502,6 +2506,26 @@
     document.addEventListener('DOMContentLoaded', function() {
       initScrollShadows();
       hideScrollHints();
+
+      // Add row highlighting for touch devices
+      const rows = document.querySelectorAll('tbody tr');
+      rows.forEach(row => {
+        row.addEventListener('click', function() {
+          // Clear selection from other rows in the same table
+          const currentTable = this.closest('table');
+          if (currentTable) {
+            const currentlySelected = currentTable.querySelectorAll('.selected-row');
+            currentlySelected.forEach(selected => {
+              if (selected !== this) {
+                selected.classList.remove('selected-row');
+              }
+            });
+          }
+          
+          // Toggle selection on the clicked row
+          this.classList.toggle('selected-row');
+        });
+      });
     });
   </script>
 </body>
