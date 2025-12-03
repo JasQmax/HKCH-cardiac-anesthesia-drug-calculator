@@ -124,6 +124,11 @@
       background-color: #f0f2f5;
     }
 
+    tbody tr {
+      cursor: pointer; /* Enables click events on iOS */
+      -webkit-tap-highlight-color: transparent; /* Removes default tap highlight */
+    }
+
     @media (hover: none) {
       tbody tr:active {
         background-color: #e0e4e8;
@@ -2507,24 +2512,25 @@
       initScrollShadows();
       hideScrollHints();
 
-      // Add row highlighting for touch devices
-      const rows = document.querySelectorAll('tbody tr');
-      rows.forEach(row => {
-        row.addEventListener('click', function() {
-          // Clear selection from other rows in the same table
-          const currentTable = this.closest('table');
-          if (currentTable) {
-            const currentlySelected = currentTable.querySelectorAll('.selected-row');
-            currentlySelected.forEach(selected => {
-              if (selected !== this) {
-                selected.classList.remove('selected-row');
-              }
-            });
-          }
-          
-          // Toggle selection on the clicked row
-          this.classList.toggle('selected-row');
-        });
+      // Add row highlighting for touch devices using event delegation
+      // This is more robust for iOS and dynamic content
+      document.addEventListener('click', function(e) {
+        const row = e.target.closest('tbody tr');
+        if (!row) return;
+        
+        // Clear selection from other rows in the same table
+        const currentTable = row.closest('table');
+        if (currentTable) {
+          const currentlySelected = currentTable.querySelectorAll('.selected-row');
+          currentlySelected.forEach(selected => {
+            if (selected !== row) {
+              selected.classList.remove('selected-row');
+            }
+          });
+        }
+        
+        // Toggle selection on the clicked row
+        row.classList.toggle('selected-row');
       });
     });
   </script>
