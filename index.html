@@ -4597,7 +4597,7 @@
        ═══════════════════════════════════════════════ */
 
     function showGenTab(tab) {
-      ['pca','ibw','abw'].forEach(t => {
+      ['pca','ibw','abw','bsa'].forEach(t => {
         document.getElementById('genTab' + t.toUpperCase()).style.display = t === tab ? 'block' : 'none';
         document.getElementById('genTabBtn' + t.toUpperCase()).classList.toggle('pals-tab-active', t === tab);
       });
@@ -4754,6 +4754,47 @@
         : '<strong style="color:#2e7d32;">✅ Actual weight ≤ 120% IBW</strong><br>' +
           'Use <strong>actual body weight (' + actual.toFixed(1) + ' kg)</strong> for dosing. ' +
           'ABW adjustment is not indicated. IBW = ' + ibw.toFixed(1) + ' kg.';
+      res.style.display = 'block';
+    }
+
+    // ── Body Surface Area ──
+    function calcBSA() {
+      const wt  = parseFloat(document.getElementById('bsaWeight').value);
+      const ht  = parseFloat(document.getElementById('bsaHeight').value);
+      const res = document.getElementById('bsaResult');
+      if (isNaN(wt) || wt <= 0 || isNaN(ht) || ht <= 0) { res.style.display = 'none'; return; }
+
+      // Mosteller formula only
+      const bsa = Math.sqrt((ht * wt) / 3600);
+      document.getElementById('bsaMosteller').textContent = bsa.toFixed(3) + ' m²';
+
+      // Anaesthesia drug doses
+      document.getElementById('bsaDoseHydro').innerHTML    = (50 * bsa).toFixed(0) + '–' + (100 * bsa).toFixed(0) + ' mg/day<br><small>(' + (25 * bsa).toFixed(0) + '–' + (50 * bsa).toFixed(0) + ' mg bolus)</small>';
+      document.getElementById('bsaDoseMPred').textContent  = (30  * bsa).toFixed(0) + ' mg';
+      document.getElementById('bsaDoseDex').textContent    = Math.min(8,  +(2.5 * bsa).toFixed(1)) + ' mg';
+      document.getElementById('bsaDoseOndan').textContent  = Math.min(4,  +(5   * bsa).toFixed(1)) + ' mg';
+      document.getElementById('bsaDoseMannitol').textContent = (30 * bsa).toFixed(0) + '–' + (60 * bsa).toFixed(0) + ' g';
+
+      // Clinical note
+      let noteColor, noteText;
+      if (bsa < 0.5) {
+        noteColor = '#fff3e0';
+        noteText  = '<strong style="color:#e65100;">⚠️ Very small BSA (&lt; 0.5 m²)</strong> — neonate or small infant. Weight-based (mg/kg) dosing is generally preferred. Use BSA dosing only where protocol specifically indicates.';
+      } else if (bsa < 1.0) {
+        noteColor = '#fff8e1';
+        noteText  = '<strong style="color:#f57f17;">📌 Small BSA (0.5–1.0 m²)</strong> — infant or young child. BSA-based dosing applicable where indicated by protocol.';
+      } else if (bsa <= 1.73) {
+        noteColor = '#e8f5e9';
+        noteText  = '<strong style="color:#2e7d32;">✅ BSA within normal range (1.0–1.73 m²)</strong> — standard adult BSA is 1.73 m².';
+      } else {
+        noteColor = '#e3f2fd';
+        noteText  = '<strong style="color:#1565c0;">ℹ️ BSA &gt; 1.73 m²</strong> — exceeds standard adult BSA. Some protocols cap at the adult-equivalent dose (BSA 1.73 m²). Check protocol.';
+      }
+      const clinNote = document.getElementById('bsaClinNote');
+      clinNote.style.background = noteColor;
+      clinNote.style.borderLeft = '4px solid #00897b';
+      clinNote.innerHTML        = noteText;
+
       res.style.display = 'block';
     }
 
@@ -5152,13 +5193,14 @@
   <div class="container" id="generalCalculator" style="display:none; border-radius:0 0 16px 16px; margin-top:0;">
     <div class="content">
       <h2 class="section-title" style="margin-top:8px;">🔢 General Calculators</h2>
-      <p class="subtitle" style="color:#555; margin-bottom:14.4px;">Post-Conceptual Age · Ideal Body Weight · Adjusted Body Weight</p>
+      <p class="subtitle" style="color:#555; margin-bottom:14.4px;">Post-Conceptual Age · Ideal Body Weight · Adjusted Body Weight · Body Surface Area</p>
 
       <!-- Sub-tabs -->
       <div style="display:flex; gap:0; margin:0 0 0; border-bottom:1.6px solid #e0e0e0; flex-wrap:wrap;">
         <button id="genTabBtnPCA"  onclick="showGenTab('pca')"  class="pals-tab-btn pals-tab-active">🗓️ Post-Conceptual Age</button>
         <button id="genTabBtnIBW"  onclick="showGenTab('ibw')"  class="pals-tab-btn">⚖️ Ideal Body Weight</button>
         <button id="genTabBtnABW"  onclick="showGenTab('abw')"  class="pals-tab-btn">🧮 Adjusted Body Weight</button>
+        <button id="genTabBtnBSA"  onclick="showGenTab('bsa')"  class="pals-tab-btn">📐 Body Surface Area</button>
       </div>
 
       <!-- ── PCA TAB ── -->
@@ -5432,6 +5474,95 @@
             </div>
           </div>
         </details>
+      </div>
+
+      <!-- ── BSA TAB ── -->
+      <div id="genTabBSA" class="pals-tab-panel" style="display:none;">
+        <h3 style="color:#00695c; border-bottom:2px solid #00897b; padding-bottom:8px; margin:20px 0 16px;">📐 Body Surface Area — Mosteller Formula</h3>
+
+        <div class="input-section">
+          <div class="input-group" style="flex-wrap:wrap; gap:20px;">
+            <div>
+              <label for="bsaWeight">Weight (kg):</label>
+              <input type="number" id="bsaWeight" min="0.5" max="300" step="0.1" placeholder="e.g. 20"
+                oninput="calcBSA()" style="width:130px;">
+            </div>
+            <div>
+              <label for="bsaHeight">Height (cm):</label>
+              <input type="number" id="bsaHeight" min="30" max="250" step="0.1" placeholder="e.g. 110"
+                oninput="calcBSA()" style="width:130px;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Result -->
+        <div id="bsaResult" style="display:none; margin-top:6px;">
+
+          <!-- BSA result card -->
+          <div style="background:#e0f2f1; border-radius:12px; padding:20px; text-align:center; border:2px solid #00897b; margin-bottom:18px;">
+            <div style="font-size:26px; color:#555; margin-bottom:6px;">Mosteller BSA &nbsp;<span style="font-weight:400; font-size:22px; color:#888;">√(Ht × Wt / 3600)</span></div>
+            <div id="bsaMosteller" style="font-size:36px; font-weight:700; color:#00695c;">—</div>
+            <div style="font-size:24px; color:#777; margin-top:4px;">m²</div>
+          </div>
+
+          <!-- Clinical note -->
+          <div id="bsaClinNote" style="border-radius:10px; padding:14px; font-size:26px; line-height:1.9; margin-bottom:18px;"></div>
+
+          <!-- Anaesthesia-relevant BSA-based doses -->
+          <div style="background:#e8f5e9; border:2px solid #43a047; border-radius:10px; padding:16px;">
+            <div style="font-weight:700; color:#1b5e20; font-size:26px; margin-bottom:12px;">💊 Anaesthesia-Relevant BSA-Based Doses</div>
+            <table style="width:100%; font-size:24px;">
+              <thead>
+                <tr style="background:#2e7d32; color:#fff;">
+                  <th style="padding:8px 12px;">Drug / Indication</th>
+                  <th style="padding:8px 12px;">Dose per m²</th>
+                  <th style="padding:8px 12px;">Calculated Dose</th>
+                  <th style="padding:8px 12px;">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:#f1f8e9;">
+                  <td style="padding:8px 12px;"><strong>Hydrocortisone</strong><br><small>Stress dosing / adrenal insufficiency</small></td>
+                  <td style="padding:8px 12px;">50–100 mg/m²/day</td>
+                  <td id="bsaDoseHydro" style="padding:8px 12px; font-weight:700; color:#2e7d32;">—</td>
+                  <td style="padding:8px 12px; font-size:22px; color:#555;">Divide q6–8h; or 25–50 mg/m² bolus for major surgery</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;"><strong>Methylprednisolone</strong><br><small>Anti-inflammatory / immunosuppression</small></td>
+                  <td style="padding:8px 12px;">30 mg/m² IV</td>
+                  <td id="bsaDoseMPred" style="padding:8px 12px; font-weight:700; color:#2e7d32;">—</td>
+                  <td style="padding:8px 12px; font-size:22px; color:#555;">Single perioperative dose; max 1 g</td>
+                </tr>
+                <tr style="background:#f1f8e9;">
+                  <td style="padding:8px 12px;"><strong>Dexamethasone</strong><br><small>PONV prophylaxis / anti-inflammatory</small></td>
+                  <td style="padding:8px 12px;">2.5 mg/m² IV</td>
+                  <td id="bsaDoseDex" style="padding:8px 12px; font-weight:700; color:#2e7d32;">—</td>
+                  <td style="padding:8px 12px; font-size:22px; color:#555;">Max 8 mg; give at induction</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;"><strong>Ondansetron</strong><br><small>PONV prophylaxis</small></td>
+                  <td style="padding:8px 12px;">5 mg/m² IV</td>
+                  <td id="bsaDoseOndan" style="padding:8px 12px; font-weight:700; color:#2e7d32;">—</td>
+                  <td style="padding:8px 12px; font-size:22px; color:#555;">Max 4 mg; slow IV over 2–5 min</td>
+                </tr>
+                <tr style="background:#f1f8e9;">
+                  <td style="padding:8px 12px;"><strong>Mannitol</strong><br><small>ICP reduction / cerebral protection</small></td>
+                  <td style="padding:8px 12px;">30–60 g/m²</td>
+                  <td id="bsaDoseMannitol" style="padding:8px 12px; font-weight:700; color:#2e7d32;">—</td>
+                  <td style="padding:8px 12px; font-size:22px; color:#555;">20% solution; infuse over 30–60 min</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="note" style="margin-top:12px; font-size:24px;">
+              All doses are calculated using <strong>Mosteller BSA</strong>. Verify against weight-based limits and local protocol before administration.
+            </div>
+          </div>
+
+          <!-- Reference -->
+          <div style="margin-top:10px; font-size:22px; color:#777; padding:6px 0;">
+            <strong>Reference:</strong> Mosteller RD. <em>N Engl J Med.</em> 1987;317:1098. BSA (m²) = √(height(cm) × weight(kg) / 3600)
+          </div>
+        </div>
       </div>
 
     </div><!-- end content -->
