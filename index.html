@@ -196,8 +196,9 @@
     h3 { font-size: 1.75rem; }
     h4 { font-size: 1.5rem; }
 
-    /* Scale up small text and details panels */
-    small { font-size: 1.5rem; }
+    /* small always renders at 87.5% of its parent so it scales correctly
+       inside tables (px-fixed on mobile) as well as in other contexts */
+    small { font-size: 0.875em; }
     details > div { font-size: 2rem; }
     summary { font-size: 2.125rem; }
 
