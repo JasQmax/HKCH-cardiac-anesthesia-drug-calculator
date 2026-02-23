@@ -87,7 +87,7 @@
     label {
       font-weight: 500;
       color: #2c3e50;
-      font-size: 1.716rem;
+      font-size: 1.75rem;
     }
     
     input[type="number"] {
@@ -123,7 +123,7 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 19.2px;
-      font-size: 1.584rem;
+      font-size: 1.5rem;
     }
 
     th, td {
@@ -187,19 +187,19 @@
       padding: 13.44px 17.28px;
       margin: 14.4px 0;
       border-radius: 3.2px;
-      font-size: 1.716rem;
+      font-size: 1.75rem;
       color: #856404;
       line-height: 1.6;
     }
     
-    h2 { font-size: 2.275rem; }
-    h3 { font-size: 1.7875rem; }
-    h4 { font-size: 1.4625rem; }
+    h2 { font-size: 2.25rem; }
+    h3 { font-size: 1.75rem; }
+    h4 { font-size: 1.5rem; }
 
     /* Scale up small text and details panels */
-    small { font-size: 1.521rem; }
-    details > div { font-size: 2.028rem; }
-    summary { font-size: 2.1294rem; }
+    small { font-size: 1.5rem; }
+    details > div { font-size: 2rem; }
+    summary { font-size: 2.125rem; }
 
     /* ── .note lists (safety reminders) inherit note font-size ── */
     .note ul, .note ol, .note li { font-size: inherit; }
@@ -247,7 +247,7 @@
       border-collapse: collapse;
       width: 100%;
       margin-top: 14.4px;
-      font-size: 1.584rem;
+      font-size: 1.5rem;
       background: white;
       border-radius: 6.4px;
       overflow: hidden;
@@ -265,7 +265,7 @@
       color: white;
       font-weight: 600;
       text-transform: uppercase;
-      font-size: 1.44rem;
+      font-size: 1.5rem;
       letter-spacing: 0.5px;
     }
     
@@ -290,7 +290,7 @@
       font-weight: 600;
       text-align: left;
       color: #1e3c72;
-      font-size: 1.584rem;
+      font-size: 1.5rem;
     }
     
     /* Drug color classes */
@@ -5542,40 +5542,7 @@
   })();
   </script>
 
-  <!-- ── Scale inline px font-sizes in dynamically injected result HTML ── -->
-  <script>
-  (function () {
-    var SCALE = 1.5;
-    function scalePx(str) {
-      return str.replace(/font-size\s*:\s*(\d+(?:\.\d+)?)px/gi, function (m, n) {
-        var orig = parseFloat(n);
-        if (orig > 25) return m; // already scaled or intentionally large
-        return 'font-size:' + (orig * SCALE).toFixed(1) + 'px';
-      });
-    }
-    function scaleEl(el) {
-      if (el.nodeType !== 1) return;
-      var s = el.getAttribute('style');
-      if (s && /font-size\s*:\s*\d/.test(s)) el.setAttribute('style', scalePx(s));
-      for (var i = 0; i < el.children.length; i++) scaleEl(el.children[i]);
-    }
-    // Only watch dynamic result containers — static HTML is now fixed directly
-    var resultIds = ['hypoResult','hyperResult','ablResult','bloodProductResult',
-      'acidosisResult','electrolyteResult','mgso4Result','caResult',
-      'hemostaticResult','lastResult','pcaResult','dilResult','dexDilResult'];
-    var observer = new MutationObserver(function (mutations) {
-      mutations.forEach(function (m) {
-        m.addedNodes.forEach(function (node) {
-          if (node.nodeType === 1) scaleEl(node);
-        });
-      });
-    });
-    resultIds.forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el) observer.observe(el, { childList: true, subtree: true });
-    });
-  })();
-  </script>
+
 
 </body>
 </html>
