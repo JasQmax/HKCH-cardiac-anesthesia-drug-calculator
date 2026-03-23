@@ -1513,7 +1513,18 @@
       <div class="drug-panel active" id="drugPanel-anaesthesia" role="tabpanel" aria-labelledby="dsubtab-anaesthesia">
 
       <h2 class="section-title" style="margin-top:10px;">Anaesthesia Drugs — Bolus / Single Dose</h2>
-      <p style="color:#555; font-size:1.5rem; margin-bottom:12px;">Weight-based bolus doses for common perioperative drugs. Enter weight above and click <strong>Calculate Dosages</strong>.</p>
+      <p style="color:#555; font-size:1.5rem; margin-bottom:8px;">Weight-based bolus doses for common perioperative drugs. Enter weight above and click <strong>Calculate Dosages</strong>.</p>
+      
+      <!-- Route Legend -->
+      <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:12px; padding:8px 12px; background:#f8f9fa; border-radius:8px; font-size:0.85rem;">
+        <span style="font-weight:600; color:#555;">Route:</span>
+        <span><strong style="color:#1565c0;">PO</strong> = Oral</span>
+        <span><strong style="color:#00796b;">IN</strong> = Intranasal</span>
+        <span><strong style="color:#6a1b9a;">IV</strong> = Intravenous</span>
+        <span><strong style="color:#e65100;">IM</strong> = Intramuscular</span>
+        <span><strong style="color:#c62828;">IO</strong> = Intraosseous</span>
+      </div>
+      
       <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
       <div class="table-wrapper" role="region" aria-label="Anaesthesia bolus drugs table">
         <table id="anaesthesiaBolusDrugTable" class="sticky-table">
@@ -1543,7 +1554,7 @@
 
             <tr data-abx="midazolam-in" style="background:#ffe8c0;">
               <td><strong>Midazolam</strong><br><small>Intranasal premedication</small></td>
-              <td>0.2–0.3 mg/kg IN<br><small>Max 10 mg; onset 5–10 min; stings</small></td>
+              <td>0.2–0.3 mg/kg <strong style="color:#00796b;">IN</strong><br><small>Max 10 mg; onset 5–10 min; stings</small></td>
               <td>5 mg/mL (undiluted)</td>
               <td>Via MAD; split between nostrils; max 0.3 mL/nostril</td>
               <td class="abdCalcDose"></td>
@@ -1552,7 +1563,7 @@
 
             <tr data-abx="ketamine-po" style="background:#fffde0;">
               <td><strong>Ketamine</strong><br><small>Oral premedication</small></td>
-              <td>3–6 mg/kg PO<br><small>Max 200 mg; onset 20–45 min; mix with juice</small></td>
+              <td>3–6 mg/kg <strong style="color:#1565c0;">PO</strong><br><small>Max 200 mg; onset 20–45 min; mix with juice</small></td>
               <td>50 mg/mL</td>
               <td>Mix in sweet juice to mask bitter taste</td>
               <td class="abdCalcDose"></td>
@@ -1561,7 +1572,7 @@
 
             <tr data-abx="ketamine-in" style="background:#fffacd;">
               <td><strong>Ketamine</strong><br><small>Intranasal</small></td>
-              <td>3–6 mg/kg IN<br><small>Max 0.5 mL/nostril; onset 5–10 min</small></td>
+              <td>3–6 mg/kg <strong style="color:#00796b;">IN</strong><br><small>Max 0.5 mL/nostril; onset 5–10 min</small></td>
               <td>50 mg/mL (undiluted)</td>
               <td>Via MAD; split between nostrils; max 0.5 mL/nostril</td>
               <td class="abdCalcDose"></td>
@@ -1570,7 +1581,7 @@
 
             <tr data-abx="dexmed-in" style="background:#e8f4fd;">
               <td><strong>Dexmedetomidine</strong><br><small>Intranasal premedication</small></td>
-              <td><strong>3 mcg/kg IN</strong><br><small>Max 100 mcg; onset 20–30 min; no airway compromise</small></td>
+              <td><strong>3 mcg/kg <span style="color:#00796b;">IN</span></strong><br><small>Max 100 mcg; onset 20–30 min; no airway compromise</small></td>
               <td>100 mcg/mL (undiluted)</td>
               <td>Via MAD; split between nostrils; max 0.5 mL/nostril</td>
               <td class="abdCalcDose"></td>
@@ -1582,7 +1593,7 @@
 
             <tr data-abx="propofol" style="background:#f0f4ff;">
               <td><strong>Propofol</strong><br><small>IV induction</small></td>
-              <td>2–4 mg/kg IV (child)<br>1.5–2.5 mg/kg IV (adult)<br><small>Reduce if opioid/benzo given</small></td>
+              <td>2–4 mg/kg <strong style="color:#6a1b9a;">IV</strong> (child)<br>1.5–2.5 mg/kg <strong style="color:#6a1b9a;">IV</strong> (adult)<br><small>Reduce if opioid/benzo given</small></td>
               <td>10 mg/mL (ready to use)</td>
               <td>Undiluted; give slowly over 20–30 sec</td>
               <td class="abdCalcDose"></td>
@@ -1591,7 +1602,7 @@
 
             <tr data-abx="etomidate" style="background:#f5f0ff;">
               <td><strong>Etomidate</strong><br><small>IV induction — haemodynamic instability</small></td>
-              <td>0.2–0.3 mg/kg IV<br><small>Max 20 mg; avoid repeat dosing (adrenal suppression)</small></td>
+              <td>0.2–0.3 mg/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Max 20 mg; avoid repeat dosing (adrenal suppression)</small></td>
               <td>2 mg/mL (ready to use)</td>
               <td>Undiluted; give over 30–60 sec; myoclonus risk</td>
               <td class="abdCalcDose"></td>
@@ -1600,7 +1611,7 @@
 
             <tr data-abx="ketamine-iv" style="background:#ffff99;">
               <td><strong>Ketamine</strong><br><small>IV induction / dissociative sedation</small></td>
-              <td>1–2 mg/kg IV<br><small>Consider midazolam co-induction</small></td>
+              <td>1–2 mg/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Consider midazolam co-induction</small></td>
               <td>50 mg/mL (stock)</td>
               <td class="abdDilution">Dilute 1:4 with NS → 10 mg/mL for IV</td>
               <td class="abdCalcDose"></td>
@@ -1609,7 +1620,7 @@
 
             <tr data-abx="ketamine-im" style="background:#f7f7a0;">
               <td><strong>Ketamine</strong><br><small>IM induction (no IV access)</small></td>
-              <td>4–6 mg/kg IM<br><small>Add midazolam 0.3 mg/kg IM to ↓dysphoria</small></td>
+              <td>4–6 mg/kg <strong style="color:#e65100;">IM</strong><br><small>Add midazolam 0.3 mg/kg IM to ↓dysphoria</small></td>
               <td>50 mg/mL (undiluted)</td>
               <td>Undiluted; anterolateral thigh preferred</td>
               <td class="abdCalcDose"></td>
@@ -1618,7 +1629,7 @@
 
             <tr data-abx="midazolam-iv" style="background:#ffe8a0;">
               <td><strong>Midazolam</strong><br><small>IV co-induction adjunct</small></td>
-              <td>0.05–0.1 mg/kg IV<br><small>Max 5 mg; ↓ induction agent requirement</small></td>
+              <td>0.05–0.1 mg/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Max 5 mg; ↓ induction agent requirement</small></td>
               <td>1 mg/mL<br><small>(1 mL of 5 mg/mL + 4 mL NS)</small></td>
               <td>Undiluted 1 mg/mL; give slowly</td>
               <td class="abdCalcDose"></td>
@@ -1630,7 +1641,7 @@
 
             <tr data-abx="suxamethonium-iv" style="background:#ffe0b2;">
               <td><strong>Suxamethonium</strong><br><small>(Succinylcholine) IV</small></td>
-              <td><strong style="color:#c62828;">2 mg/kg IV (infant/child)</strong><br>1–1.5 mg/kg IV (adolescent)<br><small>Max 150 mg</small></td>
+              <td><strong style="color:#c62828;">2 mg/kg <span style="color:#6a1b9a;">IV</span> (infant/child)</strong><br>1–1.5 mg/kg <strong style="color:#6a1b9a;">IV</strong> (adolescent)<br><small>Max 150 mg</small></td>
               <td>50 mg/mL<br><small>(100 mg/2 mL)</small></td>
               <td>Dilute 1:4 with NS → 10 mg/mL for IV use</td>
               <td class="abdCalcDose"></td>
@@ -1639,7 +1650,7 @@
 
             <tr data-abx="suxamethonium-im" style="background:#ffd8a0;">
               <td><strong>Suxamethonium</strong><br><small>IM (laryngospasm, no IV)</small></td>
-              <td><strong style="color:#c62828;">4 mg/kg IM</strong><br><small>Max 200 mg</small></td>
+              <td><strong style="color:#c62828;">4 mg/kg <span style="color:#e65100;">IM</span></strong><br><small>Max 200 mg</small></td>
               <td>50 mg/mL<br><small>(100 mg/2 mL, undiluted)</small></td>
               <td>Use undiluted</td>
               <td class="abdCalcDose"></td>
@@ -1660,7 +1671,7 @@
 
             <tr data-abx="neostigmine" style="background:#d4edda;">
               <td><strong>Neostigmine</strong><br><small>+ Atropine for NMB reversal</small></td>
-              <td>0.05 mg/kg IV<br><small>Max 2.5 mg; always give with atropine 0.02 mg/kg</small></td>
+              <td>0.05 mg/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Max 2.5 mg; always give with atropine 0.02 mg/kg</small></td>
               <td>0.5 mg/mL</td>
               <td>Always co-administer with atropine</td>
               <td class="abdCalcDose"></td>
@@ -1669,7 +1680,7 @@
 
             <tr data-abx="atropine-reversal" style="background:#c8f7c5;">
               <td><strong>Atropine</strong><br><small>Pre-reversal / with neostigmine</small></td>
-              <td>0.02 mg/kg IV<br><small>Min 0.1 mg · Max 0.6 mg</small></td>
+              <td>0.02 mg/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Min 0.1 mg · Max 0.6 mg</small></td>
               <td>0.1 mg/mL<br><small>(1 mL of 0.6 mg/mL + 5 mL NS)</small></td>
               <td>Give with neostigmine (mix or back-to-back)</td>
               <td class="abdCalcDose"></td>
@@ -1678,7 +1689,7 @@
 
             <tr data-abx="atropine-brady" style="background:#a8f0a8;">
               <td><strong>Atropine</strong><br><small>Symptomatic bradycardia</small></td>
-              <td>0.02 mg/kg IV<br><small>Min 0.1 mg · Max 0.5 mg child / 1 mg adolescent</small></td>
+              <td>0.02 mg/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Min 0.1 mg · Max 0.5 mg child / 1 mg adolescent</small></td>
               <td>0.1 mg/mL<br><small>(1 mL of 0.6 mg/mL + 5 mL NS)</small></td>
               <td>Use 0.1 mg/mL for accurate dosing</td>
               <td class="abdCalcDose"></td>
@@ -1687,7 +1698,7 @@
 
             <tr data-abx="sugammadex-routine" style="background:#d1f0d1;">
               <td><strong>Sugammadex</strong><br><small>Routine reversal</small></td>
-              <td>2 mg/kg IV<br><small>Max 200 mg</small></td>
+              <td>2 mg/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Max 200 mg</small></td>
               <td>100 mg/mL</td>
               <td>Undiluted; IV bolus over 10 sec</td>
               <td class="abdCalcDose"></td>
@@ -1696,7 +1707,7 @@
 
             <tr data-abx="sugammadex-deep" style="background:#b8e8b8;">
               <td><strong>Sugammadex</strong><br><small>Deep NMB / RSI reversal</small></td>
-              <td>16 mg/kg IV<br><small>Max 200 mg (~12 kg); ≥13 kg → 200 mg flat</small></td>
+              <td>16 mg/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Max 200 mg (~12 kg); ≥13 kg → 200 mg flat</small></td>
               <td>100 mg/mL</td>
               <td>Undiluted; rapid IV bolus</td>
               <td class="abdCalcDose"></td>
@@ -1708,7 +1719,7 @@
 
             <tr data-abx="naloxone-respiratory" style="background:#e8d5f5;">
               <td><strong>Naloxone</strong><br><small>Respiratory depression</small></td>
-              <td>1–5 mcg/kg IV<br><small>Titrate; avoid full reversal if pain present</small></td>
+              <td>1–5 mcg/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Titrate; avoid full reversal if pain present</small></td>
               <td>40 mcg/mL<br><small>(1 mL of 0.4 mg/mL + 9 mL NS)</small></td>
               <td>Give in 10–20 mcg increments; watch for re-narcotisation</td>
               <td class="abdCalcDose"></td>
@@ -1717,7 +1728,7 @@
 
             <tr data-abx="naloxone-arrest" style="background:#d8c0f0;">
               <td><strong>Naloxone</strong><br><small>Opioid OD / arrest</small></td>
-              <td>10 mcg/kg IV/IM/IO<br><small>Max 400 mcg; may repeat every 2–3 min</small></td>
+              <td>10 mcg/kg <strong style="color:#6a1b9a;">IV</strong>/<strong style="color:#e65100;">IM</strong>/<strong style="color:#c62828;">IO</strong><br><small>Max 400 mcg; may repeat every 2–3 min</small></td>
               <td>400 mcg/mL (stock)</td>
               <td>Undiluted for IM/arrest; dilute to 100 mcg/mL for IV titration</td>
               <td class="abdCalcDose"></td>
@@ -1726,7 +1737,7 @@
 
             <tr data-abx="flumazenil" style="background:#f5d5e8;">
               <td><strong>Flumazenil</strong><br><small>Benzodiazepine reversal</small></td>
-              <td>10 mcg/kg IV<br><small>Max 200 mcg; repeat q1 min PRN (max 1 mg)</small></td>
+              <td>10 mcg/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Max 200 mcg; repeat q1 min PRN (max 1 mg)</small></td>
               <td>100 mcg/mL (0.1 mg/mL)</td>
               <td>Undiluted; give over 15 sec; may repeat q1 min</td>
               <td class="abdCalcDose"></td>
@@ -1738,7 +1749,7 @@
 
             <tr data-abx="mannitol" style="background:#e0f0ff;">
               <td><strong>Mannitol 20%</strong><br><small>ICP reduction</small></td>
-              <td>0.25–0.5 g/kg IV<br><small>Max 1 g/kg/dose; 2 g/kg/day</small></td>
+              <td>0.25–0.5 g/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Max 1 g/kg/dose; 2 g/kg/day</small></td>
               <td>200 mg/mL (20%)<br><small>(1.25–2.5 mL/kg)</small></td>
               <td>Warm to dissolve crystals; use filter; infuse over 15–30 min</td>
               <td class="abdCalcDose"></td>
