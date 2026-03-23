@@ -243,7 +243,121 @@
       color: #2a5298;
       margin: 24px 0 11.52px 0;
     }
-    
+
+    /* ── Drug sub-tab navigation ── */
+    .drug-subtab-bar {
+      display: flex;
+      gap: 6px;
+      margin: 12px 0 18px 0;
+      flex-wrap: wrap;
+    }
+    .drug-subtab-btn {
+      flex: 1;
+      min-width: 110px;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.4rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #e8eaf6;
+      color: #3949ab;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .drug-subtab-btn:hover {
+      background: #c5cae9;
+      transform: translateY(-1px);
+    }
+    .drug-subtab-btn.active {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      box-shadow: 0 3px 10px rgba(30,60,114,0.35);
+    }
+    .drug-subtab-btn .dtab-icon {
+      display: block;
+      font-size: 1.6rem;
+      margin-bottom: 3px;
+    }
+    .drug-panel { display: none; }
+    .drug-panel.active { display: block; }
+
+    /* Drug search box */
+    .drug-search-container {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin: 12px 0 16px;
+      max-width: 400px;
+    }
+    .drug-search-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .drug-search-input:focus {
+      outline: none;
+      border-color: #1e3c72;
+      box-shadow: 0 0 0 3px rgba(30,60,114,0.15);
+    }
+    .drug-search-input::placeholder {
+      color: #999;
+    }
+    .drug-search-btn {
+      padding: 10px 16px;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .drug-search-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(30,60,114,0.3);
+    }
+    .drug-search-btn:active {
+      transform: translateY(0);
+    }
+    .drug-clear-btn {
+      padding: 10px 12px;
+      background: #f5f5f5;
+      color: #666;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .drug-clear-btn:hover {
+      background: #eeeeee;
+    }
+    .drug-highlight {
+      background: #fff59d !important;
+      animation: highlightPulse 0.6s ease-out;
+    }
+    @keyframes highlightPulse {
+      0% { background: #ffeb3b; }
+      100% { background: #fff59d; }
+    }
+    .drug-search-no-results {
+      padding: 12px 16px;
+      background: #fff3e0;
+      border-left: 4px solid #ff9800;
+      border-radius: 4px;
+      margin: 8px 0;
+      font-size: 0.95rem;
+      color: #e65100;
+    }
+
     table {
       border-collapse: collapse;
       width: 100%;
@@ -507,6 +621,11 @@
       .section-title { font-size: 1.2rem; margin: 20px 0 10px; }
       .subsection-title { font-size: 1rem; margin: 16px 0 8px; }
 
+      /* Drug sub-tabs on mobile */
+      .drug-subtab-bar { gap: 4px; margin: 8px 0 12px; }
+      .drug-subtab-btn { min-width: 80px; font-size: 0.75rem; padding: 7px 6px; border-radius: 8px; }
+      .drug-subtab-btn .dtab-icon { font-size: 1.2rem; margin-bottom: 2px; }
+
       /* Stack input groups */
       .input-group { flex-direction: column; gap: 12px; }
       .input-group > div { width: 100%; }
@@ -591,6 +710,170 @@
     .app-header .subtitle {
       font-size: 1.25rem;
       opacity: 0.85;
+    }
+
+    /* Global Search Bar in Header */
+    .global-search-container {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+      max-width: 380px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .global-search-input {
+      flex: 1;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      background: rgba(255,255,255,0.95);
+      color: #333;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .global-search-input:focus {
+      outline: none;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+      transform: scale(1.01);
+    }
+    .global-search-input::placeholder {
+      color: #888;
+      font-size: 0.85rem;
+    }
+    .global-search-btn {
+      padding: 8px 14px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .global-search-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: scale(1.05);
+    }
+    .global-search-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Global search results modal */
+    .search-results-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 60px 16px 16px;
+      overflow-y: auto;
+    }
+    .search-results-modal.active {
+      display: flex;
+    }
+    .search-results-box {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      max-width: 500px;
+      width: 100%;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    .search-results-header {
+      padding: 16px 20px;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      border-radius: 12px 12px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+    }
+    .search-results-header h3 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+    .search-results-close {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .search-results-close:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    .search-results-list {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+    .search-result-item {
+      padding: 14px 20px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .search-result-item:hover {
+      background: #f5f5f5;
+    }
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+    .search-result-tab {
+      font-size: 0.75rem;
+      color: white;
+      background: #1e3c72;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-right: 8px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .search-result-tab.drug { background: #7c4dff; }
+    .search-result-tab.airway { background: #00bcd4; }
+    .search-result-tab.acidosis { background: #ff9800; }
+    .search-result-tab.electrolyte { background: #ffc107; color: #333; }
+    .search-result-tab.arrhythmia { background: #f44336; }
+    .search-result-tab.blood { background: #e91e63; }
+    .search-result-tab.la { background: #9c27b0; }
+    .search-result-tab.glucose { background: #8bc34a; }
+    .search-result-tab.fluids { background: #03a9f4; }
+    .search-result-tab.general { background: #607d8b; }
+    .search-result-title {
+      font-weight: 600;
+      color: #333;
+      font-size: 1rem;
+    }
+    .search-result-context {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 4px;
+    }
+    .search-no-results {
+      padding: 30px 20px;
+      text-align: center;
+      color: #666;
+    }
+    .search-no-results-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
     }
 
     .top-nav {
@@ -706,6 +989,13 @@
     <div class="app-header">
       <h1>🏥 PediAnes Smart Buddy</h1>
       <div class="subtitle">HKCH Paediatric Anaesthesia Drug &amp; Clinical Calculator</div>
+      <!-- Global Search Bar -->
+      <div class="global-search-container">
+        <input type="text" id="globalSearchInput" class="global-search-input" placeholder="Search all tabs (drugs, equipment, protocols...)" onkeydown="if(event.key==='Enter') globalSearch()">
+        <button type="button" class="global-search-btn" onclick="globalSearch()" aria-label="Search all content">
+          🔍
+        </button>
+      </div>
     </div>
     <nav class="top-nav" aria-label="Main navigation">
       <button class="top-nav-btn active" id="navDrug" onclick="showDrugCalculator()">
@@ -731,6 +1021,9 @@
       </button>
       <button class="top-nav-btn" id="navGlucose" onclick="showGlucoseCalculator()">
         <span class="nav-icon">🍬</span>Glucose
+      </button>
+      <button class="top-nav-btn" id="navIVFluids" onclick="showIVFluidsCalculator()">
+        <span class="nav-icon">💧</span>IV Fluids
       </button>
       <button class="top-nav-btn" id="navGeneral" onclick="showGeneralCalculator()">
         <span class="nav-icon">🔢</span>General
@@ -764,8 +1057,42 @@
         <strong>Disclaimer:</strong> Stock concentrations shown are according to current stock available in pharmacy. Please verify availability before preparation.
       </div>
 
-      <h2 class="section-title">Infusions</h2>
-  
+      <!-- ══ Drug Sub-Tab Navigation ══ -->
+      <div class="drug-subtab-bar" role="tablist" aria-label="Drug calculator sections">
+        <button class="drug-subtab-btn active" id="dsubtab-anaesthesia" role="tab" aria-selected="true"  aria-controls="drugPanel-anaesthesia" onclick="switchDrugPanel('anaesthesia')">
+          <span class="dtab-icon">💊</span>Anaesthesia Drugs
+        </button>
+        <button class="drug-subtab-btn" id="dsubtab-infusion" role="tab" aria-selected="false" aria-controls="drugPanel-infusion" onclick="switchDrugPanel('infusion')">
+          <span class="dtab-icon">💉</span>Infusions
+        </button>
+        <button class="drug-subtab-btn" id="dsubtab-cardiac" role="tab" aria-selected="false" aria-controls="drugPanel-cardiac" onclick="switchDrugPanel('cardiac')">
+          <span class="dtab-icon">🫀</span>Cardiac OT
+        </button>
+      </div>
+
+      <!-- ══ Drug Search ══ -->
+      <div class="drug-search-container">
+        <input type="text" id="drugSearchInput" class="drug-search-input" placeholder="Search drugs (e.g. propofol, adrenaline...)" onkeydown="if(event.key==='Enter') searchDrugs()">
+        <button type="button" class="drug-search-btn" onclick="searchDrugs()" aria-label="Search drugs">
+          🔍 Search
+        </button>
+        <button type="button" class="drug-clear-btn" onclick="clearDrugSearch()" aria-label="Clear search">
+          ✕
+        </button>
+      </div>
+      <div id="drugSearchNoResults" class="drug-search-no-results" style="display:none;"></div>
+
+      <!-- ══════════════════════════════════════════════════════
+           PANEL 1 — ANAESTHESIA DRUGS (Bolus / Single Dose)
+           ══════════════════════════════════════════════════════ -->
+      <div class="drug-panel active" id="drugPanel-anaesthesia-stub" style="display:none;"></div>
+
+      <!-- ══════════════════════════════════════════════════════
+           PANEL 2 — INFUSIONS
+           ══════════════════════════════════════════════════════ -->
+      <div class="drug-panel" id="drugPanel-infusion" role="tabpanel" aria-labelledby="dsubtab-infusion">
+
+      <h2 class="section-title" style="margin-top:10px;">Infusions</h2>
       <h3 class="subsection-title">Commonly used drugs</h3>
       <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
       <div class="table-wrapper" role="region" aria-label="Commonly used drugs infusion table">
@@ -962,7 +1289,17 @@
         <strong>Aprotinin:</strong> Reserved for special cases. Consult cardiac anesthetist in charge before use.
       </div>
 
-      <h2 class="section-title">Cardiopulmonary bypass</h2>
+      </div><!-- /drugPanel-infusion -->
+
+      <!-- ══════════════════════════════════════════════════════
+           PANEL 3 — CARDIAC OT
+           ══════════════════════════════════════════════════════ -->
+      <div class="drug-panel" id="drugPanel-cardiac" role="tabpanel" aria-labelledby="dsubtab-cardiac">
+
+      <h2 class="section-title" style="margin-top:10px;">Cardiac OT Drug Reference</h2>
+      <p style="color:#555; font-size:1.5rem; margin-bottom:16px;">Cardiopulmonary bypass, DHCA, emergency bolus doses and cardiac-specific drugs. All doses are weight-based.</p>
+
+      <h2 class="section-title">Cardiopulmonary Bypass</h2>
       <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
       <div class="table-wrapper" role="region" aria-label="Cardiopulmonary bypass drugs table">
   <table id="cpbTable" class="sticky-table">
@@ -1081,6 +1418,356 @@
       <div class="note">
         <strong>Note:</strong> Prepare 100 mcg/ml phenylephrine for use by perfusionist: 10 mg phenylephrine into 100 ml NS
       </div>
+
+      <!-- ── Cardiac Antiarrhythmics — Bolus ── -->
+      <h2 class="section-title">Cardiac Antiarrhythmics — Bolus Doses</h2>
+      <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
+      <div class="table-wrapper" role="region" aria-label="Cardiac antiarrhythmic bolus drugs table">
+        <table id="cardiacBolusDrugTable" class="sticky-table">
+          <thead>
+            <tr>
+              <th>Drug</th>
+              <th>Dose</th>
+              <th>Stock</th>
+              <th>Dilution / Notes</th>
+              <th>Calc. Dose</th>
+              <th>Volume (mL)</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr><td colspan="6" class="group-header">⚡ Antiarrhythmics</td></tr>
+
+            <tr data-cbx="amiodarone-vfvt" style="background:#fff3e0;">
+              <td><strong>Amiodarone</strong><br><small>VF / pVT arrest</small></td>
+              <td><strong style="color:#c62828;">5 mg/kg IV/IO</strong><br><small>Max 300 mg; repeat 5 mg/kg (max 150 mg) after 5th shock</small></td>
+              <td>50 mg/mL</td>
+              <td class="cbxDilution">Dilute in D5W to ≥ 3 mg/mL; rapid bolus. <strong>D5W only — not NS.</strong></td>
+              <td class="cbxCalcDose"></td>
+              <td class="cbxVolume"></td>
+            </tr>
+
+            <tr data-cbx="amiodarone-svt" style="background:#fff8e1;">
+              <td><strong>Amiodarone</strong><br><small>Stable SVT / VT</small></td>
+              <td><strong>5 mg/kg IV over 20–60 min</strong><br><small>Max 300 mg</small></td>
+              <td>50 mg/mL</td>
+              <td class="cbxDilution">Dilute in D5W to ≤ 2 mg/mL; dedicated line; monitor ECG &amp; BP</td>
+              <td class="cbxCalcDose"></td>
+              <td class="cbxVolume"></td>
+            </tr>
+
+            <tr data-cbx="amiodarone-post" style="background:#fffde7;">
+              <td><strong>Amiodarone</strong><br><small>Post-op maintenance</small></td>
+              <td>5–15 mcg/kg/min infusion</td>
+              <td>50 mg/mL</td>
+              <td>See Infusions panel</td>
+              <td class="cbxCalcDose">→ Infusions</td>
+              <td class="cbxVolume">—</td>
+            </tr>
+
+            <tr data-cbx="adenosine" style="background:#e8f5e9;">
+              <td><strong>Adenosine</strong><br><small>SVT termination</small></td>
+              <td>0.1 mg/kg (1st) → 0.2 mg/kg (2nd)<br><small>Max 6 mg / 12 mg</small></td>
+              <td>3 mg/mL<br><small>(6 mg/2 mL)</small></td>
+              <td>Rapid bolus undiluted; flush with 5–10 mL NS immediately; proximal/central vein</td>
+              <td class="cbxCalcDose"></td>
+              <td class="cbxVolume"></td>
+            </tr>
+
+            <tr data-cbx="lignocaine-vt" style="background:#e3f2fd;">
+              <td><strong>Lignocaine</strong><br><small>VF/VT (alt. to amiodarone)</small></td>
+              <td><strong>1 mg/kg IV/IO</strong><br><small>Max 100 mg; repeat 0.5 mg/kg q5 min (max 3 mg/kg)</small></td>
+              <td>20 mg/mL (2%)</td>
+              <td>Use undiluted, or dilute 1:1 NS → 10 mg/mL</td>
+              <td class="cbxCalcDose"></td>
+              <td class="cbxVolume"></td>
+            </tr>
+
+            <tr data-cbx="magnesium-torsades" style="background:#f3e5f5;">
+              <td><strong>Magnesium sulphate</strong><br><small>Torsades de Pointes</small></td>
+              <td><strong>25–50 mg/kg IV</strong> over 10–20 min<br><small>Max 2 g; over 1–2 min in arrest</small></td>
+              <td>500 mg/mL<br><small>(49.3% stock)</small></td>
+              <td>Dilute to 20 mg/mL in NS; infuse over 10–20 min (1–2 min in arrest)</td>
+              <td class="cbxCalcDose"></td>
+              <td class="cbxVolume"></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note" style="background:#fff3e0; border-left-color:#ff9800; margin-top:10px;">
+        <strong>⚠️ Key reminders:</strong>
+        Amiodarone: D5W only (precipitates in NS) · do not combine with procainamide ·
+        Adenosine: half-life 10 sec — must flush fast ·
+        Lignocaine: watch for CNS toxicity ·
+        Magnesium: slow infusion to avoid hypotension ·
+        Protamine: draw up only on rewarming
+      </div>
+
+      </div><!-- /drugPanel-cardiac -->
+
+      <!-- ══════════════════════════════════════════════════════
+           PANEL 1 — ANAESTHESIA DRUGS (Bolus / Single Dose)
+           ══════════════════════════════════════════════════════ -->
+      <div class="drug-panel active" id="drugPanel-anaesthesia" role="tabpanel" aria-labelledby="dsubtab-anaesthesia">
+
+      <h2 class="section-title" style="margin-top:10px;">Anaesthesia Drugs — Bolus / Single Dose</h2>
+      <p style="color:#555; font-size:1.5rem; margin-bottom:12px;">Weight-based bolus doses for common perioperative drugs. Enter weight above and click <strong>Calculate Dosages</strong>.</p>
+      <div class="scroll-hint" aria-hidden="true">← Swipe to see more columns →</div>
+      <div class="table-wrapper" role="region" aria-label="Anaesthesia bolus drugs table">
+        <table id="anaesthesiaBolusDrugTable" class="sticky-table">
+          <thead>
+            <tr>
+              <th>Drug</th>
+              <th>Dose</th>
+              <th>Stock / Conc.</th>
+              <th>Dilution / Notes</th>
+              <th>Calc. dose</th>
+              <th>Volume (mL)</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <!-- PREMEDICATION / SEDATION -->
+            <tr><td colspan="6" class="group-header">💊 Premedication / Sedation</td></tr>
+
+            <tr data-abx="midazolam-oral" style="background:#fff3cd;">
+              <td><strong>Midazolam</strong><br><small>Oral premedication</small></td>
+              <td>0.3–0.5 mg/kg <strong style="color:#1565c0;">PO</strong><br><small>Max 15 mg; give 30–45 min pre-op</small></td>
+              <td>5 mg/mL (stock)</td>
+              <td>Draw up from stock; mix in juice/syrup</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="midazolam-in" style="background:#ffe8c0;">
+              <td><strong>Midazolam</strong><br><small>Intranasal premedication</small></td>
+              <td>0.2–0.3 mg/kg IN<br><small>Max 10 mg; onset 5–10 min; stings</small></td>
+              <td>5 mg/mL (undiluted)</td>
+              <td>Via MAD; split between nostrils; max 0.3 mL/nostril</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="ketamine-po" style="background:#fffde0;">
+              <td><strong>Ketamine</strong><br><small>Oral premedication</small></td>
+              <td>3–6 mg/kg PO<br><small>Max 200 mg; onset 20–45 min; mix with juice</small></td>
+              <td>50 mg/mL</td>
+              <td>Mix in sweet juice to mask bitter taste</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="ketamine-in" style="background:#fffacd;">
+              <td><strong>Ketamine</strong><br><small>Intranasal</small></td>
+              <td>3–6 mg/kg IN<br><small>Max 0.5 mL/nostril; onset 5–10 min</small></td>
+              <td>50 mg/mL (undiluted)</td>
+              <td>Via MAD; split between nostrils; max 0.5 mL/nostril</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="dexmed-in" style="background:#e8f4fd;">
+              <td><strong>Dexmedetomidine</strong><br><small>Intranasal premedication</small></td>
+              <td><strong>3 mcg/kg IN</strong><br><small>Max 100 mcg; onset 20–30 min; no airway compromise</small></td>
+              <td>100 mcg/mL (undiluted)</td>
+              <td>Via MAD; split between nostrils; max 0.5 mL/nostril</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <!-- INDUCTION AGENTS -->
+            <tr><td colspan="6" class="group-header">💉 Induction Agents</td></tr>
+
+            <tr data-abx="propofol" style="background:#f0f4ff;">
+              <td><strong>Propofol</strong><br><small>IV induction</small></td>
+              <td>2–4 mg/kg IV (child)<br>1.5–2.5 mg/kg IV (adult)<br><small>Reduce if opioid/benzo given</small></td>
+              <td>10 mg/mL (ready to use)</td>
+              <td>Undiluted; give slowly over 20–30 sec</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="etomidate" style="background:#f5f0ff;">
+              <td><strong>Etomidate</strong><br><small>IV induction — haemodynamic instability</small></td>
+              <td>0.2–0.3 mg/kg IV<br><small>Max 20 mg; avoid repeat dosing (adrenal suppression)</small></td>
+              <td>2 mg/mL (ready to use)</td>
+              <td>Undiluted; give over 30–60 sec; myoclonus risk</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="ketamine-iv" style="background:#ffff99;">
+              <td><strong>Ketamine</strong><br><small>IV induction / dissociative sedation</small></td>
+              <td>1–2 mg/kg IV<br><small>Consider midazolam co-induction</small></td>
+              <td>50 mg/mL (stock)</td>
+              <td class="abdDilution">Dilute 1:4 with NS → 10 mg/mL for IV</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="ketamine-im" style="background:#f7f7a0;">
+              <td><strong>Ketamine</strong><br><small>IM induction (no IV access)</small></td>
+              <td>4–6 mg/kg IM<br><small>Add midazolam 0.3 mg/kg IM to ↓dysphoria</small></td>
+              <td>50 mg/mL (undiluted)</td>
+              <td>Undiluted; anterolateral thigh preferred</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="midazolam-iv" style="background:#ffe8a0;">
+              <td><strong>Midazolam</strong><br><small>IV co-induction adjunct</small></td>
+              <td>0.05–0.1 mg/kg IV<br><small>Max 5 mg; ↓ induction agent requirement</small></td>
+              <td>1 mg/mL<br><small>(1 mL of 5 mg/mL + 4 mL NS)</small></td>
+              <td>Undiluted 1 mg/mL; give slowly</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <!-- NEUROMUSCULAR BLOCKADE -->
+            <tr><td colspan="6" class="group-header">💪 Neuromuscular Blockade</td></tr>
+
+            <tr data-abx="suxamethonium-iv" style="background:#ffe0b2;">
+              <td><strong>Suxamethonium</strong><br><small>(Succinylcholine) IV</small></td>
+              <td><strong style="color:#c62828;">2 mg/kg IV (infant/child)</strong><br>1–1.5 mg/kg IV (adolescent)<br><small>Max 150 mg</small></td>
+              <td>50 mg/mL<br><small>(100 mg/2 mL)</small></td>
+              <td>Dilute 1:4 with NS → 10 mg/mL for IV use</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="suxamethonium-im" style="background:#ffd8a0;">
+              <td><strong>Suxamethonium</strong><br><small>IM (laryngospasm, no IV)</small></td>
+              <td><strong style="color:#c62828;">4 mg/kg IM</strong><br><small>Max 200 mg</small></td>
+              <td>50 mg/mL<br><small>(100 mg/2 mL, undiluted)</small></td>
+              <td>Use undiluted</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="rocuronium" style="background:#ffe8d0;">
+              <td><strong>Rocuronium</strong><br><small>Intubating dose</small></td>
+              <td>0.6 mg/kg (routine)<br>1.2 mg/kg (RSI)<br><small>Max 100 mg</small></td>
+              <td>10 mg/mL</td>
+              <td>Use undiluted</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <!-- REVERSAL -->
+            <tr><td colspan="6" class="group-header">🔄 Reversal Agents</td></tr>
+
+            <tr data-abx="neostigmine" style="background:#d4edda;">
+              <td><strong>Neostigmine</strong><br><small>+ Atropine for NMB reversal</small></td>
+              <td>0.05 mg/kg IV<br><small>Max 2.5 mg; always give with atropine 0.02 mg/kg</small></td>
+              <td>0.5 mg/mL</td>
+              <td>Always co-administer with atropine</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="atropine-reversal" style="background:#c8f7c5;">
+              <td><strong>Atropine</strong><br><small>Pre-reversal / with neostigmine</small></td>
+              <td>0.02 mg/kg IV<br><small>Min 0.1 mg · Max 0.6 mg</small></td>
+              <td>0.1 mg/mL<br><small>(1 mL of 0.6 mg/mL + 5 mL NS)</small></td>
+              <td>Give with neostigmine (mix or back-to-back)</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="atropine-brady" style="background:#a8f0a8;">
+              <td><strong>Atropine</strong><br><small>Symptomatic bradycardia</small></td>
+              <td>0.02 mg/kg IV<br><small>Min 0.1 mg · Max 0.5 mg child / 1 mg adolescent</small></td>
+              <td>0.1 mg/mL<br><small>(1 mL of 0.6 mg/mL + 5 mL NS)</small></td>
+              <td>Use 0.1 mg/mL for accurate dosing</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="sugammadex-routine" style="background:#d1f0d1;">
+              <td><strong>Sugammadex</strong><br><small>Routine reversal</small></td>
+              <td>2 mg/kg IV<br><small>Max 200 mg</small></td>
+              <td>100 mg/mL</td>
+              <td>Undiluted; IV bolus over 10 sec</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="sugammadex-deep" style="background:#b8e8b8;">
+              <td><strong>Sugammadex</strong><br><small>Deep NMB / RSI reversal</small></td>
+              <td>16 mg/kg IV<br><small>Max 200 mg (~12 kg); ≥13 kg → 200 mg flat</small></td>
+              <td>100 mg/mL</td>
+              <td>Undiluted; rapid IV bolus</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <!-- OPIOID / BZD ANTAGONIST -->
+            <tr><td colspan="6" class="group-header">🚫 Opioid &amp; Benzodiazepine Antagonists</td></tr>
+
+            <tr data-abx="naloxone-respiratory" style="background:#e8d5f5;">
+              <td><strong>Naloxone</strong><br><small>Respiratory depression</small></td>
+              <td>1–5 mcg/kg IV<br><small>Titrate; avoid full reversal if pain present</small></td>
+              <td>40 mcg/mL<br><small>(1 mL of 0.4 mg/mL + 9 mL NS)</small></td>
+              <td>Give in 10–20 mcg increments; watch for re-narcotisation</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="naloxone-arrest" style="background:#d8c0f0;">
+              <td><strong>Naloxone</strong><br><small>Opioid OD / arrest</small></td>
+              <td>10 mcg/kg IV/IM/IO<br><small>Max 400 mcg; may repeat every 2–3 min</small></td>
+              <td>400 mcg/mL (stock)</td>
+              <td>Undiluted for IM/arrest; dilute to 100 mcg/mL for IV titration</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="flumazenil" style="background:#f5d5e8;">
+              <td><strong>Flumazenil</strong><br><small>Benzodiazepine reversal</small></td>
+              <td>10 mcg/kg IV<br><small>Max 200 mcg; repeat q1 min PRN (max 1 mg)</small></td>
+              <td>100 mcg/mL (0.1 mg/mL)</td>
+              <td>Undiluted; give over 15 sec; may repeat q1 min</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <!-- CEREBRAL / ICP -->
+            <tr><td colspan="6" class="group-header">🧠 Cerebral Protection / ICP</td></tr>
+
+            <tr data-abx="mannitol" style="background:#e0f0ff;">
+              <td><strong>Mannitol 20%</strong><br><small>ICP reduction</small></td>
+              <td>0.25–0.5 g/kg IV<br><small>Max 1 g/kg/dose; 2 g/kg/day</small></td>
+              <td>200 mg/mL (20%)<br><small>(1.25–2.5 mL/kg)</small></td>
+              <td>Warm to dissolve crystals; use filter; infuse over 15–30 min</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note" style="background:#e8f5e9; border-left-color:#43a047; margin-top:10px;">
+        <strong>Key reminders:</strong>
+        <ul style="margin:6px 0 0 0; padding-left:2em;">
+          <li><strong>Propofol:</strong> Reduce dose 30–50% if opioid/benzo given. Painful on injection — pre-treat with IV lignocaine. PRIS risk with prolonged infusion.</li>
+          <li><strong>Etomidate:</strong> Best choice in haemodynamic compromise. Single dose → transient adrenal suppression (6–24 h). Myoclonus common — pre-treat with opioid or benzo.</li>
+          <li><strong>Ketamine IN/PO:</strong> IN onset 5–10 min; PO 20–45 min. Add midazolam to ↓dysphoria. ↑Secretions — consider glycopyrrolate.</li>
+          <li><strong>Midazolam IN:</strong> Burns on instillation — warn family. Max 0.3 mL/nostril.</li>
+          <li><strong>Dexmedetomidine IN:</strong> Plan 30 min ahead. Minimal respiratory depression. Watch for bradycardia/hypotension.</li>
+          <li><strong>Suxamethonium:</strong> Contraindicated in hyperkalaemia, burns, denervation, myopathy, MHS. Have dantrolene available.</li>
+          <li><strong>Atropine + Neostigmine:</strong> Give together; dose ratio ≈ atropine 0.02 mg/kg : neostigmine 0.05 mg/kg.</li>
+          <li><strong>Sugammadex:</strong> Rocuronium/vecuronium only. 2 mg/kg moderate block; 16 mg/kg deep/RSI reversal.</li>
+          <li><strong>Naloxone:</strong> Duration shorter than opioids — monitor for re-narcotisation. Titrate to avoid precipitating pain/HTN.</li>
+          <li><strong>Flumazenil:</strong> Short-acting — may need repeat. Can precipitate seizures in BZD-dependent patients.</li>
+          <li><strong>Mannitol:</strong> Monitor osmolality (target &lt;320 mOsm/kg). Avoid in hypovolaemia without volume replacement.</li>
+        </ul>
+      </div>
+
+      </div><!-- /drugPanel-anaesthesia -->
+
     </div>
   </div>
 
@@ -2878,6 +3565,382 @@
           volumeCell.textContent = volume.toFixed(2) + ' ml';
         }
       });
+
+      // ── Anaesthesia Bolus Drug Table ──
+      (function calcAnaesthesiaBolusDrugs(wt) {
+        const rows = document.querySelectorAll('#anaesthesiaBolusDrugTable tbody tr[data-abx]');
+        rows.forEach(function(row) {
+          const key = row.getAttribute('data-abx');
+          const doseCell = row.querySelector('.abdCalcDose');
+          const volCell  = row.querySelector('.abdVolume');
+          if (!doseCell || !volCell) return;
+
+          var dose = 0, vol = 0, doseLabel = '', volLabel = '';
+
+          switch (key) {
+
+            /* ── Midazolam oral premedication ── */
+            case 'midazolam-oral': {
+              const lo = Math.min(0.3 * wt, 15);
+              const hi = Math.min(0.5 * wt, 15);
+              // stock 5 mg/mL — display undiluted volume
+              const loVol = (lo / 5).toFixed(2);
+              const hiVol = (hi / 5).toFixed(2);
+              doseLabel = lo.toFixed(2) + '–' + hi.toFixed(2) + ' mg' + (hi === 15 ? ' (max 15 mg)' : '');
+              volLabel  = loVol + '–' + hiVol + ' mL of 5 mg/mL (undiluted stock) — mix in juice';
+              break;
+            }
+
+            /* ── Midazolam intranasal ── */
+            case 'midazolam-in': {
+              const lo = +(Math.min(0.2 * wt, 10)).toFixed(2);
+              const hi = +(Math.min(0.3 * wt, 10)).toFixed(2);
+              // use undiluted 5 mg/mL for IN
+              doseLabel = lo + '–' + hi + ' mg' + (hi >= 10 ? ' (max 10 mg)' : '');
+              volLabel  = (lo / 5).toFixed(2) + '–' + (hi / 5).toFixed(2) + ' mL of 5 mg/mL (undiluted) via MAD';
+              break;
+            }
+
+            /* ── Midazolam IV ── */
+            case 'midazolam-iv': {
+              const lo = +(0.05 * wt).toFixed(2);
+              const hi = +(Math.min(0.1 * wt, 5)).toFixed(2);
+              // use 1 mg/mL diluted solution
+              doseLabel = lo + '–' + hi + ' mg' + (hi >= 5 ? ' (max 5 mg)' : '');
+              volLabel  = (lo / 1).toFixed(2) + '–' + (hi / 1).toFixed(2) + ' mL of 1 mg/mL';
+              break;
+            }
+
+            /* ── Ketamine PO ── */
+            case 'ketamine-po': {
+              const lo = +(3 * wt).toFixed(1);
+              const hi = +(Math.min(6 * wt, 200)).toFixed(1);
+              const maxHit = 6 * wt > 200;
+              // stock 50 mg/mL; draw up and mix in juice
+              doseLabel = lo + '–' + hi + ' mg' + (maxHit ? ' (max 200 mg)' : '');
+              volLabel  = (lo / 50).toFixed(2) + '–' + (hi / 50).toFixed(2) + ' mL of 50 mg/mL — mix in sweet juice';
+              break;
+            }
+
+            /* ── Ketamine intranasal ── */
+            case 'ketamine-in': {
+              const lo = +(3 * wt).toFixed(1);
+              const hi = +(6 * wt).toFixed(1);
+              // stock 50 mg/mL undiluted; max 0.5 mL per nostril = max 50 mg per nostril
+              const loMl = (lo / 50).toFixed(2);
+              const hiMl = (hi / 50).toFixed(2);
+              doseLabel = lo + '–' + hi + ' mg (max 0.5 mL/nostril)';
+              volLabel  = loMl + '–' + hiMl + ' mL of 50 mg/mL — split equally between nostrils via MAD';
+              break;
+            }
+
+            /* ── Propofol IV induction ── */
+            case 'propofol': {
+              const loRate = wt < 40 ? 2 : 1.5;
+              const hiRate = wt < 40 ? 4 : 2.5;
+              const lo = +(loRate * wt).toFixed(1);
+              const hi = +(hiRate * wt).toFixed(1);
+              // 10 mg/mL ready to use
+              doseLabel = lo + '–' + hi + ' mg' + (wt >= 40 ? ' (adolescent/adult dosing)' : '');
+              volLabel  = (lo / 10).toFixed(2) + '–' + (hi / 10).toFixed(2) + ' mL of 10 mg/mL';
+              break;
+            }
+
+            /* ── Etomidate IV induction ── */
+            case 'etomidate': {
+              const lo = +(0.2 * wt).toFixed(2);
+              const hi = +(Math.min(0.3 * wt, 20)).toFixed(2);
+              const maxHit = 0.3 * wt > 20;
+              // 2 mg/mL ready to use
+              doseLabel = lo + '–' + hi + ' mg' + (maxHit ? ' (max 20 mg)' : '');
+              volLabel  = (lo / 2).toFixed(2) + '–' + (hi / 2).toFixed(2) + ' mL of 2 mg/mL';
+              break;
+            }
+
+            /* ── Ketamine IV ── */
+            case 'ketamine-iv': {
+              const lo = +(1 * wt).toFixed(1);
+              const hi = +(2 * wt).toFixed(1);
+              // Stock 50 mg/mL → dilute to 10 mg/mL working solution (1 mL stock + 4 mL NS)
+              // Volume of stock needed for high dose, then dilute 1:4 with NS
+              const stockLoMl = (lo / 50).toFixed(2);
+              const stockHiMl = (hi / 50).toFixed(2);
+              const dilLoNS   = ((lo / 50) * 4).toFixed(2);
+              const dilHiNS   = ((hi / 50) * 4).toFixed(2);
+              doseLabel = lo + '–' + hi + ' mg';
+              volLabel  = (lo / 10).toFixed(2) + '–' + (hi / 10).toFixed(2) + ' mL of 10 mg/mL';
+              // Patch dilution cell with patient-specific instructions
+              var dilCell = row.querySelector('.abdDilution');
+              if (dilCell) {
+                dilCell.innerHTML =
+                  'For <strong>' + lo + ' mg</strong>: ' + stockLoMl + ' mL stock + ' + dilLoNS + ' mL NS → 10 mg/mL<br>' +
+                  'For <strong>' + hi + ' mg</strong>: ' + stockHiMl + ' mL stock + ' + dilHiNS + ' mL NS → 10 mg/mL';
+              }
+              break;
+            }
+
+            /* ── Ketamine IM ── */
+            case 'ketamine-im': {
+              const lo = +(4 * wt).toFixed(1);
+              const hi = +(6 * wt).toFixed(1);
+              // 50 mg/mL undiluted for IM
+              doseLabel = lo + '–' + hi + ' mg';
+              volLabel  = (lo / 50).toFixed(2) + '–' + (hi / 50).toFixed(2) + ' mL of 50 mg/mL';
+              break;
+            }
+
+            /* ── Suxamethonium IV ── */
+            case 'suxamethonium-iv': {
+              // Infants/children 2 mg/kg; adolescents 1–1.5 mg/kg
+              const dosePerKg = wt < 30 ? 2 : 1.5;
+              const d = +(Math.min(dosePerKg * wt, 150)).toFixed(1);
+              const maxHit = dosePerKg * wt > 150;
+              // 50 mg/mL stock (100 mg/2 mL)
+              doseLabel = d + ' mg' + (maxHit ? ' (max 150 mg)' : '');
+              volLabel  = (d / 50).toFixed(2) + ' mL of 50 mg/mL';
+              break;
+            }
+
+            /* ── Suxamethonium IM ── */
+            case 'suxamethonium-im': {
+              const d = +(Math.min(4 * wt, 200)).toFixed(1);
+              const maxHit = 4 * wt > 200;
+              doseLabel = d + ' mg' + (maxHit ? ' (max 200 mg)' : '');
+              volLabel  = (d / 50).toFixed(2) + ' mL of 50 mg/mL';
+              break;
+            }
+
+            /* ── Rocuronium ── */
+            case 'rocuronium': {
+              const routine = +(Math.min(0.6 * wt, 100)).toFixed(1);
+              const rsi     = +(Math.min(1.2 * wt, 100)).toFixed(1);
+              doseLabel = 'Routine: ' + routine + ' mg | RSI: ' + rsi + ' mg';
+              volLabel  = 'Routine: ' + (routine / 10).toFixed(2) + ' mL | RSI: ' + (rsi / 10).toFixed(2) + ' mL (10 mg/mL)';
+              break;
+            }
+
+            /* ── Neostigmine ── */
+            case 'neostigmine': {
+              const d = +(Math.min(0.05 * wt, 2.5)).toFixed(3);
+              const maxHit = 0.05 * wt > 2.5;
+              doseLabel = d + ' mg' + (maxHit ? ' (max 2.5 mg)' : '');
+              volLabel  = (d / 0.5).toFixed(2) + ' mL of 0.5 mg/mL';
+              break;
+            }
+
+            /* ── Atropine reversal ── */
+            case 'atropine-reversal': {
+              const raw = 0.02 * wt;
+              const d   = +(Math.min(Math.max(raw, 0.1), 0.6)).toFixed(3);
+              const flagMin = raw < 0.1;
+              const flagMax = raw > 0.6;
+              doseLabel = d + ' mg' + (flagMin ? ' (min 0.1 mg applied)' : '') + (flagMax ? ' (max 0.6 mg applied)' : '');
+              volLabel  = (d / 0.1).toFixed(2) + ' mL of 0.1 mg/mL';
+              break;
+            }
+
+            /* ── Atropine bradycardia ── */
+            case 'atropine-brady': {
+              const raw  = 0.02 * wt;
+              const maxD = wt < 30 ? 0.5 : 1.0;
+              const d    = +(Math.min(Math.max(raw, 0.1), maxD)).toFixed(3);
+              const flagMin = raw < 0.1;
+              const flagMax = raw > maxD;
+              doseLabel = d + ' mg' + (flagMin ? ' (min 0.1 mg applied)' : '') + (flagMax ? ' (max ' + maxD + ' mg applied)' : '');
+              volLabel  = (d / 0.1).toFixed(2) + ' mL of 0.1 mg/mL';
+              break;
+            }
+
+            /* ── Sugammadex routine (2 mg/kg) ── */
+            case 'sugammadex-routine': {
+              const d = +(Math.min(2 * wt, 200)).toFixed(1);
+              const maxHit = 2 * wt > 200;
+              doseLabel = d + ' mg' + (maxHit ? ' (max 200 mg)' : '');
+              volLabel  = (d / 100).toFixed(2) + ' mL of 100 mg/mL';
+              break;
+            }
+
+            /* ── Sugammadex deep (16 mg/kg) ── */
+            case 'sugammadex-deep': {
+              const raw = 16 * wt;
+              const d   = +(Math.min(raw, 200)).toFixed(1);
+              const maxHit = raw > 200;
+              doseLabel = d + ' mg' + (maxHit ? ' (≥ 12 kg → 200 mg flat dose)' : '');
+              volLabel  = (d / 100).toFixed(2) + ' mL of 100 mg/mL';
+              break;
+            }
+
+            /* ── Naloxone respiratory depression ── */
+            case 'naloxone-respiratory': {
+              const lo = +(1  * wt).toFixed(1);
+              const hi = +(5  * wt).toFixed(1);
+              // diluted to 40 mcg/mL
+              doseLabel = lo + '–' + hi + ' mcg (titrate in 10–20 mcg increments)';
+              volLabel  = (lo / 40).toFixed(2) + '–' + (hi / 40).toFixed(2) + ' mL of 40 mcg/mL';
+              break;
+            }
+
+            /* ── Naloxone overdose / arrest ── */
+            case 'naloxone-arrest': {
+              const d = +(Math.min(10 * wt, 400)).toFixed(1);
+              const maxHit = 10 * wt > 400;
+              // stock 400 mcg/mL
+              doseLabel = d + ' mcg' + (maxHit ? ' (max 400 mcg)' : '');
+              volLabel  = (d / 400).toFixed(2) + ' mL of 400 mcg/mL (IM/arrest) or dilute for IV';
+              break;
+            }
+
+            /* ── Flumazenil ── */
+            case 'flumazenil': {
+              const d = +(Math.min(10 * wt, 200)).toFixed(1);
+              const maxHit = 10 * wt > 200;
+              // 100 mcg/mL stock
+              doseLabel = d + ' mcg' + (maxHit ? ' (max 200 mcg per dose)' : '');
+              volLabel  = (d / 100).toFixed(2) + ' mL of 0.1 mg/mL (100 mcg/mL)';
+              break;
+            }
+
+            /* ── Dexmedetomidine intranasal ── */
+            case 'dexmed-in': {
+              const raw  = 3 * wt;
+              const d    = +(Math.min(raw, 100)).toFixed(1);
+              const maxHit = raw > 100;
+              // 100 mcg/mL stock (200 mcg/2 mL vial)
+              const vol  = (d / 100).toFixed(2);
+              doseLabel = d + ' mcg' + (maxHit ? ' (max 100 mcg)' : '');
+              volLabel  = vol + ' mL of 100 mcg/mL (200 mcg/2 mL) — split equally between nostrils via MAD';
+              break;
+            }
+
+            /* ── Mannitol 20% ── */
+            case 'mannitol': {
+              const loD = +(0.25 * wt).toFixed(1);
+              const hiD = +(Math.min(0.5 * wt, wt)).toFixed(1); // practical max 1 g/kg shown separately
+              // 20% = 200 mg/mL → mL/kg = g/kg × 5
+              const loVol = +(loD / 0.2).toFixed(1);
+              const hiVol = +(hiD / 0.2).toFixed(1);
+              doseLabel = loD + '–' + hiD + ' g (max 1 g/kg = ' + (wt * 1).toFixed(1) + ' g)';
+              volLabel  = loVol + '–' + hiVol + ' mL of 20% mannitol';
+              break;
+            }
+
+            default:
+              doseLabel = '—'; volLabel = '—';
+          }
+
+          doseCell.textContent = doseLabel;
+          volCell.textContent  = volLabel;
+        });
+      })(wt);
+
+      // ── Cardiac OT Bolus Drug Table ──
+      (function calcCardiacBolusDrugs(wt) {
+        const rows = document.querySelectorAll('#cardiacBolusDrugTable tbody tr[data-cbx]');
+        rows.forEach(function(row) {
+          const key = row.getAttribute('data-cbx');
+          const doseCell = row.querySelector('.cbxCalcDose');
+          const volCell  = row.querySelector('.cbxVolume');
+          if (!doseCell || !volCell) return;
+
+          var doseLabel = '', volLabel = '';
+
+          switch (key) {
+
+            /* ── Amiodarone VF/pVT arrest ── */
+            case 'amiodarone-vfvt': {
+              const d1st = +(Math.min(5 * wt, 300)).toFixed(1);
+              const d2nd = +(Math.min(5 * wt, 150)).toFixed(1);
+              const max1 = 5 * wt > 300;
+              const max2 = 5 * wt > 150;
+              // stock 50 mg/mL; dilute to ≥3 mg/mL in D5W
+              const vol1 = (d1st / 50).toFixed(2);   // stock volume to draw
+              const dilVol1 = Math.max(+(d1st / 3).toFixed(1), +vol1);  // minimum final volume
+              doseLabel = '1st dose: ' + d1st + ' mg' + (max1 ? ' (max 300 mg)' : '') + ' · 2nd: ' + d2nd + ' mg' + (max2 ? ' (max 150 mg)' : '');
+              // dilution instructions
+              var dilCell = row.querySelector('.cbxDilution');
+              if (dilCell) {
+                const vol2 = (d2nd / 50).toFixed(2);
+                dilCell.innerHTML =
+                  '<strong>1st dose:</strong> Draw ' + vol1 + ' mL from 50 mg/mL; dilute in D5W to ≥ ' +
+                  +(d1st / 3).toFixed(1) + ' mL total → ≥ 3 mg/mL<br>' +
+                  '<strong>2nd dose:</strong> Draw ' + vol2 + ' mL from 50 mg/mL; dilute similarly in D5W';
+              }
+              volLabel = vol1 + ' mL from 50 mg/mL stock (dilute in D5W before giving)';
+              break;
+            }
+
+            /* ── Amiodarone SVT/stable VT loading ── */
+            case 'amiodarone-svt': {
+              const d = +(Math.min(5 * wt, 300)).toFixed(1);
+              const maxHit = 5 * wt > 300;
+              // stock 50 mg/mL; dilute to ≤2 mg/mL in D5W
+              const stockMl = (d / 50).toFixed(2);
+              const minFinalMl = +(d / 2).toFixed(1);
+              doseLabel = d + ' mg IV over 20–60 min' + (maxHit ? ' (max 300 mg)' : '');
+              var dilCell2 = row.querySelector('.cbxDilution');
+              if (dilCell2) {
+                dilCell2.innerHTML =
+                  'Draw <strong>' + stockMl + ' mL</strong> from 50 mg/mL stock; dilute in D5W to total ≥ <strong>' +
+                  minFinalMl + ' mL</strong> → ≤ 2 mg/mL; infuse over 20–60 min via dedicated line';
+              }
+              volLabel = stockMl + ' mL from 50 mg/mL (dilute in D5W to ≥ ' + minFinalMl + ' mL)';
+              break;
+            }
+
+            /* ── Amiodarone post-op infusion (reference only) ── */
+            case 'amiodarone-post': {
+              // No calc — reference to infusion panel
+              doseLabel = 'See Infusions panel';
+              volLabel  = '—';
+              break;
+            }
+
+            /* ── Adenosine SVT ── */
+            case 'adenosine': {
+              const d1 = +(Math.min(0.1 * wt, 6)).toFixed(2);
+              const d2 = +(Math.min(0.2 * wt, 12)).toFixed(2);
+              const max1 = 0.1 * wt > 6;
+              const max2 = 0.2 * wt > 12;
+              // stock 3 mg/mL
+              doseLabel = '1st: ' + d1 + ' mg' + (max1 ? ' (max 6 mg)' : '') + ' · 2nd: ' + d2 + ' mg' + (max2 ? ' (max 12 mg)' : '');
+              volLabel  = '1st: ' + (d1 / 3).toFixed(2) + ' mL · 2nd: ' + (d2 / 3).toFixed(2) + ' mL of 3 mg/mL';
+              break;
+            }
+
+            /* ── Lignocaine VT ── */
+            case 'lignocaine-vt': {
+              const d1 = +(Math.min(1 * wt, 100)).toFixed(1);
+              const max1 = 1 * wt > 100;
+              // stock 20 mg/mL (2%)
+              doseLabel = d1 + ' mg IV bolus' + (max1 ? ' (max 100 mg)' : '') + '; repeat 0.5 mg/kg PRN (max 3 mg/kg total)';
+              volLabel  = (d1 / 20).toFixed(2) + ' mL of 20 mg/mL (2%)';
+              break;
+            }
+
+            /* ── Magnesium Torsades ── */
+            case 'magnesium-torsades': {
+              const lo = +(25 * wt).toFixed(0);
+              const hi = +(Math.min(50 * wt, 2000)).toFixed(0);
+              const maxHit = 50 * wt > 2000;
+              // stock 500 mg/mL (49.3%); dilute to 20 mg/mL (2%)
+              const loStockMl = (lo / 500).toFixed(2);
+              const hiStockMl = (hi / 500).toFixed(2);
+              const loFinalMl = (lo / 20).toFixed(1);
+              const hiFinalMl = (hi / 20).toFixed(1);
+              doseLabel = lo + '–' + hi + ' mg' + (maxHit ? ' (max 2000 mg)' : '');
+              volLabel  = loStockMl + '–' + hiStockMl + ' mL from 500 mg/mL stock → dilute to ' + loFinalMl + '–' + hiFinalMl + ' mL of 20 mg/mL';
+              break;
+            }
+
+            default:
+              doseLabel = '—'; volLabel = '—';
+          }
+
+          doseCell.textContent = doseLabel;
+          volCell.textContent  = volLabel;
+        });
+      })(wt);
+
     }
 
     // Calculator Navigation functions
@@ -2895,6 +3958,320 @@
       document.getElementById('drugCalculator').style.display = 'block';
       setActiveTab('navDrug');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ── Drug sub-tab switcher ── */
+    function switchDrugPanel(panelName) {
+      // Hide all panels
+      document.querySelectorAll('#drugCalculator .drug-panel').forEach(function(p) {
+        p.classList.remove('active');
+      });
+      // Deactivate all sub-tab buttons
+      document.querySelectorAll('.drug-subtab-btn').forEach(function(b) {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      // Show selected panel
+      var panel = document.getElementById('drugPanel-' + panelName);
+      if (panel) { panel.classList.add('active'); }
+      // Activate selected button
+      var btn = document.getElementById('dsubtab-' + panelName);
+      if (btn) { btn.classList.add('active'); btn.setAttribute('aria-selected', 'true'); }
+    }
+
+    /* ── Drug search functionality ── */
+    function searchDrugs() {
+      var query = document.getElementById('drugSearchInput').value.trim().toLowerCase();
+      var noResultsEl = document.getElementById('drugSearchNoResults');
+      
+      // Clear previous highlights
+      document.querySelectorAll('.drug-highlight').forEach(function(el) {
+        el.classList.remove('drug-highlight');
+      });
+      noResultsEl.style.display = 'none';
+      
+      if (!query) return;
+      
+      // Search all drug tables in all panels
+      var allTables = document.querySelectorAll('#drugCalculator table');
+      var found = [];
+      
+      allTables.forEach(function(table) {
+        var rows = table.querySelectorAll('tbody tr[data-drug], tbody tr[data-abx], tbody tr[data-cbx]');
+        rows.forEach(function(row) {
+          var text = row.textContent.toLowerCase();
+          if (text.includes(query)) {
+            found.push(row);
+          }
+        });
+      });
+      
+      if (found.length === 0) {
+        noResultsEl.textContent = 'No drugs found matching "' + query + '". Try a different search term.';
+        noResultsEl.style.display = 'block';
+        return;
+      }
+      
+      // Find which panel contains the first result and switch to it
+      var firstRow = found[0];
+      var panel = firstRow.closest('.drug-panel');
+      if (panel) {
+        var panelId = panel.id.replace('drugPanel-', '');
+        switchDrugPanel(panelId);
+      }
+      
+      // Highlight all found rows
+      found.forEach(function(row) {
+        row.classList.add('drug-highlight');
+      });
+      
+      // Scroll to first result
+      setTimeout(function() {
+        found[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+      
+      // Show result count if multiple
+      if (found.length > 1) {
+        noResultsEl.textContent = 'Found ' + found.length + ' matching drugs. Showing first result.';
+        noResultsEl.style.display = 'block';
+        noResultsEl.style.background = '#e8f5e9';
+        noResultsEl.style.borderLeftColor = '#4caf50';
+        noResultsEl.style.color = '#2e7d32';
+      }
+    }
+    
+    function clearDrugSearch() {
+      document.getElementById('drugSearchInput').value = '';
+      document.getElementById('drugSearchNoResults').style.display = 'none';
+      document.querySelectorAll('.drug-highlight').forEach(function(el) {
+        el.classList.remove('drug-highlight');
+      });
+    }
+
+    /* ── Global Search Functionality ── */
+    function globalSearch() {
+      var query = document.getElementById('globalSearchInput').value.trim().toLowerCase();
+      if (!query || query.length < 2) {
+        alert('Please enter at least 2 characters to search.');
+        return;
+      }
+      
+      var results = [];
+      
+      // Define searchable content areas with their tab info
+      var searchAreas = [
+        { 
+          containerId: 'drugCalculator', 
+          tabId: 'navDrug', 
+          tabName: 'Drug', 
+          tabClass: 'drug',
+          showFn: 'showDrugCalculator',
+          selectors: ['table tr[data-drug]', 'table tr[data-abx]', 'table tr[data-cbx]', 'table tr[data-drug] td', 'table tr[data-abx] td', 'table tr[data-cbx] td', '.section-title', '.subsection-title', 'h2', 'h3']
+        },
+        { 
+          containerId: 'airwayCalculator', 
+          tabId: 'navAirway', 
+          tabName: 'Airway', 
+          tabClass: 'airway',
+          showFn: 'showAirwayCalculator',
+          selectors: ['table td', 'table th', '.section-title', 'h2', 'h3', '.note']
+        },
+        { 
+          containerId: 'acidosisCalculator', 
+          tabId: 'navAcidosis', 
+          tabName: 'Acidosis', 
+          tabClass: 'acidosis',
+          showFn: 'showAcidosisCalculator',
+          selectors: ['.section-title', 'h2', 'label', '.note']
+        },
+        { 
+          containerId: 'electrolyteCalculator', 
+          tabId: 'navElectrolyte', 
+          tabName: 'Electrolyte', 
+          tabClass: 'electrolyte',
+          showFn: 'showElectrolyteCalculator',
+          selectors: ['.section-title', 'h2', 'label', '.note']
+        },
+        { 
+          containerId: 'arrhythmiaCalculator', 
+          tabId: 'navArrhythmia', 
+          tabName: 'Arrhythmia', 
+          tabClass: 'arrhythmia',
+          showFn: 'showArrhythmiaCalculator',
+          selectors: ['table td', '.section-title', 'h2', 'h3', '.note', 'summary']
+        },
+        { 
+          containerId: 'hemostaticCalculator', 
+          tabId: 'navHemostatic', 
+          tabName: 'Blood', 
+          tabClass: 'blood',
+          showFn: 'showHemostaticCalculator',
+          selectors: ['table td', '.section-title', 'h2', 'h3', '.note']
+        },
+        { 
+          containerId: 'laCalculator', 
+          tabId: 'navLA', 
+          tabName: 'Local Anaesthesia', 
+          tabClass: 'la',
+          showFn: 'showLACalculator',
+          selectors: ['table td', '.section-title', 'h2', 'h3', '.note']
+        },
+        { 
+          containerId: 'glucoseCalculator', 
+          tabId: 'navGlucose', 
+          tabName: 'Glucose', 
+          tabClass: 'glucose',
+          showFn: 'showGlucoseCalculator',
+          selectors: ['.section-title', 'h2', 'label', '.note']
+        },
+        { 
+          containerId: 'ivFluidsCalculator', 
+          tabId: 'navIVFluids', 
+          tabName: 'IV Fluids', 
+          tabClass: 'fluids',
+          showFn: 'showIVFluidsCalculator',
+          selectors: ['table td', '.section-title', 'h2', 'h3', '.note']
+        },
+        { 
+          containerId: 'generalCalculator', 
+          tabId: 'navGeneral', 
+          tabName: 'General', 
+          tabClass: 'general',
+          showFn: 'showGeneralCalculator',
+          selectors: ['.section-title', 'h2', 'h3', '.note', 'table td']
+        }
+      ];
+      
+      searchAreas.forEach(function(area) {
+        var container = document.getElementById(area.containerId);
+        if (!container) return;
+        
+        var foundInArea = new Set(); // Avoid duplicates
+        
+        area.selectors.forEach(function(selector) {
+          var elements = container.querySelectorAll(selector);
+          elements.forEach(function(el) {
+            var text = el.textContent.toLowerCase();
+            if (text.includes(query) && !foundInArea.has(el.textContent.substring(0, 100))) {
+              // Get a meaningful title from the element
+              var title = '';
+              var context = '';
+              
+              // Try to get drug name from table row
+              var row = el.closest('tr[data-drug], tr[data-abx], tr[data-cbx]');
+              if (row) {
+                var firstTd = row.querySelector('td:first-child');
+                if (firstTd) {
+                  var strong = firstTd.querySelector('strong');
+                  title = strong ? strong.textContent : firstTd.textContent.split('\n')[0];
+                  var small = firstTd.querySelector('small');
+                  context = small ? small.textContent : '';
+                }
+              } else if (el.tagName === 'H2' || el.tagName === 'H3' || el.classList.contains('section-title')) {
+                title = el.textContent.trim();
+                context = 'Section heading';
+              } else if (el.tagName === 'TD') {
+                title = el.textContent.trim().substring(0, 60);
+                if (title.length === 60) title += '...';
+                context = 'Table content';
+              } else if (el.tagName === 'SUMMARY') {
+                title = el.textContent.trim();
+                context = 'Expandable section';
+              } else {
+                title = el.textContent.trim().substring(0, 60);
+                if (title.length === 60) title += '...';
+              }
+              
+              if (title && !foundInArea.has(title)) {
+                foundInArea.add(title);
+                results.push({
+                  title: title,
+                  context: context,
+                  tabName: area.tabName,
+                  tabClass: area.tabClass,
+                  showFn: area.showFn,
+                  element: row || el
+                });
+              }
+            }
+          });
+        });
+      });
+      
+      // Remove duplicates based on title
+      var uniqueResults = [];
+      var seenTitles = new Set();
+      results.forEach(function(r) {
+        var key = r.tabName + ':' + r.title;
+        if (!seenTitles.has(key)) {
+          seenTitles.add(key);
+          uniqueResults.push(r);
+        }
+      });
+      
+      // Limit to 20 results
+      uniqueResults = uniqueResults.slice(0, 20);
+      
+      // Display results
+      var resultsContainer = document.getElementById('globalSearchResults');
+      resultsContainer.innerHTML = '';
+      
+      if (uniqueResults.length === 0) {
+        resultsContainer.innerHTML = '<div class="search-no-results"><div class="search-no-results-icon">🔍</div>No results found for "<strong>' + query + '</strong>"<br><small>Try a different search term</small></div>';
+      } else {
+        uniqueResults.forEach(function(result, index) {
+          var li = document.createElement('li');
+          li.className = 'search-result-item';
+          li.innerHTML = '<span class="search-result-tab ' + result.tabClass + '">' + result.tabName + '</span>' +
+                         '<span class="search-result-title">' + result.title + '</span>' +
+                         (result.context ? '<div class="search-result-context">' + result.context + '</div>' : '');
+          li.onclick = function() {
+            goToSearchResult(result);
+          };
+          resultsContainer.appendChild(li);
+        });
+      }
+      
+      // Show modal
+      document.getElementById('globalSearchModal').classList.add('active');
+    }
+    
+    function goToSearchResult(result) {
+      // Close modal
+      closeGlobalSearch();
+      
+      // Navigate to the correct tab
+      if (result.showFn && window[result.showFn]) {
+        window[result.showFn]();
+      }
+      
+      // If it's a drug tab result, also switch to the correct drug sub-panel
+      if (result.tabName === 'Drug' && result.element) {
+        var panel = result.element.closest('.drug-panel');
+        if (panel) {
+          var panelId = panel.id.replace('drugPanel-', '');
+          setTimeout(function() {
+            switchDrugPanel(panelId);
+          }, 100);
+        }
+      }
+      
+      // Highlight and scroll to the element
+      setTimeout(function() {
+        if (result.element) {
+          result.element.classList.add('drug-highlight');
+          result.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          // Remove highlight after 3 seconds
+          setTimeout(function() {
+            result.element.classList.remove('drug-highlight');
+          }, 3000);
+        }
+      }, 200);
+    }
+    
+    function closeGlobalSearch() {
+      document.getElementById('globalSearchModal').classList.remove('active');
     }
 
     function showAcidosisCalculator() {
@@ -4597,7 +5974,7 @@
        ═══════════════════════════════════════════════ */
 
     function showGenTab(tab) {
-      ['pca','ibw','abw','bsa'].forEach(t => {
+      ['pca','ibw','abw','bsa','fluids'].forEach(t => {
         document.getElementById('genTab' + t.toUpperCase()).style.display = t === tab ? 'block' : 'none';
         document.getElementById('genTabBtn' + t.toUpperCase()).classList.toggle('pals-tab-active', t === tab);
       });
@@ -4796,6 +6173,166 @@
       clinNote.innerHTML        = noteText;
 
       res.style.display = 'block';
+    }
+
+    // ── IV Fluids ──
+    function calcFluids() {
+      const wt  = parseFloat(document.getElementById('fluidWeight').value);
+      const res = document.getElementById('fluidResult');
+      if (isNaN(wt) || wt <= 0) { res.style.display = 'none'; return; }
+
+      // Holliday-Segar maintenance
+      let maintDay;
+      if (wt <= 10)       maintDay = wt * 100;
+      else if (wt <= 20)  maintDay = 1000 + (wt - 10) * 50;
+      else                maintDay = 1500 + (wt - 20) * 20;
+      maintDay = Math.min(maintDay, 2400); // practical daily cap
+      const maintHr = maintDay / 24;
+
+      let formula;
+      if (wt <= 10)       formula = wt.toFixed(1) + ' kg × 100 = ' + maintDay.toFixed(0) + ' mL/day';
+      else if (wt <= 20)  formula = '1000 + (' + (wt-10).toFixed(1) + ' × 50) = ' + maintDay.toFixed(0) + ' mL/day';
+      else                formula = '1500 + (' + (wt-20).toFixed(1) + ' × 20) = ' + maintDay.toFixed(0) + ' mL/day' + (maintDay === 2400 ? ' (capped at 2400)' : '');
+
+      document.getElementById('fluidMaintDay').textContent     = maintDay.toFixed(0) + ' mL';
+      document.getElementById('fluidMaintHr').textContent      = maintHr.toFixed(1)  + ' mL';
+      document.getElementById('fluidMaintFormula').textContent = formula;
+
+      // Bolus
+      document.getElementById('fluidBolus10').textContent   = (wt * 10).toFixed(0)  + ' mL';
+      document.getElementById('fluidBolus20').textContent   = (wt * 20).toFixed(0)  + ' mL';
+      document.getElementById('fluidBolusMax').textContent  = (wt * 60).toFixed(0)  + ' mL';
+
+      // Intraoperative
+      document.getElementById('fluidIntraopMinor').textContent = (wt * 4).toFixed(1) + ' mL';
+      document.getElementById('fluidIntraopMod').textContent   = (wt * 6).toFixed(1) + ' mL';
+      document.getElementById('fluidIntraopMajor').textContent = (wt * 8).toFixed(1) + ' mL';
+
+      res.style.display = 'block';
+    }
+
+    // ── IV Fluids (General tab — existing calcFluids kept for back-compat) ──
+    function calcFluids() {
+      const wt  = parseFloat(document.getElementById('fluidWeight').value);
+      const res = document.getElementById('fluidResult');
+      if (isNaN(wt) || wt <= 0) { res.style.display = 'none'; return; }
+      let maintDay;
+      if (wt <= 10)       maintDay = wt * 100;
+      else if (wt <= 20)  maintDay = 1000 + (wt - 10) * 50;
+      else                maintDay = 1500 + (wt - 20) * 20;
+      maintDay = Math.min(maintDay, 2400);
+      const maintHr = maintDay / 24;
+      let formula;
+      if (wt <= 10)       formula = wt.toFixed(1) + ' kg × 100 = ' + maintDay.toFixed(0) + ' mL/day';
+      else if (wt <= 20)  formula = '1000 + (' + (wt-10).toFixed(1) + ' × 50) = ' + maintDay.toFixed(0) + ' mL/day';
+      else                formula = '1500 + (' + (wt-20).toFixed(1) + ' × 20) = ' + maintDay.toFixed(0) + ' mL/day' + (maintDay === 2400 ? ' (capped)' : '');
+      document.getElementById('fluidMaintDay').textContent     = maintDay.toFixed(0) + ' mL';
+      document.getElementById('fluidMaintHr').textContent      = maintHr.toFixed(1)  + ' mL';
+      document.getElementById('fluidMaintFormula').textContent = formula;
+      document.getElementById('fluidBolus10').textContent   = (wt * 10).toFixed(0)  + ' mL';
+      document.getElementById('fluidBolus20').textContent   = (wt * 20).toFixed(0)  + ' mL';
+      document.getElementById('fluidBolusMax').textContent  = (wt * 60).toFixed(0)  + ' mL';
+      document.getElementById('fluidIntraopMinor').textContent = (wt * 4).toFixed(1) + ' mL';
+      document.getElementById('fluidIntraopMod').textContent   = (wt * 6).toFixed(1) + ' mL';
+      document.getElementById('fluidIntraopMajor').textContent = (wt * 8).toFixed(1) + ' mL';
+      res.style.display = 'block';
+    }
+
+    // ── IV Fluids standalone tab ──
+    function calcIVF() {
+      const wt = parseFloat(document.getElementById('ivfWeight').value);
+
+      // ── Weight band label ──
+      const bandEl = document.getElementById('ivfWeightBand');
+      if (isNaN(wt) || wt <= 0) {
+        bandEl.textContent = '';
+        document.getElementById('ivfMaintCards').style.display  = 'none';
+        document.getElementById('ivfBolusCards').style.display  = 'none';
+        document.getElementById('ivfPeriopCards').style.display = 'none';
+        document.getElementById('ivfVSHighlight').style.display = 'none';
+        document.getElementById('ivfHypotensionCalc').style.display = 'none';
+        return;
+      }
+
+      // ── Holliday-Segar maintenance ──
+      let maintDay;
+      if (wt <= 10)       maintDay = wt * 100;
+      else if (wt <= 20)  maintDay = 1000 + (wt - 10) * 50;
+      else                maintDay = 1500 + (wt - 20) * 20;
+      maintDay = Math.min(maintDay, 2400);
+      const maintHr = maintDay / 24;
+
+      let formula;
+      if (wt <= 10)
+        formula = wt.toFixed(1) + ' kg × 100 mL/kg/day = ' + maintDay.toFixed(0) + ' mL/day';
+      else if (wt <= 20)
+        formula = '1000 + (' + (wt - 10).toFixed(1) + ' × 50) = ' + maintDay.toFixed(0) + ' mL/day';
+      else
+        formula = '1500 + (' + (wt - 20).toFixed(1) + ' × 20) = ' + maintDay.toFixed(0) + ' mL/day' + (maintDay >= 2400 ? ' ← capped' : '');
+
+      document.getElementById('ivfMaintDay').textContent     = maintDay.toFixed(0) + ' mL';
+      document.getElementById('ivfMaintHr').textContent      = maintHr.toFixed(1)  + ' mL';
+      document.getElementById('ivfMaintFormula').textContent = formula;
+      document.getElementById('ivfMaintCards').style.display = 'block';
+
+      // ── Bolus ──
+      document.getElementById('ivfBolus10').textContent  = (wt * 10).toFixed(0) + ' mL';
+      document.getElementById('ivfBolus20').textContent  = (wt * 20).toFixed(0) + ' mL';
+      document.getElementById('ivfBolusMax').textContent = (wt * 60).toFixed(0) + ' mL';
+
+      // Contextual bolus note
+      var bolusNote = '';
+      if (wt < 3) {
+        bolusNote = '<strong>⚠️ Neonate / very low weight:</strong> Use 5–10 mL/kg boluses. Reassess carefully after each.';
+      } else if (wt <= 10) {
+        bolusNote = '10 mL/kg = <strong>' + (wt*10).toFixed(0) + ' mL</strong>. Give over 5–10 min. Reassess HR, perfusion, capillary refill after each bolus.';
+      } else {
+        bolusNote = '10 mL/kg = <strong>' + (wt*10).toFixed(0) + ' mL</strong> &nbsp;|&nbsp; 20 mL/kg = <strong>' + (wt*20).toFixed(0) + ' mL</strong>. Reassess after each bolus. Max 60 mL/kg in first hour for septic shock.';
+      }
+      document.getElementById('ivfBolusNote').innerHTML  = bolusNote;
+      document.getElementById('ivfBolusCards').style.display = 'block';
+
+      // ── Intraoperative ──
+      document.getElementById('ivfIntraopMinor').textContent = (wt * 4).toFixed(1) + ' mL';
+      document.getElementById('ivfIntraopMod').textContent   = (wt * 6).toFixed(1) + ' mL';
+      document.getElementById('ivfIntraopMajor').textContent = (wt * 8).toFixed(1) + ' mL';
+      document.getElementById('ivfPeriopCards').style.display = 'block';
+
+      // ── Age-group inference from weight + vital sign highlight ──
+      var ageGroup = '', vsRows = ['vsRowNeonate','vsRowInfant','vsRowToddler','vsRowPreschool','vsRowSchool','vsRowAdolescent'];
+      vsRows.forEach(function(id) {
+        var row = document.getElementById(id);
+        if (row) row.style.outline = '';
+      });
+      var highlightId = '';
+      var hypSBP = 0, ageName = '', ageDesc = '';
+      if (wt < 3.5)        { highlightId='vsRowNeonate';    hypSBP=60;  ageName='Neonate';     ageDesc='0–28 days'; }
+      else if (wt <= 10)   { highlightId='vsRowInfant';     hypSBP=70;  ageName='Infant';      ageDesc='1–12 months'; }
+      else if (wt <= 14)   { highlightId='vsRowToddler';    hypSBP=72;  ageName='Toddler';     ageDesc='1–3 years'; }
+      else if (wt <= 18)   { highlightId='vsRowPreschool';  hypSBP=78;  ageName='Preschool';   ageDesc='3–5 years'; }
+      else if (wt <= 40)   { highlightId='vsRowSchool';     hypSBP=82;  ageName='School age';  ageDesc='6–12 years'; }
+      else                  { highlightId='vsRowAdolescent'; hypSBP=90;  ageName='Adolescent';  ageDesc='12–18 years'; }
+
+      var targetRow = document.getElementById(highlightId);
+      if (targetRow) targetRow.style.outline = '3px solid #f57f17';
+
+      var hlEl = document.getElementById('ivfVSHighlight');
+      hlEl.style.display = 'block';
+      hlEl.innerHTML = '<div style="background:#fff3e0; border:2px solid #f57f17; border-radius:8px; padding:12px 16px; font-size:1.5rem;">' +
+        '📌 <strong>Estimated age group for ' + wt.toFixed(1) + ' kg:</strong> ' + ageName + ' (' + ageDesc + ') — ' +
+        'row highlighted in table below.' +
+        '</div>';
+
+      // Hypotension threshold calc
+      var hypEl = document.getElementById('ivfHypotensionCalc');
+      hypEl.style.display = 'block';
+      hypEl.innerHTML = '<div style="background:#ffebee; border:2px solid #e53935; border-radius:8px; padding:12px 16px; font-size:1.5rem; margin-top:10px;">' +
+        '🩺 <strong>Estimated hypotension threshold for ' + wt.toFixed(1) + ' kg (' + ageName + '):</strong> ' +
+        'SBP &lt; <strong style="font-size:1.8rem; color:#c62828;">' + hypSBP + ' mmHg</strong>' +
+        '</div>';
+
+      // Weight band label
+      bandEl.textContent = '→ ' + ageName + ' (' + ageDesc + ')';
     }
 
   </script>
@@ -5200,7 +6737,8 @@
         <button id="genTabBtnPCA"  onclick="showGenTab('pca')"  class="pals-tab-btn pals-tab-active">🗓️ Post-Conceptual Age</button>
         <button id="genTabBtnIBW"  onclick="showGenTab('ibw')"  class="pals-tab-btn">⚖️ Ideal Body Weight</button>
         <button id="genTabBtnABW"  onclick="showGenTab('abw')"  class="pals-tab-btn">🧮 Adjusted Body Weight</button>
-        <button id="genTabBtnBSA"  onclick="showGenTab('bsa')"  class="pals-tab-btn">📐 Body Surface Area</button>
+        <button id="genTabBtnBSA"    onclick="showGenTab('bsa')"    class="pals-tab-btn">📐 Body Surface Area</button>
+        <button id="genTabBtnFLUIDS" onclick="showGenTab('fluids')" class="pals-tab-btn">💧 IV Fluids &amp; Vital Signs</button>
       </div>
 
       <!-- ── PCA TAB ── -->
@@ -5565,8 +7103,536 @@
         </div>
       </div>
 
+      <!-- ── FLUIDS & VITAL SIGNS TAB ── -->
+      <div id="genTabFLUIDS" class="pals-tab-panel" style="display:none;">
+        <h3 style="color:#0277bd; border-bottom:2px solid #0288d1; padding-bottom:8px; margin:20px 0 16px;">💧 IV Fluids &amp; Paediatric Vital Signs</h3>
+
+        <!-- Weight input -->
+        <div class="input-section">
+          <div class="input-group" style="flex-wrap:wrap; gap:20px;">
+            <div>
+              <label for="fluidWeight">Weight (kg):</label>
+              <input type="number" id="fluidWeight" min="1" max="150" step="0.1" placeholder="e.g. 15"
+                oninput="calcFluids()" style="width:130px;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div id="fluidResult" style="display:none; margin-top:4px;">
+
+          <!-- Maintenance -->
+          <div style="background:#e1f5fe; border:2px solid #0288d1; border-radius:12px; padding:18px; margin-bottom:16px;">
+            <div style="font-weight:700; color:#01579b; font-size:26px; margin-bottom:12px;">🔵 Maintenance Fluid — Holliday-Segar Method</div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-bottom:12px;">
+              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #0288d1;">
+                <div style="font-size:24px; color:#555; margin-bottom:4px;">Daily Rate</div>
+                <div id="fluidMaintDay" style="font-size:28px; font-weight:700; color:#01579b;">—</div>
+                <div style="font-size:22px; color:#777;">mL/day</div>
+              </div>
+              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #0288d1;">
+                <div style="font-size:24px; color:#555; margin-bottom:4px;">Hourly Rate</div>
+                <div id="fluidMaintHr" style="font-size:28px; font-weight:700; color:#01579b;">—</div>
+                <div style="font-size:22px; color:#777;">mL/hr</div>
+              </div>
+              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #0288d1;">
+                <div style="font-size:24px; color:#555; margin-bottom:4px;">Formula Used</div>
+                <div id="fluidMaintFormula" style="font-size:22px; font-weight:600; color:#0277bd; line-height:1.6;">—</div>
+              </div>
+            </div>
+            <div class="note" style="background:#e1f5fe; border-left-color:#0288d1; margin:0; font-size:24px;">
+              <strong>Holliday-Segar:</strong> 0–10 kg → 100 mL/kg/day (4 mL/kg/hr) &nbsp;|&nbsp;
+              10–20 kg → 1000 + 50 mL/kg/day for each kg &gt;10 &nbsp;|&nbsp;
+              &gt;20 kg → 1500 + 20 mL/kg/day for each kg &gt;20 &nbsp;(max ~2400 mL/day)
+            </div>
+          </div>
+
+          <!-- Bolus -->
+          <div style="background:#fce4ec; border:2px solid #e91e63; border-radius:12px; padding:18px; margin-bottom:16px;">
+            <div style="font-weight:700; color:#880e4f; font-size:26px; margin-bottom:12px;">🔴 Fluid Bolus</div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:12px;">
+              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #e91e63;">
+                <div style="font-size:24px; color:#555; margin-bottom:4px;">10 mL/kg bolus</div>
+                <div id="fluidBolus10" style="font-size:28px; font-weight:700; color:#880e4f;">—</div>
+                <div style="font-size:22px; color:#777;">mL</div>
+              </div>
+              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #e91e63;">
+                <div style="font-size:24px; color:#555; margin-bottom:4px;">20 mL/kg bolus</div>
+                <div id="fluidBolus20" style="font-size:28px; font-weight:700; color:#880e4f;">—</div>
+                <div style="font-size:22px; color:#777;">mL</div>
+              </div>
+              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #c62828;">
+                <div style="font-size:24px; color:#555; margin-bottom:4px;">Max bolus (60 mL/kg)</div>
+                <div id="fluidBolusMax" style="font-size:28px; font-weight:700; color:#c62828;">—</div>
+                <div style="font-size:22px; color:#777;">mL cumulative</div>
+              </div>
+            </div>
+            <div class="note" style="background:#fce4ec; border-left-color:#c62828; margin:0; font-size:24px;">
+              <strong>Bolus fluid:</strong> Use isotonic crystalloid (0.9% NaCl or Plasmalyte). Give 10 mL/kg over 5–10 min; reassess after each bolus.
+              Repeat up to 20–60 mL/kg total in first hour for septic shock. Reassess frequently for fluid overload. In neonates and cardiac patients, use smaller boluses (5–10 mL/kg).
+            </div>
+          </div>
+
+          <!-- Intraoperative -->
+          <div style="background:#f3e5f5; border:2px solid #8e24aa; border-radius:12px; padding:18px; margin-bottom:16px;">
+            <div style="font-weight:700; color:#4a148c; font-size:26px; margin-bottom:12px;">🟣 Intraoperative Fluid (Perioperative)</div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:12px;">
+              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #8e24aa;">
+                <div style="font-size:24px; color:#555; margin-bottom:4px;">Minor surgery</div>
+                <div id="fluidIntraopMinor" style="font-size:26px; font-weight:700; color:#4a148c;">—</div>
+                <div style="font-size:22px; color:#777;">mL/hr (4 mL/kg/hr)</div>
+              </div>
+              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #8e24aa;">
+                <div style="font-size:24px; color:#555; margin-bottom:4px;">Moderate surgery</div>
+                <div id="fluidIntraopMod" style="font-size:26px; font-weight:700; color:#4a148c;">—</div>
+                <div style="font-size:22px; color:#777;">mL/hr (6 mL/kg/hr)</div>
+              </div>
+              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #8e24aa;">
+                <div style="font-size:24px; color:#555; margin-bottom:4px;">Major surgery</div>
+                <div id="fluidIntraopMajor" style="font-size:26px; font-weight:700; color:#4a148c;">—</div>
+                <div style="font-size:22px; color:#777;">mL/hr (8 mL/kg/hr)</div>
+              </div>
+            </div>
+            <div class="note" style="background:#f3e5f5; border-left-color:#8e24aa; margin:0; font-size:24px;">
+              Intraoperative rates are estimates; titrate to urine output ≥0.5–1 mL/kg/hr, haemodynamic response, and surgical blood loss.
+              Use isotonic balanced crystalloid (Plasmalyte or Hartmann's) perioperatively.
+            </div>
+          </div>
+        </div>
+
+        <!-- Vital Signs Reference — always visible regardless of weight entry -->
+        <div style="background:#fff8e1; border:2px solid #f9a825; border-radius:12px; padding:18px; margin-top:8px;">
+          <div style="font-weight:700; color:#e65100; font-size:26px; margin-bottom:14px;">📊 Normal Paediatric Vital Signs Reference</div>
+          <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+            <table style="width:100%; font-size:24px; min-width:560px;">
+              <thead>
+                <tr style="background:#f57f17; color:#fff;">
+                  <th style="padding:9px 12px; text-align:left;">Age Group</th>
+                  <th style="padding:9px 12px; text-align:center;">HR<br><span style="font-weight:400; font-size:21px;">(beats/min)</span></th>
+                  <th style="padding:9px 12px; text-align:center;">RR<br><span style="font-weight:400; font-size:21px;">(breaths/min)</span></th>
+                  <th style="padding:9px 12px; text-align:center;">Systolic BP<br><span style="font-weight:400; font-size:21px;">(mmHg)</span></th>
+                  <th style="padding:9px 12px; text-align:center;">SBP Hypotension<br><span style="font-weight:400; font-size:21px;">(&lt; mmHg)</span></th>
+                  <th style="padding:9px 12px; text-align:center;">SpO₂<br><span style="font-weight:400; font-size:21px;">(%)</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:#fff9c4;">
+                  <td style="padding:8px 12px;"><strong>Neonate</strong><br><small>0–28 days</small></td>
+                  <td style="padding:8px 12px; text-align:center;">100–180</td>
+                  <td style="padding:8px 12px; text-align:center;">30–60</td>
+                  <td style="padding:8px 12px; text-align:center;">60–90</td>
+                  <td style="padding:8px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 60</td>
+                  <td style="padding:8px 12px; text-align:center;">95–100</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;"><strong>Infant</strong><br><small>1–12 months</small></td>
+                  <td style="padding:8px 12px; text-align:center;">100–160</td>
+                  <td style="padding:8px 12px; text-align:center;">25–50</td>
+                  <td style="padding:8px 12px; text-align:center;">70–100</td>
+                  <td style="padding:8px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 70</td>
+                  <td style="padding:8px 12px; text-align:center;">95–100</td>
+                </tr>
+                <tr style="background:#fff9c4;">
+                  <td style="padding:8px 12px;"><strong>Toddler</strong><br><small>1–3 years</small></td>
+                  <td style="padding:8px 12px; text-align:center;">90–150</td>
+                  <td style="padding:8px 12px; text-align:center;">20–40</td>
+                  <td style="padding:8px 12px; text-align:center;">80–110</td>
+                  <td style="padding:8px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 70</td>
+                  <td style="padding:8px 12px; text-align:center;">95–100</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;"><strong>Preschool</strong><br><small>3–5 years</small></td>
+                  <td style="padding:8px 12px; text-align:center;">80–140</td>
+                  <td style="padding:8px 12px; text-align:center;">20–30</td>
+                  <td style="padding:8px 12px; text-align:center;">80–115</td>
+                  <td style="padding:8px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 75</td>
+                  <td style="padding:8px 12px; text-align:center;">95–100</td>
+                </tr>
+                <tr style="background:#fff9c4;">
+                  <td style="padding:8px 12px;"><strong>School age</strong><br><small>6–12 years</small></td>
+                  <td style="padding:8px 12px; text-align:center;">70–120</td>
+                  <td style="padding:8px 12px; text-align:center;">18–25</td>
+                  <td style="padding:8px 12px; text-align:center;">85–120</td>
+                  <td style="padding:8px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 80</td>
+                  <td style="padding:8px 12px; text-align:center;">95–100</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;"><strong>Adolescent</strong><br><small>12–18 years</small></td>
+                  <td style="padding:8px 12px; text-align:center;">60–100</td>
+                  <td style="padding:8px 12px; text-align:center;">12–20</td>
+                  <td style="padding:8px 12px; text-align:center;">100–135</td>
+                  <td style="padding:8px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 90</td>
+                  <td style="padding:8px 12px; text-align:center;">95–100</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="margin-top:12px; background:#fff; border-radius:8px; padding:12px; font-size:24px; line-height:1.9; border:1px solid #ffcc02;">
+            <strong>Hypotension rule of thumb (PALS 2025):</strong>
+            SBP &lt; 70 + (2 × age in years) mmHg for children 1–10 yr &nbsp;|&nbsp;
+            SBP &lt; 90 mmHg for ≥ 10 yr
+          </div>
+          <div class="note" style="background:#fff8e1; border-left-color:#f9a825; margin-top:10px; font-size:22px;">
+            <strong>References:</strong> AHA/PALS 2025; APLS 6th Ed.; Fleming S et al. <em>Arch Dis Child.</em> 2011;96:323–328 (normal HR/RR ranges); PICU reference ranges. Values are approximate — always interpret in clinical context.
+          </div>
+        </div>
+
+      </div><!-- end genTabFLUIDS -->
+
     </div><!-- end content -->
   </div><!-- end generalCalculator -->
+
+  <!-- ══════════════════════════════════════════════════════════
+       IV FLUIDS CALCULATOR
+       ══════════════════════════════════════════════════════════ -->
+  <div class="container" id="ivFluidsCalculator" style="display:none; border-radius:0 0 16px 16px; margin-top:0;">
+    <div class="content">
+      <h2 class="section-title" style="margin-top:8px;">💧 IV Fluids Calculator</h2>
+      <p class="subtitle" style="color:#555; margin-bottom:14.4px;">Maintenance Fluids · Fluid Bolus · Paediatric Vital Signs Reference</p>
+
+      <!-- Weight input -->
+      <div class="input-section">
+        <div class="input-group" style="flex-wrap:wrap; gap:20px; align-items:flex-end;">
+          <div>
+            <label for="ivfWeight">Body weight (kg):</label>
+            <input type="number" id="ivfWeight" min="0.5" max="150" step="0.1" placeholder="e.g. 15"
+              oninput="calcIVF()" style="width:140px;">
+          </div>
+          <div id="ivfWeightBand" style="font-size:1.6rem; font-weight:700; color:#0277bd; padding-bottom:2px;"></div>
+        </div>
+      </div>
+
+      <!-- ── MAINTENANCE ── -->
+      <div style="background:#e1f5fe; border:2px solid #0288d1; border-radius:12px; padding:18px; margin-bottom:18px;">
+        <div style="font-weight:700; color:#01579b; font-size:2rem; margin-bottom:14px;">
+          🔵 Maintenance Fluid — Holliday-Segar Method
+        </div>
+
+        <!-- Result cards -->
+        <div id="ivfMaintCards" style="display:none;">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:14px;">
+            <div style="background:#fff; border-radius:10px; padding:16px; text-align:center; border:2px solid #0288d1;">
+              <div style="font-size:1.5rem; color:#555; margin-bottom:4px;">Daily Rate</div>
+              <div id="ivfMaintDay" style="font-size:2.2rem; font-weight:800; color:#01579b;">—</div>
+              <div style="font-size:1.4rem; color:#777;">mL / day</div>
+            </div>
+            <div style="background:#fff; border-radius:10px; padding:16px; text-align:center; border:2px solid #0288d1;">
+              <div style="font-size:1.5rem; color:#555; margin-bottom:4px;">Hourly Rate</div>
+              <div id="ivfMaintHr" style="font-size:2.2rem; font-weight:800; color:#01579b;">—</div>
+              <div style="font-size:1.4rem; color:#777;">mL / hr</div>
+            </div>
+            <div style="background:#fff; border-radius:10px; padding:16px; text-align:center; border:2px solid #0288d1;">
+              <div style="font-size:1.5rem; color:#555; margin-bottom:4px;">Calculation</div>
+              <div id="ivfMaintFormula" style="font-size:1.45rem; font-weight:600; color:#0277bd; line-height:1.5;">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Always-visible formula reference -->
+        <div style="background:#fff; border-radius:8px; padding:14px; border:1.5px solid #b3e5fc;">
+          <div style="font-weight:700; color:#01579b; font-size:1.65rem; margin-bottom:8px;">📐 Holliday-Segar Formula</div>
+          <table style="width:100%; font-size:1.5rem; margin:0;">
+            <thead>
+              <tr style="background:#0288d1; color:#fff;">
+                <th style="padding:8px 12px; text-align:left;">Weight</th>
+                <th style="padding:8px 12px; text-align:left;">Daily Rate</th>
+                <th style="padding:8px 12px; text-align:left;">Hourly Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:#e1f5fe;">
+                <td style="padding:8px 12px;"><strong>First 10 kg</strong></td>
+                <td style="padding:8px 12px;">100 mL/kg/day</td>
+                <td style="padding:8px 12px;">4 mL/kg/hr</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 12px;"><strong>Next 10 kg</strong> (10–20 kg)</td>
+                <td style="padding:8px 12px;">+50 mL/kg/day</td>
+                <td style="padding:8px 12px;">+2 mL/kg/hr</td>
+              </tr>
+              <tr style="background:#e1f5fe;">
+                <td style="padding:8px 12px;"><strong>Each kg &gt; 20 kg</strong></td>
+                <td style="padding:8px 12px;">+20 mL/kg/day</td>
+                <td style="padding:8px 12px;">+1 mL/kg/hr</td>
+              </tr>
+              <tr style="background:#fff9c4;">
+                <td style="padding:8px 12px;"><strong>Examples</strong></td>
+                <td style="padding:8px 12px;">10 kg → 1000 mL/day<br>20 kg → 1500 mL/day<br>30 kg → 1700 mL/day</td>
+                <td style="padding:8px 12px;">10 kg → 40 mL/hr<br>20 kg → 60 mL/hr<br>30 kg → 70 mL/hr</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note" style="background:#e1f5fe; border-left-color:#0288d1; margin:12px 0 0; font-size:1.5rem;">
+          <strong>Fluid choice:</strong> Use isotonic solutions (0.9% NaCl, Hartmann's/Plasmalyte) for maintenance in most
+          paediatric patients. Hypotonic solutions (&lt;0.45% NaCl) carry risk of hyponatraemia and are generally avoided
+          unless specifically indicated. Always add appropriate potassium (20 mmol/L) once urine output confirmed.
+        </div>
+      </div>
+
+      <!-- ── FLUID BOLUS ── -->
+      <div style="background:#fce4ec; border:2px solid #e91e63; border-radius:12px; padding:18px; margin-bottom:18px;">
+        <div style="font-weight:700; color:#880e4f; font-size:2rem; margin-bottom:14px;">
+          🔴 Fluid Bolus Calculator
+        </div>
+
+        <!-- Result cards -->
+        <div id="ivfBolusCards" style="display:none;">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:14px;">
+            <div style="background:#fff; border-radius:10px; padding:16px; text-align:center; border:2px solid #e91e63;">
+              <div style="font-size:1.5rem; color:#555; margin-bottom:4px;">10 mL/kg bolus</div>
+              <div id="ivfBolus10" style="font-size:2.2rem; font-weight:800; color:#880e4f;">—</div>
+              <div style="font-size:1.4rem; color:#777;">mL</div>
+            </div>
+            <div style="background:#fff; border-radius:10px; padding:16px; text-align:center; border:2px solid #e91e63;">
+              <div style="font-size:1.5rem; color:#555; margin-bottom:4px;">20 mL/kg bolus</div>
+              <div id="ivfBolus20" style="font-size:2.2rem; font-weight:800; color:#880e4f;">—</div>
+              <div style="font-size:1.4rem; color:#777;">mL</div>
+            </div>
+            <div style="background:#fff8e1; border-radius:10px; padding:16px; text-align:center; border:2px solid #f57f17;">
+              <div style="font-size:1.5rem; color:#555; margin-bottom:4px;">Max resus (60 mL/kg)</div>
+              <div id="ivfBolusMax" style="font-size:2.2rem; font-weight:800; color:#e65100;">—</div>
+              <div style="font-size:1.4rem; color:#777;">mL total (1st hour)</div>
+            </div>
+          </div>
+          <div id="ivfBolusNote" style="background:#fff; border-radius:8px; padding:12px 14px; border:1.5px solid #f48fb1; font-size:1.5rem; line-height:1.7;"></div>
+        </div>
+
+        <!-- Bolus quick reference — always visible -->
+        <div style="background:#fff; border-radius:8px; padding:14px; border:1.5px solid #f48fb1; margin-top:8px;">
+          <div style="font-weight:700; color:#880e4f; font-size:1.65rem; margin-bottom:8px;">📋 Fluid Bolus Guide</div>
+          <table style="width:100%; font-size:1.5rem; margin:0;">
+            <thead>
+              <tr style="background:#c2185b; color:#fff;">
+                <th style="padding:8px 12px; text-align:left;">Scenario</th>
+                <th style="padding:8px 12px; text-align:left;">Volume</th>
+                <th style="padding:8px 12px; text-align:left;">Rate</th>
+                <th style="padding:8px 12px; text-align:left;">Fluid choice</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:#fce4ec;">
+                <td style="padding:8px 12px;"><strong>Mild hypovolaemia</strong><br><small>Dehydration, mild hypotension</small></td>
+                <td style="padding:8px 12px; font-weight:700;">10 mL/kg</td>
+                <td style="padding:8px 12px;">Over 10–20 min</td>
+                <td style="padding:8px 12px;">0.9% NaCl or Plasmalyte</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 12px;"><strong>Moderate hypovolaemia</strong><br><small>Shock, significant blood loss</small></td>
+                <td style="padding:8px 12px; font-weight:700;">20 mL/kg</td>
+                <td style="padding:8px 12px;">Over 5–10 min</td>
+                <td style="padding:8px 12px;">0.9% NaCl or Plasmalyte</td>
+              </tr>
+              <tr style="background:#fce4ec;">
+                <td style="padding:8px 12px;"><strong>Septic shock</strong><br><small>PALS 2025 — reassess after each bolus</small></td>
+                <td style="padding:8px 12px; font-weight:700;">10–20 mL/kg<br><small>Repeat to 40–60 mL/kg total</small></td>
+                <td style="padding:8px 12px;">Over 5–10 min<br><small>Reassess after each</small></td>
+                <td style="padding:8px 12px;">Balanced crystalloid<br><small>Avoid hypotonic</small></td>
+              </tr>
+              <tr>
+                <td style="padding:8px 12px;"><strong>Neonates / cardiac patients</strong><br><small>Use smaller boluses</small></td>
+                <td style="padding:8px 12px; font-weight:700;">5–10 mL/kg</td>
+                <td style="padding:8px 12px;">Over 10–20 min</td>
+                <td style="padding:8px 12px;">0.9% NaCl; avoid dextrose</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="note" style="background:#fce4ec; border-left-color:#c62828; margin:10px 0 0; font-size:1.5rem;">
+            <strong>⚠️ After each bolus:</strong> Reassess HR, BP, capillary refill, urine output, lung bases (crackles),
+            and hepatomegaly. Stop fluid if signs of overload develop. For cardiogenic shock, start with 5 mL/kg.
+          </div>
+        </div>
+      </div>
+
+      <!-- ── VITAL SIGNS REFERENCE ── -->
+      <div style="background:#fff8e1; border:2px solid #f9a825; border-radius:12px; padding:18px; margin-bottom:18px;">
+        <div style="font-weight:700; color:#e65100; font-size:2rem; margin-bottom:14px;">
+          📊 Normal Paediatric Vital Signs Reference
+        </div>
+
+        <!-- Age-group highlight if weight entered -->
+        <div id="ivfVSHighlight" style="display:none; margin-bottom:14px;"></div>
+
+        <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+          <table style="width:100%; font-size:1.5rem; min-width:620px; margin:0;">
+            <thead>
+              <tr style="background:#f57f17; color:#fff;">
+                <th style="padding:10px 12px; text-align:left;">Age Group</th>
+                <th style="padding:10px 12px; text-align:center;">HR<br><span style="font-weight:400; font-size:1.3rem;">(beats/min)</span></th>
+                <th style="padding:10px 12px; text-align:center;">RR<br><span style="font-weight:400; font-size:1.3rem;">(breaths/min)</span></th>
+                <th style="padding:10px 12px; text-align:center;">Systolic BP<br><span style="font-weight:400; font-size:1.3rem;">(mmHg)</span></th>
+                <th style="padding:10px 12px; text-align:center;">Mean BP<br><span style="font-weight:400; font-size:1.3rem;">(mmHg)</span></th>
+                <th style="padding:10px 12px; text-align:center; color:#ffcdd2;">Hypotension<br><span style="font-weight:400; font-size:1.3rem;">SBP &lt; mmHg</span></th>
+                <th style="padding:10px 12px; text-align:center;">SpO₂<br><span style="font-weight:400; font-size:1.3rem;">(%)</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="vsRowNeonate" style="background:#fff9c4;">
+                <td style="padding:9px 12px;"><strong>Neonate</strong><br><small style="color:#777;">0–28 days</small></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>100–180</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>30–60</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>60–90</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>35–60</strong></td>
+                <td style="padding:9px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 60</td>
+                <td style="padding:9px 12px; text-align:center;">95–100</td>
+              </tr>
+              <tr id="vsRowInfant">
+                <td style="padding:9px 12px;"><strong>Infant</strong><br><small style="color:#777;">1–12 months</small></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>100–160</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>25–50</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>70–100</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>40–60</strong></td>
+                <td style="padding:9px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 70</td>
+                <td style="padding:9px 12px; text-align:center;">95–100</td>
+              </tr>
+              <tr id="vsRowToddler" style="background:#fff9c4;">
+                <td style="padding:9px 12px;"><strong>Toddler</strong><br><small style="color:#777;">1–3 years</small></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>90–150</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>20–40</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>80–110</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>45–70</strong></td>
+                <td style="padding:9px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 70</td>
+                <td style="padding:9px 12px; text-align:center;">95–100</td>
+              </tr>
+              <tr id="vsRowPreschool">
+                <td style="padding:9px 12px;"><strong>Preschool</strong><br><small style="color:#777;">3–5 years</small></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>80–140</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>20–30</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>80–115</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>50–75</strong></td>
+                <td style="padding:9px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 75</td>
+                <td style="padding:9px 12px; text-align:center;">95–100</td>
+              </tr>
+              <tr id="vsRowSchool" style="background:#fff9c4;">
+                <td style="padding:9px 12px;"><strong>School age</strong><br><small style="color:#777;">6–12 years</small></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>70–120</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>18–25</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>85–120</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>55–80</strong></td>
+                <td style="padding:9px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 80</td>
+                <td style="padding:9px 12px; text-align:center;">95–100</td>
+              </tr>
+              <tr id="vsRowAdolescent">
+                <td style="padding:9px 12px;"><strong>Adolescent</strong><br><small style="color:#777;">12–18 years</small></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>60–100</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>12–20</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>100–135</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>65–90</strong></td>
+                <td style="padding:9px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 90</td>
+                <td style="padding:9px 12px; text-align:center;">95–100</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Hypotension rule + clinical notes -->
+        <div style="background:#fff; border-radius:8px; padding:14px; margin-top:14px; border:1.5px solid #ffd54f;">
+          <div style="font-weight:700; color:#e65100; font-size:1.65rem; margin-bottom:8px;">⚠️ Hypotension Thresholds (PALS 2025)</div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; font-size:1.5rem;">
+            <div style="background:#fff3e0; border-radius:8px; padding:12px; border-left:4px solid #e65100;">
+              <strong>Formula (1–10 yr):</strong><br>
+              SBP &lt; 70 + (2 × age in years) mmHg
+            </div>
+            <div style="background:#fff3e0; border-radius:8px; padding:12px; border-left:4px solid #c62828;">
+              <strong>Neonate (&lt; 1 month):</strong><br>
+              SBP &lt; 60 mmHg
+            </div>
+            <div style="background:#fff3e0; border-radius:8px; padding:12px; border-left:4px solid #f9a825;">
+              <strong>Infant (1–12 months):</strong><br>
+              SBP &lt; 70 mmHg
+            </div>
+            <div style="background:#fff3e0; border-radius:8px; padding:12px; border-left:4px solid #1976d2;">
+              <strong>Child ≥ 10 yr / adolescent:</strong><br>
+              SBP &lt; 90 mmHg
+            </div>
+          </div>
+          <div id="ivfHypotensionCalc" style="display:none; margin-top:12px;"></div>
+        </div>
+
+        <!-- Additional vital sign notes -->
+        <div style="background:#fff; border-radius:8px; padding:14px; margin-top:12px; border:1.5px solid #ffd54f; font-size:1.5rem; line-height:1.8;">
+          <div style="font-weight:700; color:#e65100; font-size:1.65rem; margin-bottom:8px;">🩺 Clinical Notes on Vital Signs</div>
+          <ul style="padding-left:2em; margin:0;">
+            <li><strong>Heart rate:</strong> Tachycardia is the first compensatory sign in paediatric shock. Bradycardia is a pre-arrest sign — treat urgently.</li>
+            <li><strong>Blood pressure:</strong> Children maintain BP until decompensated shock — a normal BP does not exclude shock. Assess perfusion (capillary refill, skin mottling, mental status) clinically.</li>
+            <li><strong>Respiratory rate:</strong> Tachypnoea may indicate respiratory distress, metabolic acidosis, or pain. Count for a full minute in infants.</li>
+            <li><strong>SpO₂:</strong> Target ≥ 95% for most children. Neonates with cyanotic congenital heart disease may have lower acceptable saturations — confirm with cardiology team.</li>
+            <li><strong>Temperature:</strong> Normal 36.5–37.5 °C. Fever &gt; 38 °C increases HR by ~10 bpm per degree.</li>
+          </ul>
+        </div>
+
+        <div class="note" style="background:#fff8e1; border-left-color:#f9a825; margin-top:12px; font-size:1.4rem;">
+          <strong>References:</strong> AHA/PALS 2025 Guidelines; Fleming S et al. <em>Arch Dis Child.</em> 2011;96:323–328
+          (centile-based HR &amp; RR normal ranges); Advanced Paediatric Life Support (APLS) 6th Ed.;
+          WHO Child Growth Standards. Values are approximate — interpret in clinical context.
+        </div>
+      </div>
+
+      <!-- ── PERIOPERATIVE / INTRAOPERATIVE GUIDE ── -->
+      <div style="background:#f3e5f5; border:2px solid #8e24aa; border-radius:12px; padding:18px; margin-bottom:8px;">
+        <div style="font-weight:700; color:#4a148c; font-size:2rem; margin-bottom:14px;">
+          🟣 Perioperative Fluid Guide
+        </div>
+
+        <div id="ivfPeriopCards" style="display:none;">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:14px;">
+            <div style="background:#fff; border-radius:10px; padding:16px; text-align:center; border:2px solid #8e24aa;">
+              <div style="font-size:1.5rem; color:#555; margin-bottom:4px;">Minor surgery</div>
+              <div id="ivfIntraopMinor" style="font-size:2rem; font-weight:800; color:#4a148c;">—</div>
+              <div style="font-size:1.3rem; color:#777;">mL/hr (4 mL/kg/hr)</div>
+            </div>
+            <div style="background:#fff; border-radius:10px; padding:16px; text-align:center; border:2px solid #8e24aa;">
+              <div style="font-size:1.5rem; color:#555; margin-bottom:4px;">Moderate surgery</div>
+              <div id="ivfIntraopMod" style="font-size:2rem; font-weight:800; color:#4a148c;">—</div>
+              <div style="font-size:1.3rem; color:#777;">mL/hr (6 mL/kg/hr)</div>
+            </div>
+            <div style="background:#fff; border-radius:10px; padding:16px; text-align:center; border:2px solid #7b1fa2;">
+              <div style="font-size:1.5rem; color:#555; margin-bottom:4px;">Major surgery</div>
+              <div id="ivfIntraopMajor" style="font-size:2rem; font-weight:800; color:#4a148c;">—</div>
+              <div style="font-size:1.3rem; color:#777;">mL/hr (8 mL/kg/hr)</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:#fff; border-radius:8px; padding:14px; border:1.5px solid #ce93d8; font-size:1.5rem; line-height:1.8;">
+          <div style="font-weight:700; color:#4a148c; font-size:1.65rem; margin-bottom:8px;">📋 Intraoperative Rate Guide</div>
+          <table style="width:100%; font-size:1.5rem; margin:0;">
+            <thead>
+              <tr style="background:#7b1fa2; color:#fff;">
+                <th style="padding:8px 12px; text-align:left;">Surgery type</th>
+                <th style="padding:8px 12px; text-align:left;">Rate</th>
+                <th style="padding:8px 12px; text-align:left;">Examples</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:#f3e5f5;">
+                <td style="padding:8px 12px;"><strong>Minor / superficial</strong></td>
+                <td style="padding:8px 12px; font-weight:700;">4 mL/kg/hr</td>
+                <td style="padding:8px 12px;">Inguinal hernia, circumcision, orchidopexy</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 12px;"><strong>Moderate</strong></td>
+                <td style="padding:8px 12px; font-weight:700;">6 mL/kg/hr</td>
+                <td style="padding:8px 12px;">Appendicectomy, pyloromyotomy, splenectomy</td>
+              </tr>
+              <tr style="background:#f3e5f5;">
+                <td style="padding:8px 12px;"><strong>Major / open cavity</strong></td>
+                <td style="padding:8px 12px; font-weight:700;">8 mL/kg/hr</td>
+                <td style="padding:8px 12px;">Bowel resection, major cardiac, trauma</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="note" style="background:#f3e5f5; border-left-color:#8e24aa; margin:10px 0 0; font-size:1.5rem;">
+            Titrate to <strong>urine output ≥ 0.5–1 mL/kg/hr</strong>, haemodynamic status and surgical blood loss.
+            Use <strong>balanced isotonic crystalloid</strong> (Hartmann's or Plasmalyte) perioperatively.
+            Consider colloid or blood products if blood loss &gt;10% EBV.
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end content -->
+  </div><!-- end ivFluidsCalculator -->
+
   <!-- Disclaimer Section -->
   <div style="max-width: 900px; margin: 40px auto 20px; padding: 20px; background: linear-gradient(135deg, #fff5f5 0%, #ffe9e9 100%); border: 1.6px solid #ff6b6b; border-radius: 9.6px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
     <h2 style="text-align: center; color: #c92a2a; margin-top: 0; margin-bottom: 9.6px; font-size: 20.8px;">⚠️ Important Disclaimer ⚠️</h2>
@@ -5609,6 +7675,7 @@
       { nav: 'navAirway',      calc: 'airwayCalculator'      },
       { nav: 'navLA',          calc: 'laCalculator'          },
       { nav: 'navGlucose',     calc: 'glucoseCalculator'     },
+      { nav: 'navIVFluids',    calc: 'ivFluidsCalculator'    },
       { nav: 'navGeneral',     calc: 'generalCalculator'     }
     ];
 
@@ -5665,6 +7732,7 @@
     window.showAirwayCalculator      = function () { showCalc('airwayCalculator',      'navAirway'); };
     window.showLACalculator          = function () { showCalc('laCalculator',          'navLA'); };
     window.showGlucoseCalculator     = function () { showCalc('glucoseCalculator',     'navGlucose'); };
+    window.showIVFluidsCalculator    = function () { showCalc('ivFluidsCalculator',    'navIVFluids'); };
     window.showGeneralCalculator     = function () { showCalc('generalCalculator',     'navGeneral'); };
 
     // Initialise LA dilution stock options (DOM is complete at this point)
@@ -5674,7 +7742,16 @@
   })();
   </script>
 
-
+  <!-- Global Search Results Modal -->
+  <div id="globalSearchModal" class="search-results-modal" onclick="if(event.target===this) closeGlobalSearch()">
+    <div class="search-results-box">
+      <div class="search-results-header">
+        <h3>🔍 Search Results</h3>
+        <button class="search-results-close" onclick="closeGlobalSearch()" aria-label="Close search">✕</button>
+      </div>
+      <ul id="globalSearchResults" class="search-results-list"></ul>
+    </div>
+  </div>
 
 </body>
 </html>
