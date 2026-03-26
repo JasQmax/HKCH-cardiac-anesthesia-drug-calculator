@@ -357,6 +357,70 @@
       font-size: 0.95rem;
       color: #e65100;
     }
+    
+    /* Drug search results dropdown */
+    .drug-search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 60px;
+      max-height: 350px;
+      overflow-y: auto;
+      background: white;
+      border: 2px solid #1e3c72;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      z-index: 1000;
+      margin-top: 4px;
+    }
+    .drug-search-result-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+      transition: background 0.15s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .drug-search-result-item:last-child {
+      border-bottom: none;
+    }
+    .drug-search-result-item:hover {
+      background: #e3f2fd;
+    }
+    .drug-search-result-item.selected {
+      background: #bbdefb;
+    }
+    .drug-search-result-name {
+      font-weight: 600;
+      color: #1e3c72;
+      font-size: 1rem;
+    }
+    .drug-search-result-detail {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 2px;
+    }
+    .drug-search-result-panel {
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 12px;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+    .drug-search-result-panel.anaesthesia { background: #e8f5e9; color: #2e7d32; }
+    .drug-search-result-panel.infusion { background: #e3f2fd; color: #1565c0; }
+    .drug-search-result-panel.cardiac { background: #fce4ec; color: #c2185b; }
+    .drug-search-results-header {
+      padding: 10px 16px;
+      background: #f5f5f5;
+      border-bottom: 1px solid #ddd;
+      font-size: 0.85rem;
+      color: #666;
+      position: sticky;
+      top: 0;
+    }
 
     table {
       border-collapse: collapse;
@@ -1025,6 +1089,9 @@
       <button class="top-nav-btn" id="navIVFluids" onclick="showIVFluidsCalculator()">
         <span class="nav-icon">💧</span>IV Fluids
       </button>
+      <button class="top-nav-btn" id="navPain" onclick="showPainCalculator()">
+        <span class="nav-icon">😢</span>Pain
+      </button>
       <button class="top-nav-btn" id="navGeneral" onclick="showGeneralCalculator()">
         <span class="nav-icon">🔢</span>General
       </button>
@@ -1071,14 +1138,16 @@
       </div>
 
       <!-- ══ Drug Search ══ -->
-      <div class="drug-search-container">
-        <input type="text" id="drugSearchInput" class="drug-search-input" placeholder="Search drugs (e.g. propofol, adrenaline...)" onkeydown="if(event.key==='Enter') searchDrugs()">
+      <div class="drug-search-container" style="position:relative;">
+        <input type="text" id="drugSearchInput" class="drug-search-input" placeholder="Search drugs (e.g. propofol, adrenaline...)" oninput="searchDrugsLive()" onkeydown="handleDrugSearchKey(event)">
         <button type="button" class="drug-search-btn" onclick="searchDrugs()" aria-label="Search drugs">
           🔍 Search
         </button>
         <button type="button" class="drug-clear-btn" onclick="clearDrugSearch()" aria-label="Clear search">
           ✕
         </button>
+        <!-- Search Results Dropdown -->
+        <div id="drugSearchResults" class="drug-search-results" style="display:none;"></div>
       </div>
       <div id="drugSearchNoResults" class="drug-search-no-results" style="display:none;"></div>
 
@@ -1687,6 +1756,24 @@
               <td class="abdVolume"></td>
             </tr>
 
+            <tr data-abx="glycopyrrolate-reversal" style="background:#b8e6cf;">
+              <td><strong>Glycopyrrolate</strong><br><small>With neostigmine</small></td>
+              <td>0.01 mg/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Max 0.2 mg; give with neostigmine 0.05 mg/kg</small></td>
+              <td>0.2 mg/mL</td>
+              <td>Alternative to atropine; less tachycardia, no CNS effects</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="glycopyrrolate-antisialogogue" style="background:#a3d9be;">
+              <td><strong>Glycopyrrolate</strong><br><small>Antisialogogue</small></td>
+              <td>4–10 mcg/kg <strong style="color:#6a1b9a;">IV</strong>/<strong style="color:#e65100;">IM</strong><br><small>Max 0.2 mg; give 30–60 min pre-op if IM</small></td>
+              <td>0.2 mg/mL</td>
+              <td>Dries secretions; useful for ketamine, airway procedures</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
             <tr data-abx="atropine-brady" style="background:#a8f0a8;">
               <td><strong>Atropine</strong><br><small>Symptomatic bradycardia</small></td>
               <td>0.02 mg/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Min 0.1 mg · Max 0.5 mg child / 1 mg adolescent</small></td>
@@ -1756,26 +1843,51 @@
               <td class="abdVolume"></td>
             </tr>
 
+            <!-- STEROIDS / STRESS DOSE -->
+            <tr><td colspan="6" class="group-header">💉 Steroids</td></tr>
+
+            <tr data-abx="hydrocortisone-stress" style="background:#fff8e1;">
+              <td><strong>Hydrocortisone</strong><br><small>Stress dose / adrenal crisis</small></td>
+              <td>1–2 mg/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Max 100 mg</small></td>
+              <td>50 mg/mL<br><small>(100 mg vial + 2 mL SWFI)</small></td>
+              <td>Bolus over 3–5 min</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="hydrocortisone-broncho" style="background:#fffde7;">
+              <td><strong>Hydrocortisone</strong><br><small>Bronchospasm</small></td>
+              <td>4 mg/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Max 200 mg</small></td>
+              <td>50 mg/mL<br><small>(100 mg vial + 2 mL SWFI)</small></td>
+              <td>Bolus over 3–5 min</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
           </tbody>
         </table>
       </div>
 
-      <div class="note" style="background:#e8f5e9; border-left-color:#43a047; margin-top:10px;">
-        <strong>Key reminders:</strong>
-        <ul style="margin:6px 0 0 0; padding-left:2em;">
-          <li><strong>Propofol:</strong> Reduce dose 30–50% if opioid/benzo given. Painful on injection — pre-treat with IV lignocaine. PRIS risk with prolonged infusion.</li>
-          <li><strong>Etomidate:</strong> Best choice in haemodynamic compromise. Single dose → transient adrenal suppression (6–24 h). Myoclonus common — pre-treat with opioid or benzo.</li>
-          <li><strong>Ketamine IN/PO:</strong> IN onset 5–10 min; PO 20–45 min. Add midazolam to ↓dysphoria. ↑Secretions — consider glycopyrrolate.</li>
-          <li><strong>Midazolam IN:</strong> Burns on instillation — warn family. Max 0.3 mL/nostril.</li>
-          <li><strong>Dexmedetomidine IN:</strong> Plan 30 min ahead. Minimal respiratory depression. Watch for bradycardia/hypotension.</li>
-          <li><strong>Suxamethonium:</strong> Contraindicated in hyperkalaemia, burns, denervation, myopathy, MHS. Have dantrolene available.</li>
-          <li><strong>Atropine + Neostigmine:</strong> Give together; dose ratio ≈ atropine 0.02 mg/kg : neostigmine 0.05 mg/kg.</li>
-          <li><strong>Sugammadex:</strong> Rocuronium/vecuronium only. 2 mg/kg moderate block; 16 mg/kg deep/RSI reversal.</li>
-          <li><strong>Naloxone:</strong> Duration shorter than opioids — monitor for re-narcotisation. Titrate to avoid precipitating pain/HTN.</li>
-          <li><strong>Flumazenil:</strong> Short-acting — may need repeat. Can precipitate seizures in BZD-dependent patients.</li>
-          <li><strong>Mannitol:</strong> Monitor osmolality (target &lt;320 mOsm/kg). Avoid in hypovolaemia without volume replacement.</li>
-        </ul>
-      </div>
+      <details style="margin-top:10px;">
+        <summary style="cursor:pointer; font-weight:700; color:#2e7d32; padding:8px 12px; background:#e8f5e9; border-left:4px solid #43a047; border-radius:4px; font-size:1.5rem;">⚠️ Key Reminders</summary>
+        <div class="note" style="background:#e8f5e9; border-left-color:#43a047; margin-top:0; border-top:none; border-radius:0 0 4px 4px;">
+          <ul style="margin:6px 0 0 0; padding-left:2em;">
+            <li><strong>Propofol:</strong> Reduce dose 30–50% if opioid/benzo given. Painful on injection — pre-treat with IV lignocaine. PRIS risk with prolonged infusion.</li>
+            <li><strong>Etomidate:</strong> Best choice in haemodynamic compromise. Single dose → transient adrenal suppression (6–24 h). Myoclonus common — pre-treat with opioid or benzo.</li>
+            <li><strong>Ketamine IN/PO:</strong> IN onset 5–10 min; PO 20–45 min. Add midazolam to ↓dysphoria. ↑Secretions — consider glycopyrrolate.</li>
+            <li><strong>Midazolam IN:</strong> Burns on instillation — warn family. Max 0.3 mL/nostril.</li>
+            <li><strong>Dexmedetomidine IN:</strong> Plan 30 min ahead. Minimal respiratory depression. Watch for bradycardia/hypotension.</li>
+            <li><strong>Suxamethonium:</strong> Contraindicated in hyperkalaemia, burns, denervation, myopathy, MHS. Have dantrolene available.</li>
+            <li><strong>Atropine + Neostigmine:</strong> Give together; ratio ≈ atropine 0.02 mg/kg : neostigmine 0.05 mg/kg.</li>
+            <li><strong>Glycopyrrolate:</strong> Alternative to atropine for reversal (0.01 mg/kg); less tachycardia, no CNS effects. As antisialogogue: 4–10 mcg/kg, useful with ketamine.</li>
+            <li><strong>Sugammadex:</strong> Rocuronium/vecuronium only. 2 mg/kg moderate block; 16 mg/kg deep/RSI reversal.</li>
+            <li><strong>Naloxone:</strong> Duration shorter than opioids — monitor for re-narcotisation. Titrate to avoid precipitating pain/HTN.</li>
+            <li><strong>Flumazenil:</strong> Short-acting — may need repeat. Can precipitate seizures in BZD-dependent patients.</li>
+            <li><strong>Mannitol:</strong> Monitor osmolality (target &lt;320 mOsm/kg). Avoid in hypovolaemia without volume replacement.</li>
+            <li><strong>Hydrocortisone:</strong> Stress/crisis dose 1–2 mg/kg (max 100 mg); bronchospasm dose 4 mg/kg (max 200 mg). For periop BSA-based cover, use <a href="#" onclick="showGeneralCalculator(); setTimeout(function(){showGenTab('bsa');},100); return false;" style="color:#1565c0;">BSA calculator</a>.</li>
+          </ul>
+        </div>
+      </details>
 
       </div><!-- /drugPanel-anaesthesia -->
 
@@ -2138,6 +2250,168 @@
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Dextrose-Insulin Drip Section for Hyperkalaemia -->
+      <div style="margin-top:32px; border-top:2.4px solid #7c4dff; padding-top:30px;">
+        <h2 style="text-align:center; color:#333; margin-bottom:16px;">💉 Dextrose-Insulin Drip (Hyperkalaemia)</h2>
+        
+        <div class="input-section">
+          <div class="input-group" style="flex-direction:column; align-items:stretch;">
+            <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:9.6px;">
+              <div style="flex:1; min-width:160px;">
+                <label for="dexInsWeight">Body weight (kg):</label>
+                <input type="number" id="dexInsWeight" min="0" step="0.1" placeholder="Enter weight" style="width:100%;">
+              </div>
+              <div style="flex:1; min-width:160px;">
+                <label for="dexInsProtocol">Protocol:</label>
+                <select id="dexInsProtocol" style="padding:8px 12px; border:1.6px solid #e0e0e0; border-radius:6.4px; font-size:1.5rem; width:100%;">
+                  <option value="standard" selected>Standard (0.1 unit/kg + 0.5 g/kg glucose)</option>
+                  <option value="high">High dose (0.2 unit/kg + 1 g/kg glucose)</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:9.6px;">
+              <div style="flex:1; min-width:160px;">
+                <label for="dexInsRoute">Dextrose preparation:</label>
+                <select id="dexInsRoute" style="padding:8px 12px; border:1.6px solid #e0e0e0; border-radius:6.4px; font-size:1.5rem; width:100%;">
+                  <option value="d10" selected>D10W (100 mg/mL) — Peripheral/Central</option>
+                  <option value="d25">D25W (250 mg/mL) — Central line preferred</option>
+                  <option value="d50">D50W (500 mg/mL) — Central line only</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex; gap:8px; justify-content:center;">
+              <button type="button" onclick="calculateDexIns()">Calculate</button>
+              <button type="button" onclick="resetDexIns()" style="background:linear-gradient(135deg,#f44336 0%,#e91e63 100%); padding:12px 20px; font-size:22.4px;">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="note" style="margin-bottom:9.6px;">
+          <strong>Onset:</strong> 15–30 min &nbsp;|&nbsp; <strong>Duration:</strong> 4–6 hours &nbsp;|&nbsp; <strong>K⁺ reduction:</strong> ~0.5–1.0 mmol/L
+        </div>
+
+        <div id="dexInsResult" style="display:none; margin-top:16px;">
+          <table style="max-width:600px; margin:0 auto;">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Body Weight</td>
+                <td id="dexInsResultWeight"></td>
+              </tr>
+              <tr>
+                <td>Protocol</td>
+                <td id="dexInsResultProtocol"></td>
+              </tr>
+              <tr style="background:#e8eaf6;">
+                <td style="font-weight:600;"><strong>Insulin Dose</strong> (Actrapid / Regular)</td>
+                <td id="dexInsResultInsulin" style="font-weight:700; font-size:20.8px; color:#5e35b1;"></td>
+              </tr>
+              <tr>
+                <td>Insulin Concentration</td>
+                <td id="dexInsResultInsulinConc"></td>
+              </tr>
+              <tr style="background:#ede7f6;">
+                <td style="font-weight:600;"><strong>Insulin Volume</strong></td>
+                <td id="dexInsResultInsulinVol" style="font-weight:700; font-size:20.8px; color:#5e35b1;"></td>
+              </tr>
+              <tr style="background:#fff3e0;">
+                <td style="font-weight:600;"><strong>Glucose Dose</strong></td>
+                <td id="dexInsResultGlucose" style="font-weight:700; font-size:20.8px; color:#e65100;"></td>
+              </tr>
+              <tr>
+                <td>Dextrose Preparation</td>
+                <td id="dexInsResultDexPrep"></td>
+              </tr>
+              <tr style="background:#fff8e1;">
+                <td style="font-weight:600;"><strong>Dextrose Volume</strong></td>
+                <td id="dexInsResultDexVol" style="font-weight:700; font-size:20.8px; color:#e65100;"></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div id="dexInsAdminNote" style="margin-top:12px; padding:12px 16px; background:#e3f2fd; border-left:4px solid #1976d2; border-radius:6px; font-size:1.5rem;">
+          </div>
+        </div>
+
+        <!-- Collapsible Clinical Guides -->
+        <details style="margin-top:16px;">
+          <summary style="cursor:pointer; font-weight:700; color:#5e35b1; padding:8px 0; font-size:1.5rem;">📋 Administration &amp; Monitoring Guide</summary>
+          <div style="margin-top:8px;">
+            <div class="note" style="background:#fff3e0; border-left-color:#ff9800; margin-bottom:8px;">
+              <strong>Administration:</strong>
+              <ul style="margin:8px 0 0 16px; text-align:left;">
+                <li>Infuse over <strong>15–30 minutes</strong></li>
+                <li><strong>Do NOT bolus insulin</strong> — risk of severe hypoglycaemia</li>
+                <li>Peripheral IV: Use D10W only (≤12.5% dextrose)</li>
+                <li>Central line: D25W or D50W can be used</li>
+              </ul>
+            </div>
+            <div class="note" style="background:#ffebee; border-left-color:#f44336;">
+              <strong>⚠️ Monitoring — CRITICAL:</strong>
+              <ul style="margin:8px 0 0 16px; text-align:left;">
+                <li><strong>BGL:</strong> Every 15–30 min for 2 hours, then hourly for 4–6 hours</li>
+                <li><strong>Hypoglycaemia risk:</strong> Highest 30–60 min post-infusion</li>
+                <li><strong>K⁺:</strong> Recheck at 1 hour</li>
+                <li><strong>ECG:</strong> Continuous if K⁺ &gt; 6.5 mmol/L or ECG changes</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+
+        <details style="margin-top:8px;">
+          <summary style="cursor:pointer; font-weight:700; color:#2e7d32; padding:8px 0; font-size:1.5rem;">💊 Other Hyperkalaemia Treatments</summary>
+          <div class="note" style="margin-top:8px; background:#e8f5e9; border-left-color:#4caf50;">
+            <ul style="margin:0 0 0 16px; text-align:left;">
+              <li><strong>Calcium gluconate 10%:</strong> 0.5 mL/kg (max 20 mL) over 5–10 min — cardioprotection</li>
+              <li><strong>Salbutamol nebulised:</strong> 2.5–5 mg — drives K⁺ intracellularly</li>
+              <li><strong>Sodium bicarbonate:</strong> 1–2 mmol/kg if metabolic acidosis</li>
+              <li><strong>Resonium:</strong> 1 g/kg PO/PR — removes K⁺ (slow onset)</li>
+              <li><strong>Dialysis:</strong> For refractory hyperkalaemia or renal failure</li>
+            </ul>
+          </div>
+        </details>
+
+        <details style="margin-top:8px;">
+          <summary style="cursor:pointer; font-weight:700; color:#1565c0; padding:8px 0; font-size:1.5rem;">📊 Dosing Reference Table</summary>
+          <div style="margin-top:8px;">
+            <table>
+              <thead>
+                <tr style="background:#7c4dff; color:#fff;">
+                  <th>Protocol</th>
+                  <th>Insulin Dose</th>
+                  <th>Glucose Dose</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:#ede7f6;">
+                  <td><strong>Standard</strong></td>
+                  <td>0.1 unit/kg<br><small>(max 10 units)</small></td>
+                  <td>0.5 g/kg glucose<br><small>(5 mL/kg D10W)</small></td>
+                  <td>First-line</td>
+                </tr>
+                <tr>
+                  <td><strong>High dose</strong></td>
+                  <td>0.2 unit/kg<br><small>(max 10 units)</small></td>
+                  <td>1 g/kg glucose<br><small>(10 mL/kg D10W)</small></td>
+                  <td>Severe/refractory</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+
+        <div class="note" style="margin-top:12px; font-size:1.4rem;">
+          <strong>References:</strong> Pediatric Advanced Life Support (PALS) 2020; UpToDate: Treatment of hyperkalemia in children; 
+          Mahoney BA et al. <em>Cochrane Database Syst Rev</em> 2005; Alfonzo A et al. <em>Renal Association Clinical Practice Guidelines: Treatment of Acute Hyperkalaemia in Adults</em> 2020.
         </div>
       </div>
 
@@ -3750,6 +4024,31 @@
               break;
             }
 
+            /* ── Glycopyrrolate with neostigmine ── */
+            case 'glycopyrrolate-reversal': {
+              const raw = 0.01 * wt;
+              const d   = +(Math.min(raw, 0.2)).toFixed(3);
+              const maxHit = raw > 0.2;
+              doseLabel = d + ' mg' + (maxHit ? ' (max 0.2 mg)' : '');
+              volLabel  = (d / 0.2).toFixed(2) + ' mL of 0.2 mg/mL';
+              break;
+            }
+
+            /* ── Glycopyrrolate antisialogogue ── */
+            case 'glycopyrrolate-antisialogogue': {
+              const loRaw = 4 * wt;   // 4 mcg/kg
+              const hiRaw = 10 * wt;  // 10 mcg/kg
+              const loDose = +(Math.min(loRaw, 200)).toFixed(0);  // max 200 mcg = 0.2 mg
+              const hiDose = +(Math.min(hiRaw, 200)).toFixed(0);
+              const maxHit = hiRaw > 200;
+              // 0.2 mg/mL = 200 mcg/mL
+              const loVol = (loDose / 200).toFixed(2);
+              const hiVol = (hiDose / 200).toFixed(2);
+              doseLabel = loDose + '–' + hiDose + ' mcg' + (maxHit ? ' (max 200 mcg)' : '');
+              volLabel  = loVol + '–' + hiVol + ' mL of 0.2 mg/mL';
+              break;
+            }
+
             /* ── Atropine bradycardia ── */
             case 'atropine-brady': {
               const raw  = 0.02 * wt;
@@ -3832,6 +4131,28 @@
               const hiVol = +(hiD / 0.2).toFixed(1);
               doseLabel = loD + '–' + hiD + ' g (max 1 g/kg = ' + (wt * 1).toFixed(1) + ' g)';
               volLabel  = loVol + '–' + hiVol + ' mL of 20% mannitol';
+              break;
+            }
+
+            /* ── Hydrocortisone stress dose / adrenal crisis ── */
+            case 'hydrocortisone-stress': {
+              const loD = +(Math.min(1 * wt, 100)).toFixed(1);
+              const hiD = +(Math.min(2 * wt, 100)).toFixed(1);
+              const maxHit = 2 * wt > 100;
+              const loVol = +(loD / 50).toFixed(2);
+              const hiVol = +(hiD / 50).toFixed(2);
+              doseLabel = loD + '–' + hiD + ' mg' + (maxHit ? ' (max 100 mg)' : '');
+              volLabel  = loVol + '–' + hiVol + ' mL of 50 mg/mL';
+              break;
+            }
+
+            /* ── Hydrocortisone bronchospasm ── */
+            case 'hydrocortisone-broncho': {
+              const d = +(Math.min(4 * wt, 200)).toFixed(1);
+              const maxHit = 4 * wt > 200;
+              const vol = +(d / 50).toFixed(2);
+              doseLabel = d + ' mg' + (maxHit ? ' (max 200 mg)' : '');
+              volLabel  = vol + ' mL of 50 mg/mL';
               break;
             }
 
@@ -3991,8 +4312,12 @@
     }
 
     /* ── Drug search functionality ── */
-    function searchDrugs() {
+    var drugSearchSelectedIndex = -1;
+    var drugSearchResults = [];
+    
+    function searchDrugsLive() {
       var query = document.getElementById('drugSearchInput').value.trim().toLowerCase();
+      var resultsEl = document.getElementById('drugSearchResults');
       var noResultsEl = document.getElementById('drugSearchNoResults');
       
       // Clear previous highlights
@@ -4000,8 +4325,13 @@
         el.classList.remove('drug-highlight');
       });
       noResultsEl.style.display = 'none';
+      drugSearchSelectedIndex = -1;
+      drugSearchResults = [];
       
-      if (!query) return;
+      if (!query || query.length < 2) {
+        resultsEl.style.display = 'none';
+        return;
+      }
       
       // Search all drug tables in all panels
       var allTables = document.querySelectorAll('#drugCalculator table');
@@ -4012,52 +4342,169 @@
         rows.forEach(function(row) {
           var text = row.textContent.toLowerCase();
           if (text.includes(query)) {
-            found.push(row);
+            // Get drug name from first cell
+            var firstCell = row.querySelector('td:first-child');
+            var drugNameEl = firstCell ? firstCell.querySelector('strong') : null;
+            var drugDetail = firstCell ? firstCell.querySelector('small') : null;
+            
+            // Get drug name - try <strong> first, then fall back to cell text content
+            var drugName = '';
+            if (drugNameEl) {
+              drugName = drugNameEl.textContent.trim();
+            } else if (firstCell) {
+              // For infusion tables without <strong>, get text but exclude any <small> content
+              var clonedCell = firstCell.cloneNode(true);
+              var smallEl = clonedCell.querySelector('small');
+              if (smallEl) smallEl.remove();
+              drugName = clonedCell.textContent.trim();
+            }
+            
+            // Determine which panel
+            var panel = row.closest('.drug-panel');
+            var panelId = panel ? panel.id.replace('drugPanel-', '') : '';
+            var panelLabel = '';
+            if (panelId === 'anaesthesia') panelLabel = 'Anaesthesia';
+            else if (panelId === 'infusion') panelLabel = 'Infusions';
+            else if (panelId === 'cardiac') panelLabel = 'Cardiac OT';
+            
+            found.push({
+              row: row,
+              name: drugName || 'Unknown',
+              detail: drugDetail ? drugDetail.textContent.trim() : '',
+              panelId: panelId,
+              panelLabel: panelLabel
+            });
           }
         });
       });
       
+      drugSearchResults = found;
+      
       if (found.length === 0) {
-        noResultsEl.textContent = 'No drugs found matching "' + query + '". Try a different search term.';
-        noResultsEl.style.display = 'block';
+        resultsEl.innerHTML = '<div class="drug-search-results-header">No drugs found matching "' + query + '"</div>';
+        resultsEl.style.display = 'block';
         return;
       }
       
-      // Find which panel contains the first result and switch to it
-      var firstRow = found[0];
-      var panel = firstRow.closest('.drug-panel');
-      if (panel) {
-        var panelId = panel.id.replace('drugPanel-', '');
-        switchDrugPanel(panelId);
-      }
-      
-      // Highlight all found rows
-      found.forEach(function(row) {
-        row.classList.add('drug-highlight');
+      // Build results dropdown
+      var html = '<div class="drug-search-results-header">Found ' + found.length + ' result' + (found.length > 1 ? 's' : '') + ' — click to select</div>';
+      found.forEach(function(item, index) {
+        html += '<div class="drug-search-result-item" data-index="' + index + '" onclick="selectDrugResult(' + index + ')">';
+        html += '<div>';
+        html += '<div class="drug-search-result-name">' + item.name + '</div>';
+        if (item.detail) {
+          html += '<div class="drug-search-result-detail">' + item.detail + '</div>';
+        }
+        html += '</div>';
+        html += '<span class="drug-search-result-panel ' + item.panelId + '">' + item.panelLabel + '</span>';
+        html += '</div>';
       });
       
-      // Scroll to first result
+      resultsEl.innerHTML = html;
+      resultsEl.style.display = 'block';
+    }
+    
+    function searchDrugs() {
+      // Trigger live search if not already showing results
+      searchDrugsLive();
+      // If there's exactly one result, select it automatically
+      if (drugSearchResults.length === 1) {
+        selectDrugResult(0);
+      }
+    }
+    
+    function selectDrugResult(index) {
+      var resultsEl = document.getElementById('drugSearchResults');
+      var noResultsEl = document.getElementById('drugSearchNoResults');
+      
+      if (index < 0 || index >= drugSearchResults.length) return;
+      
+      var item = drugSearchResults[index];
+      
+      // Clear previous highlights
+      document.querySelectorAll('.drug-highlight').forEach(function(el) {
+        el.classList.remove('drug-highlight');
+      });
+      
+      // Switch to the correct panel
+      if (item.panelId) {
+        switchDrugPanel(item.panelId);
+      }
+      
+      // Highlight the selected row
+      item.row.classList.add('drug-highlight');
+      
+      // Hide dropdown
+      resultsEl.style.display = 'none';
+      
+      // Scroll to result
       setTimeout(function() {
-        found[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        item.row.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 100);
       
-      // Show result count if multiple
-      if (found.length > 1) {
-        noResultsEl.textContent = 'Found ' + found.length + ' matching drugs. Showing first result.';
-        noResultsEl.style.display = 'block';
-        noResultsEl.style.background = '#e8f5e9';
-        noResultsEl.style.borderLeftColor = '#4caf50';
-        noResultsEl.style.color = '#2e7d32';
+      // Show confirmation
+      noResultsEl.textContent = '✓ Showing: ' + item.name + ' (' + item.panelLabel + ')';
+      noResultsEl.style.display = 'block';
+      noResultsEl.style.background = '#e8f5e9';
+      noResultsEl.style.borderLeftColor = '#4caf50';
+      noResultsEl.style.color = '#2e7d32';
+    }
+    
+    function handleDrugSearchKey(event) {
+      var resultsEl = document.getElementById('drugSearchResults');
+      var items = resultsEl.querySelectorAll('.drug-search-result-item');
+      
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        drugSearchSelectedIndex = Math.min(drugSearchSelectedIndex + 1, drugSearchResults.length - 1);
+        updateDrugSearchSelection(items);
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        drugSearchSelectedIndex = Math.max(drugSearchSelectedIndex - 1, 0);
+        updateDrugSearchSelection(items);
+      } else if (event.key === 'Enter') {
+        event.preventDefault();
+        if (drugSearchSelectedIndex >= 0) {
+          selectDrugResult(drugSearchSelectedIndex);
+        } else if (drugSearchResults.length > 0) {
+          // Show dropdown if not visible
+          searchDrugsLive();
+        }
+      } else if (event.key === 'Escape') {
+        resultsEl.style.display = 'none';
+        drugSearchSelectedIndex = -1;
       }
+    }
+    
+    function updateDrugSearchSelection(items) {
+      items.forEach(function(item, i) {
+        if (i === drugSearchSelectedIndex) {
+          item.classList.add('selected');
+          item.scrollIntoView({ block: 'nearest' });
+        } else {
+          item.classList.remove('selected');
+        }
+      });
     }
     
     function clearDrugSearch() {
       document.getElementById('drugSearchInput').value = '';
+      document.getElementById('drugSearchResults').style.display = 'none';
       document.getElementById('drugSearchNoResults').style.display = 'none';
+      drugSearchSelectedIndex = -1;
+      drugSearchResults = [];
       document.querySelectorAll('.drug-highlight').forEach(function(el) {
         el.classList.remove('drug-highlight');
       });
     }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      var searchContainer = document.querySelector('.drug-search-container');
+      if (searchContainer && !searchContainer.contains(e.target)) {
+        document.getElementById('drugSearchResults').style.display = 'none';
+      }
+    });
 
     /* ── Global Search Functionality ── */
     function globalSearch() {
@@ -4150,6 +4597,14 @@
           tabClass: 'general',
           showFn: 'showGeneralCalculator',
           selectors: ['.section-title', 'h2', 'h3', '.note', 'table td']
+        },
+        { 
+          containerId: 'painCalculator', 
+          tabId: 'navPain', 
+          tabName: 'Pain', 
+          tabClass: 'pain',
+          showFn: 'showPainCalculator',
+          selectors: ['.section-title', 'h2', 'h3', '.note', 'table td', 'th']
         }
       ];
       
@@ -5540,6 +5995,91 @@
       document.getElementById('mgso4Result').style.display = 'block';
     }
 
+    // ══════════════════════════════════════════════════════════════
+    // DEXTROSE-INSULIN DRIP CALCULATOR (Hyperkalaemia)
+    // ══════════════════════════════════════════════════════════════
+    function calculateDexIns() {
+      const weight = parseFloat(document.getElementById('dexInsWeight').value);
+      const protocol = document.getElementById('dexInsProtocol').value;
+      const dexRoute = document.getElementById('dexInsRoute').value;
+
+      if (!weight || weight <= 0) {
+        alert('Please enter a valid body weight.');
+        return;
+      }
+
+      // Insulin dosing
+      let insulinDosePerKg, glucoseDosePerKg, protocolLabel;
+      if (protocol === 'high') {
+        insulinDosePerKg = 0.2;  // units/kg
+        glucoseDosePerKg = 1.0;  // g/kg
+        protocolLabel = 'High dose (0.2 unit/kg + 1 g/kg glucose)';
+      } else {
+        insulinDosePerKg = 0.1;  // units/kg
+        glucoseDosePerKg = 0.5;  // g/kg
+        protocolLabel = 'Standard (0.1 unit/kg + 0.5 g/kg glucose)';
+      }
+
+      const insulinDose = Math.min(weight * insulinDosePerKg, 10); // max 10 units
+      const glucoseDose = weight * glucoseDosePerKg; // grams
+
+      // Insulin concentration: Actrapid 100 units/mL
+      const insulinConc = 100; // units/mL
+      const insulinVol = insulinDose / insulinConc;
+
+      // Dextrose calculations based on preparation
+      let dexConc, dexLabel, dexVol, routeNote;
+      if (dexRoute === 'd50') {
+        dexConc = 0.5;  // 500 mg/mL = 0.5 g/mL
+        dexLabel = 'D50W (500 mg/mL)';
+        dexVol = glucoseDose / dexConc;
+        routeNote = '⚠️ D50W — Central line only. Highly hyperosmolar.';
+      } else if (dexRoute === 'd25') {
+        dexConc = 0.25;  // 250 mg/mL = 0.25 g/mL
+        dexLabel = 'D25W (250 mg/mL)';
+        dexVol = glucoseDose / dexConc;
+        routeNote = '⚠️ D25W — Central line preferred. May cause phlebitis via peripheral IV.';
+      } else {
+        dexConc = 0.1;  // 100 mg/mL = 0.1 g/mL
+        dexLabel = 'D10W (100 mg/mL)';
+        dexVol = glucoseDose / dexConc;
+        routeNote = '✓ D10W — Safe for peripheral or central IV.';
+      }
+
+      // Display results
+      document.getElementById('dexInsResultWeight').textContent = weight.toFixed(1) + ' kg';
+      document.getElementById('dexInsResultProtocol').textContent = protocolLabel;
+      document.getElementById('dexInsResultInsulin').textContent = insulinDose.toFixed(1) + ' units' + (weight * insulinDosePerKg > 10 ? ' (capped at max 10 units)' : '');
+      document.getElementById('dexInsResultInsulinConc').textContent = 'Actrapid / Regular Insulin 100 units/mL';
+      document.getElementById('dexInsResultInsulinVol').textContent = insulinVol.toFixed(2) + ' mL';
+      document.getElementById('dexInsResultGlucose').textContent = glucoseDose.toFixed(1) + ' g';
+      document.getElementById('dexInsResultDexPrep').textContent = dexLabel;
+      document.getElementById('dexInsResultDexVol').textContent = dexVol.toFixed(1) + ' mL';
+
+      // Administration note
+      const adminNote = document.getElementById('dexInsAdminNote');
+      adminNote.innerHTML = `
+        <strong>Administration:</strong><br>
+        <div style="margin-top:8px;">
+          <div style="margin-bottom:6px;"><strong>Insulin:</strong> Draw up <strong style="color:#5e35b1;">${insulinVol.toFixed(2)} mL</strong> Actrapid (${insulinDose.toFixed(1)} units)</div>
+          <div style="margin-bottom:6px;"><strong>Dextrose:</strong> Draw up <strong style="color:#e65100;">${dexVol.toFixed(1)} mL</strong> ${dexLabel} (${glucoseDose.toFixed(1)} g glucose)</div>
+          <div style="margin-bottom:6px;"><strong>Infuse both over 15–30 minutes</strong></div>
+          <div style="background:#fff3e0; padding:8px; border-radius:4px; margin-top:8px;">
+            ${routeNote}
+          </div>
+        </div>
+      `;
+
+      document.getElementById('dexInsResult').style.display = 'block';
+    }
+
+    function resetDexIns() {
+      document.getElementById('dexInsWeight').value = '';
+      document.getElementById('dexInsProtocol').value = 'standard';
+      document.getElementById('dexInsRoute').value = 'd10';
+      document.getElementById('dexInsResult').style.display = 'none';
+    }
+
     function calculateHemostatic() {
       const weight = parseFloat(document.getElementById('hemostaticWeight').value);
       const ptxDose = parseFloat(document.getElementById('prothrombinexDose').value);
@@ -6736,6 +7276,234 @@
   </div><!-- end glucoseCalculator -->
 
   <!-- ═══════════════════════════════════════════════
+       PAIN ASSESSMENT SCALES
+       ═══════════════════════════════════════════════ -->
+  <div class="container" id="painCalculator" style="display:none; border-radius:0 0 16px 16px; margin-top:0;">
+    <div class="content">
+      <h2 class="section-title" style="margin-top:8px;">😢 Pain Assessment Scales</h2>
+      <p class="subtitle" style="color:#555; margin-bottom:14.4px;">FLACC (0–7 years / non-verbal) &amp; Wong-Baker FACES (3+ years / verbal)</p>
+
+      <!-- Sub-tabs for Pain Scales -->
+      <div style="display:flex; gap:0; margin:0 0 0; border-bottom:1.6px solid #e0e0e0; flex-wrap:wrap;">
+        <button id="painTabBtnFLACC" onclick="showPainTab('flacc')" class="pals-tab-btn pals-tab-active">👶 FLACC Scale</button>
+        <button id="painTabBtnFACES" onclick="showPainTab('faces')" class="pals-tab-btn">😊 Wong-Baker FACES</button>
+      </div>
+
+      <!-- ══ FLACC Pain Scale ══ -->
+      <div id="painPanelFLACC" class="pals-panel" style="display:block;">
+        <h3 style="color:#1e3c72; margin:16px 0 8px; font-size:1.3rem;">FLACC Behavioural Pain Scale</h3>
+        <p style="color:#555; font-size:0.95rem; margin-bottom:12px;">
+          For infants/children <strong>0–7 years</strong> or <strong>non-verbal/cognitively impaired</strong> patients. Observe for 1–5 minutes. Score each category 0–2.
+        </p>
+
+        <div class="table-wrapper">
+          <table class="sticky-table" id="flaccTable">
+            <thead>
+              <tr>
+                <th style="width:15%;">Category</th>
+                <th style="width:28%;">0</th>
+                <th style="width:28%;">1</th>
+                <th style="width:28%;">2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>F</strong>ace</td>
+                <td>No particular expression or smile</td>
+                <td>Occasional grimace or frown, withdrawn, disinterested</td>
+                <td>Frequent to constant frown, clenched jaw, quivering chin</td>
+              </tr>
+              <tr>
+                <td><strong>L</strong>egs</td>
+                <td>Normal position or relaxed</td>
+                <td>Uneasy, restless, tense</td>
+                <td>Kicking or legs drawn up</td>
+              </tr>
+              <tr>
+                <td><strong>A</strong>ctivity</td>
+                <td>Lying quietly, normal position, moves easily</td>
+                <td>Squirming, shifting back and forth, tense</td>
+                <td>Arched, rigid, or jerking</td>
+              </tr>
+              <tr>
+                <td><strong>C</strong>ry</td>
+                <td>No cry (awake or asleep)</td>
+                <td>Moans or whimpers, occasional complaint</td>
+                <td>Crying steadily, screams or sobs, frequent complaints</td>
+              </tr>
+              <tr>
+                <td><strong>C</strong>onsolability</td>
+                <td>Content, relaxed</td>
+                <td>Reassured by occasional touching, hugging, or being talked to; distractible</td>
+                <td>Difficult to console or comfort</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- FLACC Calculator -->
+        <div class="input-section" style="margin-top:16px;">
+          <h4 style="margin-bottom:12px; color:#1e3c72;">Calculate FLACC Score</h4>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+            <div>
+              <label for="flaccFace" style="font-size:0.9rem;"><strong>F</strong>ace:</label>
+              <select id="flaccFace" style="width:100%; padding:8px; border:1.5px solid #ddd; border-radius:6px; font-size:0.9rem;">
+                <option value="0">0 — No expression / smile</option>
+                <option value="1">1 — Occasional grimace / frown</option>
+                <option value="2">2 — Frequent frown / clenched jaw</option>
+              </select>
+            </div>
+            <div>
+              <label for="flaccLegs" style="font-size:0.9rem;"><strong>L</strong>egs:</label>
+              <select id="flaccLegs" style="width:100%; padding:8px; border:1.5px solid #ddd; border-radius:6px; font-size:0.9rem;">
+                <option value="0">0 — Normal / relaxed</option>
+                <option value="1">1 — Uneasy / restless / tense</option>
+                <option value="2">2 — Kicking / drawn up</option>
+              </select>
+            </div>
+            <div>
+              <label for="flaccActivity" style="font-size:0.9rem;"><strong>A</strong>ctivity:</label>
+              <select id="flaccActivity" style="width:100%; padding:8px; border:1.5px solid #ddd; border-radius:6px; font-size:0.9rem;">
+                <option value="0">0 — Lying quietly / moves easily</option>
+                <option value="1">1 — Squirming / shifting / tense</option>
+                <option value="2">2 — Arched / rigid / jerking</option>
+              </select>
+            </div>
+            <div>
+              <label for="flaccCry" style="font-size:0.9rem;"><strong>C</strong>ry:</label>
+              <select id="flaccCry" style="width:100%; padding:8px; border:1.5px solid #ddd; border-radius:6px; font-size:0.9rem;">
+                <option value="0">0 — No cry</option>
+                <option value="1">1 — Moans / whimpers / occasional</option>
+                <option value="2">2 — Crying steadily / screams</option>
+              </select>
+            </div>
+            <div>
+              <label for="flaccConsolability" style="font-size:0.9rem;"><strong>C</strong>onsolability:</label>
+              <select id="flaccConsolability" style="width:100%; padding:8px; border:1.5px solid #ddd; border-radius:6px; font-size:0.9rem;">
+                <option value="0">0 — Content / relaxed</option>
+                <option value="1">1 — Reassured by touch / distractible</option>
+                <option value="2">2 — Difficult to console</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:16px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+            <button type="button" onclick="calculateFLACC()">Calculate FLACC Score</button>
+            <button type="button" onclick="resetFLACC()" style="background:linear-gradient(135deg, #78909c 0%, #546e7a 100%);">Reset</button>
+          </div>
+        </div>
+
+        <!-- FLACC Result -->
+        <div id="flaccResult" style="display:none; margin-top:16px;">
+          <div id="flaccScoreBox" style="padding:20px; border-radius:12px; text-align:center;">
+            <div style="font-size:0.9rem; color:#555; margin-bottom:4px;">FLACC Score</div>
+            <div id="flaccScoreValue" style="font-size:3rem; font-weight:700;"></div>
+            <div id="flaccScoreLabel" style="font-size:1.1rem; font-weight:600; margin-top:4px;"></div>
+          </div>
+        </div>
+
+        <!-- FLACC Interpretation -->
+        <div class="note" style="margin-top:16px; background:#e3f2fd; border-left-color:#2196f3;">
+          <strong>Interpretation:</strong>
+          <ul style="margin:8px 0 0 16px;">
+            <li><strong>0:</strong> Relaxed &amp; comfortable — no pain intervention needed</li>
+            <li><strong>1–3:</strong> Mild discomfort — consider non-pharmacological interventions, reassess</li>
+            <li><strong>4–6:</strong> Moderate pain — consider analgesia, reassess after intervention</li>
+            <li><strong>7–10:</strong> Severe pain/discomfort — analgesia indicated, escalate if needed</li>
+          </ul>
+        </div>
+
+        <div class="note" style="margin-top:12px;">
+          <strong>Reference:</strong> Merkel SI, et al. The FLACC: a behavioral scale for scoring postoperative pain in young children. <em>Pediatr Nurs</em> 1997;23(3):293-7.
+        </div>
+      </div>
+
+      <!-- ══ Wong-Baker FACES Pain Scale ══ -->
+      <div id="painPanelFACES" class="pals-panel" style="display:none;">
+        <h3 style="color:#1e3c72; margin:16px 0 8px; font-size:1.3rem;">Wong-Baker FACES® Pain Rating Scale</h3>
+        <p style="color:#555; font-size:0.95rem; margin-bottom:12px;">
+          For children <strong>3 years and older</strong> who can self-report. Ask the child to choose the face that best describes how they feel.
+        </p>
+
+        <!-- FACES Visual Scale -->
+        <div style="background:#fff; border:2px solid #e0e0e0; border-radius:12px; padding:20px; margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
+            <div class="faces-option" onclick="selectFace(0)" style="text-align:center; cursor:pointer; padding:8px; border-radius:8px; transition:background 0.2s; flex:1; min-width:60px;">
+              <div style="font-size:2.5rem;">😊</div>
+              <div style="font-weight:700; color:#4caf50; font-size:1.2rem;">0</div>
+              <div style="font-size:0.7rem; color:#555;">No Hurt</div>
+            </div>
+            <div class="faces-option" onclick="selectFace(2)" style="text-align:center; cursor:pointer; padding:8px; border-radius:8px; transition:background 0.2s; flex:1; min-width:60px;">
+              <div style="font-size:2.5rem;">🙂</div>
+              <div style="font-weight:700; color:#8bc34a; font-size:1.2rem;">2</div>
+              <div style="font-size:0.7rem; color:#555;">Hurts Little Bit</div>
+            </div>
+            <div class="faces-option" onclick="selectFace(4)" style="text-align:center; cursor:pointer; padding:8px; border-radius:8px; transition:background 0.2s; flex:1; min-width:60px;">
+              <div style="font-size:2.5rem;">😐</div>
+              <div style="font-weight:700; color:#ffc107; font-size:1.2rem;">4</div>
+              <div style="font-size:0.7rem; color:#555;">Hurts Little More</div>
+            </div>
+            <div class="faces-option" onclick="selectFace(6)" style="text-align:center; cursor:pointer; padding:8px; border-radius:8px; transition:background 0.2s; flex:1; min-width:60px;">
+              <div style="font-size:2.5rem;">😟</div>
+              <div style="font-weight:700; color:#ff9800; font-size:1.2rem;">6</div>
+              <div style="font-size:0.7rem; color:#555;">Hurts Even More</div>
+            </div>
+            <div class="faces-option" onclick="selectFace(8)" style="text-align:center; cursor:pointer; padding:8px; border-radius:8px; transition:background 0.2s; flex:1; min-width:60px;">
+              <div style="font-size:2.5rem;">😢</div>
+              <div style="font-weight:700; color:#f44336; font-size:1.2rem;">8</div>
+              <div style="font-size:0.7rem; color:#555;">Hurts Whole Lot</div>
+            </div>
+            <div class="faces-option" onclick="selectFace(10)" style="text-align:center; cursor:pointer; padding:8px; border-radius:8px; transition:background 0.2s; flex:1; min-width:60px;">
+              <div style="font-size:2.5rem;">😭</div>
+              <div style="font-weight:700; color:#b71c1c; font-size:1.2rem;">10</div>
+              <div style="font-size:0.7rem; color:#555;">Hurts Worst</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FACES Result -->
+        <div id="facesResult" style="display:none; margin-top:16px;">
+          <div id="facesScoreBox" style="padding:20px; border-radius:12px; text-align:center;">
+            <div style="font-size:0.9rem; color:#555; margin-bottom:4px;">Selected Pain Score</div>
+            <div id="facesScoreEmoji" style="font-size:3.5rem;"></div>
+            <div id="facesScoreValue" style="font-size:2.5rem; font-weight:700;"></div>
+            <div id="facesScoreLabel" style="font-size:1.1rem; font-weight:600; margin-top:4px;"></div>
+          </div>
+          <div style="text-align:center; margin-top:12px;">
+            <button type="button" onclick="clearFaces()" style="background:linear-gradient(135deg, #78909c 0%, #546e7a 100%);">Clear Selection</button>
+          </div>
+        </div>
+
+        <!-- FACES Instructions -->
+        <div class="note" style="margin-top:16px; background:#fff3e0; border-left-color:#ff9800;">
+          <strong>Instructions for use:</strong>
+          <ol style="margin:8px 0 0 16px;">
+            <li>Explain to the child that each face shows a person who has no pain (hurt), some, or a lot of pain.</li>
+            <li>Point to each face and describe: "This face has no hurt... this face has a little bit of hurt... this face has the worst hurt."</li>
+            <li>Ask the child to choose the face that best describes how much hurt they have <strong>right now</strong>.</li>
+          </ol>
+        </div>
+
+        <!-- FACES Interpretation -->
+        <div class="note" style="margin-top:12px; background:#e3f2fd; border-left-color:#2196f3;">
+          <strong>Interpretation &amp; Action:</strong>
+          <ul style="margin:8px 0 0 16px;">
+            <li><strong>0:</strong> No pain — continue to monitor</li>
+            <li><strong>2:</strong> Mild pain — non-pharmacological measures, consider simple analgesia</li>
+            <li><strong>4:</strong> Mild–moderate pain — simple analgesia (paracetamol, NSAIDs)</li>
+            <li><strong>6:</strong> Moderate pain — combination analgesia, consider weak opioid</li>
+            <li><strong>8–10:</strong> Severe pain — strong analgesia indicated, escalate care</li>
+          </ul>
+        </div>
+
+        <div class="note" style="margin-top:12px;">
+          <strong>Reference:</strong> Wong-Baker FACES Foundation. <a href="https://wongbakerfaces.org" target="_blank" style="color:#1565c0;">wongbakerfaces.org</a>. Used with permission.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
        GENERAL CALCULATORS
        ═══════════════════════════════════════════════ -->
   <div class="container" id="generalCalculator" style="display:none; border-radius:0 0 16px 16px; margin-top:0;">
@@ -7662,6 +8430,7 @@
       <hr style="margin: 15px 0; border: none; border-top: 1px solid #ff6b6b;">
       <div style="text-align: center; margin-top: 12px;">
         <p style="margin: 5px 0; font-size: 20.8px;"><strong>Created by:</strong> Jasmin Tong (2025)</p>
+        <p style="margin: 3px 0; font-size: 17.6px; color: #888;"><em>Last updated: March 2026</em></p>
         <p style="margin: 8px 0; font-size: 20.8px;">
           <strong>License:</strong>
           <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" style="color: #c92a2a; text-decoration: none; font-weight: 600;">CC BY-NC-ND 4.0</a>
@@ -7687,6 +8456,7 @@
       { nav: 'navLA',          calc: 'laCalculator'          },
       { nav: 'navGlucose',     calc: 'glucoseCalculator'     },
       { nav: 'navIVFluids',    calc: 'ivFluidsCalculator'    },
+      { nav: 'navPain',        calc: 'painCalculator'        },
       { nav: 'navGeneral',     calc: 'generalCalculator'     }
     ];
 
@@ -7744,7 +8514,139 @@
     window.showLACalculator          = function () { showCalc('laCalculator',          'navLA'); };
     window.showGlucoseCalculator     = function () { showCalc('glucoseCalculator',     'navGlucose'); };
     window.showIVFluidsCalculator    = function () { showCalc('ivFluidsCalculator',    'navIVFluids'); };
+    window.showPainCalculator        = function () { showCalc('painCalculator',        'navPain'); };
     window.showGeneralCalculator     = function () { showCalc('generalCalculator',     'navGeneral'); };
+
+    // ══════════════════════════════════════════════════════════════
+    // PAIN ASSESSMENT SCALES - FLACC & Wong-Baker FACES Functions
+    // ══════════════════════════════════════════════════════════════
+
+    // Pain sub-tab switcher
+    window.showPainTab = function(tab) {
+      var panels = { flacc: 'painPanelFLACC', faces: 'painPanelFACES' };
+      var btns = { flacc: 'painTabBtnFLACC', faces: 'painTabBtnFACES' };
+      Object.keys(panels).forEach(function(k) {
+        var panel = document.getElementById(panels[k]);
+        if (panel) panel.style.display = (k === tab) ? 'block' : 'none';
+        var btn = document.getElementById(btns[k]);
+        if (btn) {
+          btn.classList.toggle('pals-tab-active', k === tab);
+        }
+      });
+    };
+
+    // FLACC Score Calculator
+    window.calculateFLACC = function() {
+      var face = parseInt(document.getElementById('flaccFace').value) || 0;
+      var legs = parseInt(document.getElementById('flaccLegs').value) || 0;
+      var activity = parseInt(document.getElementById('flaccActivity').value) || 0;
+      var cry = parseInt(document.getElementById('flaccCry').value) || 0;
+      var consolability = parseInt(document.getElementById('flaccConsolability').value) || 0;
+      
+      var total = face + legs + activity + cry + consolability;
+      
+      var label = '', color = '', bgColor = '';
+      if (total === 0) {
+        label = 'Relaxed & Comfortable';
+        color = '#2e7d32';
+        bgColor = '#e8f5e9';
+      } else if (total <= 3) {
+        label = 'Mild Discomfort';
+        color = '#558b2f';
+        bgColor = '#f1f8e9';
+      } else if (total <= 6) {
+        label = 'Moderate Pain';
+        color = '#f57c00';
+        bgColor = '#fff3e0';
+      } else {
+        label = 'Severe Pain/Discomfort';
+        color = '#c62828';
+        bgColor = '#ffebee';
+      }
+      
+      document.getElementById('flaccResult').style.display = 'block';
+      var scoreBox = document.getElementById('flaccScoreBox');
+      scoreBox.style.background = bgColor;
+      scoreBox.style.border = '2px solid ' + color;
+      
+      document.getElementById('flaccScoreValue').textContent = total + '/10';
+      document.getElementById('flaccScoreValue').style.color = color;
+      document.getElementById('flaccScoreLabel').textContent = label;
+      document.getElementById('flaccScoreLabel').style.color = color;
+    };
+
+    // FLACC Reset
+    window.resetFLACC = function() {
+      document.getElementById('flaccFace').value = '0';
+      document.getElementById('flaccLegs').value = '0';
+      document.getElementById('flaccActivity').value = '0';
+      document.getElementById('flaccCry').value = '0';
+      document.getElementById('flaccConsolability').value = '0';
+      document.getElementById('flaccResult').style.display = 'none';
+    };
+
+    // Wong-Baker FACES - Select face
+    window.selectFace = function(score) {
+      // Remove previous selection highlight
+      var options = document.querySelectorAll('.faces-option');
+      options.forEach(function(opt) {
+        opt.style.background = '';
+        opt.style.boxShadow = '';
+        opt.style.transform = '';
+      });
+      
+      // Highlight selected face
+      var idx = score / 2; // 0,2,4,6,8,10 -> index 0,1,2,3,4,5
+      if (options[idx]) {
+        options[idx].style.background = '#e3f2fd';
+        options[idx].style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+        options[idx].style.transform = 'scale(1.05)';
+      }
+      
+      var emoji = '', label = '', color = '', bgColor = '';
+      switch(score) {
+        case 0:
+          emoji = '😊'; label = 'No Hurt'; color = '#4caf50'; bgColor = '#e8f5e9';
+          break;
+        case 2:
+          emoji = '🙂'; label = 'Hurts Little Bit'; color = '#8bc34a'; bgColor = '#f1f8e9';
+          break;
+        case 4:
+          emoji = '😐'; label = 'Hurts Little More'; color = '#ffc107'; bgColor = '#fffde7';
+          break;
+        case 6:
+          emoji = '😟'; label = 'Hurts Even More'; color = '#ff9800'; bgColor = '#fff3e0';
+          break;
+        case 8:
+          emoji = '😢'; label = 'Hurts Whole Lot'; color = '#f44336'; bgColor = '#ffebee';
+          break;
+        case 10:
+          emoji = '😭'; label = 'Hurts Worst'; color = '#b71c1c'; bgColor = '#ffcdd2';
+          break;
+      }
+      
+      document.getElementById('facesResult').style.display = 'block';
+      var scoreBox = document.getElementById('facesScoreBox');
+      scoreBox.style.background = bgColor;
+      scoreBox.style.border = '2px solid ' + color;
+      
+      document.getElementById('facesScoreEmoji').textContent = emoji;
+      document.getElementById('facesScoreValue').textContent = score + '/10';
+      document.getElementById('facesScoreValue').style.color = color;
+      document.getElementById('facesScoreLabel').textContent = label;
+      document.getElementById('facesScoreLabel').style.color = color;
+    };
+
+    // Wong-Baker FACES - Clear selection
+    window.clearFaces = function() {
+      var options = document.querySelectorAll('.faces-option');
+      options.forEach(function(opt) {
+        opt.style.background = '';
+        opt.style.boxShadow = '';
+        opt.style.transform = '';
+      });
+      document.getElementById('facesResult').style.display = 'none';
+    };
 
     // Initialise LA dilution stock options (DOM is complete at this point)
     if (typeof updateDilStockOptions === 'function') {
