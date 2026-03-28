@@ -5204,10 +5204,11 @@
 
       // Parse agent and concentration
       const agentMap = {
-        'levobupivacaine_0.25': { name: 'Levobupivacaine', conc: 0.25, maxMgKg: 2 },
-        'levobupivacaine_0.2':  { name: 'Levobupivacaine', conc: 0.2,  maxMgKg: 2 },
-        'ropivacaine_0.2':      { name: 'Ropivacaine',     conc: 0.2,  maxMgKg: 3 },
-        'ropivacaine_0.1':      { name: 'Ropivacaine',     conc: 0.1,  maxMgKg: 3 },
+        'levobupivacaine_0.25': { name: 'Levobupivacaine', conc: 0.25,  maxMgKg: 2 },
+        'levobupivacaine_0.2':  { name: 'Levobupivacaine', conc: 0.2,   maxMgKg: 2 },
+        'levobupivacaine_0.125':{ name: 'Levobupivacaine', conc: 0.125, maxMgKg: 2 },
+        'ropivacaine_0.2':      { name: 'Ropivacaine',     conc: 0.2,   maxMgKg: 3 },
+        'ropivacaine_0.1':      { name: 'Ropivacaine',     conc: 0.1,   maxMgKg: 3 },
       };
       const agent = agentMap[agentVal];
       const mgPerMl = agent.conc * 10; // conc% × 10 = mg/mL
@@ -7191,6 +7192,7 @@
                 style="padding:8px 12px; border-radius:6.4px; border:1.5px solid #ce93d8; font-size:22.4px; background:#fff;">
                 <option value="levobupivacaine_0.25">Levobupivacaine 0.25%</option>
                 <option value="levobupivacaine_0.2">Levobupivacaine 0.2%</option>
+                <option value="levobupivacaine_0.125">Levobupivacaine 0.125%</option>
                 <option value="ropivacaine_0.2">Ropivacaine 0.2%</option>
                 <option value="ropivacaine_0.1">Ropivacaine 0.1%</option>
               </select>
