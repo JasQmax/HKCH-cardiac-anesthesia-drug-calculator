@@ -5181,10 +5181,64 @@
     }
 
     function showLATab(tab) {
-      document.getElementById('laTabDose').style.display  = tab === 'dose' ? 'block' : 'none';
-      document.getElementById('laTabLAST').style.display  = tab === 'last' ? 'block' : 'none';
-      document.getElementById('laTabBtnDose').classList.toggle('pals-tab-active', tab === 'dose');
-      document.getElementById('laTabBtnLAST').classList.toggle('pals-tab-active', tab === 'last');
+      document.getElementById('laTabDose').style.display      = tab === 'dose'     ? 'block' : 'none';
+      document.getElementById('laTabArmitage').style.display  = tab === 'armitage' ? 'block' : 'none';
+      document.getElementById('laTabLAST').style.display      = tab === 'last'     ? 'block' : 'none';
+      document.getElementById('laTabBtnDose').classList.toggle('pals-tab-active',     tab === 'dose');
+      document.getElementById('laTabBtnArmitage').classList.toggle('pals-tab-active', tab === 'armitage');
+      document.getElementById('laTabBtnLAST').classList.toggle('pals-tab-active',     tab === 'last');
+    }
+
+    function calculateArmitage() {
+      const weight = parseFloat(document.getElementById('armWeight').value);
+      const coeff  = parseFloat(document.getElementById('armLevel').value);
+      const agentVal = document.getElementById('armAgent').value;
+      const resultDiv = document.getElementById('armResult');
+
+      if (!weight || weight <= 0 || isNaN(weight)) {
+        resultDiv.style.display = 'none';
+        return;
+      }
+
+      const volume = weight * coeff;
+
+      // Parse agent and concentration
+      const agentMap = {
+        'levobupivacaine_0.25': { name: 'Levobupivacaine', conc: 0.25, maxMgKg: 2 },
+        'levobupivacaine_0.2':  { name: 'Levobupivacaine', conc: 0.2,  maxMgKg: 2 },
+        'ropivacaine_0.2':      { name: 'Ropivacaine',     conc: 0.2,  maxMgKg: 3 },
+        'ropivacaine_0.1':      { name: 'Ropivacaine',     conc: 0.1,  maxMgKg: 3 },
+      };
+      const agent = agentMap[agentVal];
+      const mgPerMl = agent.conc * 10; // conc% × 10 = mg/mL
+      const totalMg = volume * mgPerMl;
+      const mgKg    = totalMg / weight;
+      const maxMg   = agent.maxMgKg * weight;
+      const safe    = totalMg <= maxMg;
+
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = `
+        <div style="background:${safe ? '#e8f5e9' : '#ffebee'}; border:2px solid ${safe ? '#388e3c' : '#c62828'}; border-radius:8px; padding:14px 16px;">
+          <div style="font-size:24px; font-weight:700; color:${safe ? '#2e7d32' : '#c62828'}; margin-bottom:10px;">
+            ${safe ? '✅' : '⚠️'} Volume: <span style="font-size:28px;">${volume.toFixed(1)} mL</span>
+          </div>
+          <table style="margin:0; font-size:21px;">
+            <tr><td style="padding:4px 12px 4px 0;"><strong>Weight:</strong></td><td>${weight} kg</td></tr>
+            <tr><td style="padding:4px 12px 4px 0;"><strong>Coefficient:</strong></td><td>${coeff} mL/kg</td></tr>
+            <tr><td style="padding:4px 12px 4px 0;"><strong>Agent:</strong></td><td>${agent.name} ${agent.conc}%</td></tr>
+            <tr><td style="padding:4px 12px 4px 0;"><strong>Total dose:</strong></td><td>${totalMg.toFixed(2)} mg (${mgKg.toFixed(2)} mg/kg)</td></tr>
+            <tr><td style="padding:4px 12px 4px 0;"><strong>Max safe dose:</strong></td><td>${maxMg.toFixed(2)} mg (${agent.maxMgKg} mg/kg)</td></tr>
+            <tr style="font-weight:700; color:${safe ? '#2e7d32' : '#c62828'};"><td style="padding:4px 12px 4px 0;"><strong>Safety check:</strong></td>
+              <td>${safe ? '✅ Within safe limit' : '❌ EXCEEDS safe limit — reduce volume or use lower concentration'}</td></tr>
+          </table>
+        </div>`;
+    }
+
+    function resetArmitage() {
+      document.getElementById('armWeight').value = '';
+      document.getElementById('armLevel').value  = '1.0';
+      document.getElementById('armAgent').value  = 'levobupivacaine_0.25';
+      document.getElementById('armResult').style.display = 'none';
     }
 
     // Metabolic Acidosis Calculator functions
@@ -6906,8 +6960,9 @@
 
       <!-- Sub-tab nav -->
       <div style="display:flex; gap:0; margin:0 0 0; border-bottom:1.6px solid #e0e0e0; flex-wrap:wrap;">
-        <button id="laTabBtnDose"  onclick="showLATab('dose')"  class="pals-tab-btn pals-tab-active">📐 Max Dose &amp; Dilution</button>
-        <button id="laTabBtnLAST" onclick="showLATab('last')" class="pals-tab-btn">🚨 LAST Treatment</button>
+        <button id="laTabBtnDose"     onclick="showLATab('dose')"     class="pals-tab-btn pals-tab-active">📐 Max Dose &amp; Dilution</button>
+        <button id="laTabBtnArmitage" onclick="showLATab('armitage')" class="pals-tab-btn">🧮 Armitage Formula</button>
+        <button id="laTabBtnLAST"     onclick="showLATab('last')"     class="pals-tab-btn">🚨 LAST Treatment</button>
       </div>
 
       <!-- ══════════════════════════════════
@@ -7059,6 +7114,109 @@
       </div>
 
       </div><!-- end laTabDose -->
+
+      <!-- ══════════════════════════════════
+           TAB 2 — ARMITAGE FORMULA
+           ══════════════════════════════════ -->
+      <div id="laTabArmitage" class="pals-tab-panel" style="display:none;">
+
+        <div style="background:#e3f2fd; border-left:4px solid #1976d2; border-radius:8px; padding:14px 16px; margin:20px 0 16px;">
+          <strong style="color:#1565c0; font-size:22.4px;">📖 Armitage Formula — Caudal Epidural Volume</strong>
+          <p style="margin:8px 0 0; font-size:20.8px; line-height:1.8;">
+            The <strong>Armitage formula</strong> estimates the volume of local anaesthetic required for caudal epidural block in children, based on the desired dermatomal level.
+          </p>
+          <div style="margin-top:10px; font-size:22.4px; background:#fff; border-radius:6px; padding:10px 14px; display:inline-block;">
+            <strong>Volume (mL) = Weight (kg) × Armitage coefficient</strong>
+          </div>
+        </div>
+
+        <!-- Armitage coefficient reference table -->
+        <h3 style="color:#1565c0; border-bottom:1.6px solid #1976d2; padding-bottom:6px; margin:0 0 12px; font-size:20.8px;">📋 Armitage Coefficients</h3>
+        <table style="margin-bottom:16px;">
+          <thead>
+            <tr>
+              <th>Desired Block Level</th>
+              <th>Volume (mL/kg)</th>
+              <th>Clinical Use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#e3f2fd;">
+              <td><strong>Lumbosacral</strong> (S5–L1)</td>
+              <td><strong>0.5 mL/kg</strong></td>
+              <td>Perineal / anorectal surgery</td>
+            </tr>
+            <tr>
+              <td><strong>Thoracolumbar</strong> (T10)</td>
+              <td><strong>1.0 mL/kg</strong></td>
+              <td>Lower abdominal surgery (e.g. herniotomy)</td>
+            </tr>
+            <tr style="background:#e3f2fd;">
+              <td><strong>Mid-thoracic</strong> (T6)</td>
+              <td><strong>1.25 mL/kg</strong></td>
+              <td>Upper abdominal surgery</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Calculator -->
+        <h3 style="color:#6a1b9a; border-bottom:1.6px solid #8e24aa; padding-bottom:6px; margin:20px 0 14px; font-size:20.8px;">🧮 Calculator</h3>
+
+        <div style="background:#f3e5f5; border-radius:9.6px; padding:16px; margin-bottom:14px;">
+          <div style="display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end; margin-bottom:14px;">
+
+            <!-- Weight -->
+            <div>
+              <label style="display:block; font-weight:600; margin-bottom:4px; font-size:22.4px;">Body weight (kg):</label>
+              <input type="number" id="armWeight" min="0" step="0.1" placeholder="Enter weight"
+                onkeyup="calculateArmitage()" onchange="calculateArmitage()"
+                style="padding:8px 12px; border-radius:6.4px; border:1.5px solid #ce93d8; font-size:22.4px; width:130px; background:#fff;">
+            </div>
+
+            <!-- Block level -->
+            <div>
+              <label style="display:block; font-weight:600; margin-bottom:4px; font-size:22.4px;">Desired block level:</label>
+              <select id="armLevel" onchange="calculateArmitage()"
+                style="padding:8px 12px; border-radius:6.4px; border:1.5px solid #ce93d8; font-size:22.4px; background:#fff;">
+                <option value="0.5">Lumbosacral (S5–L1) — 0.5 mL/kg</option>
+                <option value="1.0" selected>Thoracolumbar (T10) — 1.0 mL/kg</option>
+                <option value="1.25">Mid-thoracic (T6) — 1.25 mL/kg</option>
+              </select>
+            </div>
+
+            <!-- Agent -->
+            <div>
+              <label style="display:block; font-weight:600; margin-bottom:4px; font-size:22.4px;">Agent &amp; concentration:</label>
+              <select id="armAgent" onchange="calculateArmitage()"
+                style="padding:8px 12px; border-radius:6.4px; border:1.5px solid #ce93d8; font-size:22.4px; background:#fff;">
+                <option value="levobupivacaine_0.25">Levobupivacaine 0.25%</option>
+                <option value="levobupivacaine_0.2">Levobupivacaine 0.2%</option>
+                <option value="ropivacaine_0.2">Ropivacaine 0.2%</option>
+                <option value="ropivacaine_0.1">Ropivacaine 0.1%</option>
+              </select>
+            </div>
+
+            <button onclick="resetArmitage()" style="padding:8px 16px; background:#b0bec5; color:#fff; border:none; border-radius:6.4px; font-size:22.4px; cursor:pointer; align-self:flex-end;">Reset</button>
+          </div>
+
+          <!-- Result -->
+          <div id="armResult" style="display:none;"></div>
+        </div>
+
+        <!-- Safety reminders -->
+        <div class="note" style="background:#ffebee; border-left-color:#c62828; margin:14px 0 0; border-radius:6.4px;">
+          <strong>⚠️ Paediatric caudal safety reminders:</strong>
+          <ul style="margin:6px 0 0 18px; font-size:22.4px; line-height:1.9;">
+            <li>Maximum volume: <strong>1.25 mL/kg</strong> (cap at ~20–25 mL in most children)</li>
+            <li>Preferred agents: <strong>levobupivacaine 0.25%</strong> or <strong>ropivacaine 0.2%</strong> — avoid plain bupivacaine in infants</li>
+            <li>Aspirate carefully before injection; inject slowly in ≥5 mL increments with 30-second pauses</li>
+            <li>Neonates &amp; infants (&lt;6 months): reduce dose by 30–50% due to immature protein binding and high free fraction</li>
+            <li>Confirm caudal space with loss of resistance or ultrasound guidance</li>
+            <li>Adrenaline 1:200,000 (5 mcg/mL) may be added as intravascular injection marker</li>
+          </ul>
+        </div>
+
+      </div><!-- end laTabArmitage -->
 
       <!-- ══════════════════════════════════
            TAB 2 — LAST TREATMENT
