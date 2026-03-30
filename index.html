@@ -722,6 +722,18 @@
       [style*="font-size:20.8px"], [style*="font-size: 20.8px"] { font-size: 13px !important; }
       [style*="font-size:22.4px"], [style*="font-size: 22.4px"] { font-size: 13px !important; }
       [style*="font-size:24px"], [style*="font-size: 24px"] { font-size: 13px !important; }
+      [style*="font-size:21px"], [style*="font-size: 21px"] { font-size: 13px !important; }
+      /* rem-based overrides for IVF / Vital Signs / Armitage sections */
+      [style*="font-size:2rem"], [style*="font-size: 2rem"] { font-size: 1.3rem !important; }
+      [style*="font-size:1.65rem"], [style*="font-size: 1.65rem"] { font-size: 1.2rem !important; }
+      [style*="font-size:1.9rem"], [style*="font-size: 1.9rem"] { font-size: 1.3rem !important; }
+      [style*="font-size:1.75rem"], [style*="font-size: 1.75rem"] { font-size: 1.25rem !important; }
+      [style*="font-size:2.2rem"], [style*="font-size: 2.2rem"] { font-size: 1.35rem !important; }
+      [style*="font-size:1.5rem"], [style*="font-size: 1.5rem"] { font-size: 1.1rem !important; }
+      [style*="font-size:1.4rem"], [style*="font-size: 1.4rem"] { font-size: 1.05rem !important; }
+      [style*="font-size:1.45rem"], [style*="font-size: 1.45rem"] { font-size: 1.05rem !important; }
+      [style*="font-size:1.35rem"], [style*="font-size: 1.35rem"] { font-size: 1rem !important; }
+      [style*="font-size:1.3rem"], [style*="font-size: 1.3rem"] { font-size: 1rem !important; }
 
       /* details/summary panels — match body text size on mobile */
       details > div { font-size: 13px; }
@@ -751,6 +763,17 @@
       [style*="font-size:20.8px"], [style*="font-size: 20.8px"] { font-size: 12px !important; }
       [style*="font-size:22.4px"], [style*="font-size: 22.4px"] { font-size: 12px !important; }
       [style*="font-size:24px"], [style*="font-size: 24px"] { font-size: 12px !important; }
+      [style*="font-size:21px"], [style*="font-size: 21px"] { font-size: 12px !important; }
+      [style*="font-size:2rem"], [style*="font-size: 2rem"] { font-size: 1.2rem !important; }
+      [style*="font-size:1.65rem"], [style*="font-size: 1.65rem"] { font-size: 1.1rem !important; }
+      [style*="font-size:1.9rem"], [style*="font-size: 1.9rem"] { font-size: 1.2rem !important; }
+      [style*="font-size:1.75rem"], [style*="font-size: 1.75rem"] { font-size: 1.15rem !important; }
+      [style*="font-size:2.2rem"], [style*="font-size: 2.2rem"] { font-size: 1.25rem !important; }
+      [style*="font-size:1.5rem"], [style*="font-size: 1.5rem"] { font-size: 1rem !important; }
+      [style*="font-size:1.4rem"], [style*="font-size: 1.4rem"] { font-size: 0.95rem !important; }
+      [style*="font-size:1.45rem"], [style*="font-size: 1.45rem"] { font-size: 0.95rem !important; }
+      [style*="font-size:1.35rem"], [style*="font-size: 1.35rem"] { font-size: 0.9rem !important; }
+      [style*="font-size:1.3rem"], [style*="font-size: 1.3rem"] { font-size: 0.9rem !important; }
       details > div { font-size: 12px; }
       summary { font-size: 12px; }
     }
@@ -2078,6 +2101,8 @@
             </tr>
           </tbody>
         </table>
+
+        <div id="kclSmallVolWarn" style="display:none; margin-top:14px; background:#fff8e1; border-left:4px solid #f9a825; border-radius:6.4px; padding:12px 14px; font-size:21px; line-height:1.8; color:#333;"></div>
 
         <div class="note" style="margin-top: 16px; background: #e3f2fd; border-left-color: #2196f3;">
           <strong>Clinical Note:</strong> 
@@ -5345,13 +5370,30 @@
       // Display results
       document.getElementById('electResultWeight').textContent = weight.toFixed(1) + ' kg';
       document.getElementById('electResultFactor').textContent = factor + ' mmol/kg';
-      document.getElementById('electResultTotal').textContent = totalKCl.toFixed(1) + ' mmol';
+      document.getElementById('electResultTotal').textContent = totalKCl.toFixed(2) + ' mmol';
       document.getElementById('electResultStock').textContent = stockConc + ' mmol/mL';
       document.getElementById('electResultDesired').textContent = desiredConc + ' mmol/mL';
-      document.getElementById('electResultStockVol').textContent = stockVolume.toFixed(1) + ' mL';
-      document.getElementById('electResultDiluent').textContent = diluentVolume.toFixed(1) + ' mL';
-      document.getElementById('electResultTotalVol').textContent = totalVolume.toFixed(1) + ' mL';
-      
+      document.getElementById('electResultStockVol').textContent = stockVolume.toFixed(2) + ' mL';
+      document.getElementById('electResultDiluent').textContent = diluentVolume.toFixed(2) + ' mL';
+      document.getElementById('electResultTotalVol').textContent = totalVolume.toFixed(2) + ' mL';
+
+      // Warn if stock volume is very small — suggest pre-diluting to 1 mmol/mL
+      const smallVolWarn = document.getElementById('kclSmallVolWarn');
+      if (stockVolume < 0.5) {
+        smallVolWarn.style.display = 'block';
+        smallVolWarn.innerHTML = `
+          <strong>⚠️ Small stock volume warning:</strong><br>
+          The calculated stock KCl volume is <strong>${stockVolume.toFixed(2)} mL</strong> — this is very small and
+          difficult to measure accurately with a standard syringe.<br><br>
+          <strong>Recommendation:</strong> Pre-dilute stock KCl to <strong>1 mmol/mL</strong> before use
+          to improve accuracy:<br>
+          &nbsp;&nbsp;e.g. Take <strong>1 mL of KCl ${stockConc} mmol/mL</strong> and add
+          <strong>${(stockConc - 1).toFixed(1)} mL of NS</strong> → gives 1 mmol/mL in ${stockConc.toFixed(1)} mL total.<br><br>
+          Then use the diluted 1 mmol/mL solution and re-enter <strong>1</strong> as the stock concentration above.`;
+      } else {
+        smallVolWarn.style.display = 'none';
+      }
+
       document.getElementById('electrolyteResult').style.display = 'block';
     }
 
@@ -8151,17 +8193,17 @@
 
         <!-- Vital Signs Reference — always visible regardless of weight entry -->
         <div style="background:#fff8e1; border:2px solid #f9a825; border-radius:12px; padding:18px; margin-top:8px;">
-          <div style="font-weight:700; color:#e65100; font-size:26px; margin-bottom:14px;">📊 Normal Paediatric Vital Signs Reference</div>
+          <div style="font-weight:700; color:#e65100; font-size:1.65rem; margin-bottom:14px;">📊 Normal Paediatric Vital Signs Reference</div>
           <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
-            <table style="width:100%; font-size:24px; min-width:560px;">
+            <table style="width:100%; font-size:1.5rem; min-width:560px;">
               <thead>
                 <tr style="background:#f57f17; color:#fff;">
                   <th style="padding:9px 12px; text-align:left;">Age Group</th>
-                  <th style="padding:9px 12px; text-align:center;">HR<br><span style="font-weight:400; font-size:21px;">(beats/min)</span></th>
-                  <th style="padding:9px 12px; text-align:center;">RR<br><span style="font-weight:400; font-size:21px;">(breaths/min)</span></th>
-                  <th style="padding:9px 12px; text-align:center;">Systolic BP<br><span style="font-weight:400; font-size:21px;">(mmHg)</span></th>
-                  <th style="padding:9px 12px; text-align:center;">SBP Hypotension<br><span style="font-weight:400; font-size:21px;">(&lt; mmHg)</span></th>
-                  <th style="padding:9px 12px; text-align:center;">SpO₂<br><span style="font-weight:400; font-size:21px;">(%)</span></th>
+                  <th style="padding:9px 12px; text-align:center;">HR<br><span style="font-weight:400; font-size:1.3rem;">(beats/min)</span></th>
+                  <th style="padding:9px 12px; text-align:center;">RR<br><span style="font-weight:400; font-size:1.3rem;">(breaths/min)</span></th>
+                  <th style="padding:9px 12px; text-align:center;">Systolic BP<br><span style="font-weight:400; font-size:1.3rem;">(mmHg)</span></th>
+                  <th style="padding:9px 12px; text-align:center;">SBP Hypotension<br><span style="font-weight:400; font-size:1.3rem;">(&lt; mmHg)</span></th>
+                  <th style="padding:9px 12px; text-align:center;">SpO₂<br><span style="font-weight:400; font-size:1.3rem;">(%)</span></th>
                 </tr>
               </thead>
               <tbody>
@@ -8216,12 +8258,12 @@
               </tbody>
             </table>
           </div>
-          <div style="margin-top:12px; background:#fff; border-radius:8px; padding:12px; font-size:24px; line-height:1.9; border:1px solid #ffcc02;">
+          <div style="margin-top:12px; background:#fff; border-radius:8px; padding:12px; font-size:1.5rem; line-height:1.9; border:1px solid #ffcc02;">
             <strong>Hypotension rule of thumb (PALS 2025):</strong>
             SBP &lt; 70 + (2 × age in years) mmHg for children 1–10 yr &nbsp;|&nbsp;
             SBP &lt; 90 mmHg for ≥ 10 yr
           </div>
-          <div class="note" style="background:#fff8e1; border-left-color:#f9a825; margin-top:10px; font-size:22px;">
+          <div class="note" style="background:#fff8e1; border-left-color:#f9a825; margin-top:10px; font-size:1.4rem;">
             <strong>References:</strong> AHA/PALS 2025; APLS 6th Ed.; Fleming S et al. <em>Arch Dis Child.</em> 2011;96:323–328 (normal HR/RR ranges); PICU reference ranges. Values are approximate — always interpret in clinical context.
           </div>
         </div>
@@ -8253,7 +8295,7 @@
 
       <!-- ── MAINTENANCE ── -->
       <div style="background:#e1f5fe; border:2px solid #0288d1; border-radius:12px; padding:18px; margin-bottom:18px;">
-        <div style="font-weight:700; color:#01579b; font-size:2rem; margin-bottom:14px;">
+        <div style="font-weight:700; color:#01579b; font-size:1.65rem; margin-bottom:14px;">
           🔵 Maintenance Fluid — Holliday-Segar Method
         </div>
 
@@ -8321,7 +8363,7 @@
 
       <!-- ── FLUID BOLUS ── -->
       <div style="background:#fce4ec; border:2px solid #e91e63; border-radius:12px; padding:18px; margin-bottom:18px;">
-        <div style="font-weight:700; color:#880e4f; font-size:2rem; margin-bottom:14px;">
+        <div style="font-weight:700; color:#880e4f; font-size:1.65rem; margin-bottom:14px;">
           🔴 Fluid Bolus Calculator
         </div>
 
@@ -8350,7 +8392,8 @@
         <!-- Bolus quick reference — always visible -->
         <div style="background:#fff; border-radius:8px; padding:14px; border:1.5px solid #f48fb1; margin-top:8px;">
           <div style="font-weight:700; color:#880e4f; font-size:1.65rem; margin-bottom:8px;">📋 Fluid Bolus Guide</div>
-          <table style="width:100%; font-size:1.5rem; margin:0;">
+          <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+          <table style="width:100%; font-size:1.5rem; margin:0; min-width:520px;">
             <thead>
               <tr style="background:#c2185b; color:#fff;">
                 <th style="padding:8px 12px; text-align:left;">Scenario</th>
@@ -8383,9 +8426,10 @@
                 <td style="padding:8px 12px; font-weight:700;">5–10 mL/kg</td>
                 <td style="padding:8px 12px;">Over 10–20 min</td>
                 <td style="padding:8px 12px;">0.9% NaCl; avoid dextrose</td>
-              </tr>
             </tbody>
           </table>
+          </div><!-- end overflow-x:auto bolus guide -->
+          <div class="note" style="background:#fce4ec; border-left-color:#c62828; margin:10px 0 0; font-size:1.5rem;">
           <div class="note" style="background:#fce4ec; border-left-color:#c62828; margin:10px 0 0; font-size:1.5rem;">
             <strong>⚠️ After each bolus:</strong> Reassess HR, BP, capillary refill, urine output, lung bases (crackles),
             and hepatomegaly. Stop fluid if signs of overload develop. For cardiogenic shock, start with 5 mL/kg.
@@ -8393,9 +8437,9 @@
         </div>
       </div>
 
-      <!-- ── VITAL SIGNS REFERENCE ── -->
-      <div style="background:#fff8e1; border:2px solid #f9a825; border-radius:12px; padding:18px; margin-bottom:18px;">
-        <div style="font-weight:700; color:#e65100; font-size:2rem; margin-bottom:14px;">
+        <div style="font-weight:700; color:#e65100; font-size:1.65rem; margin-bottom:14px;">
+          📊 Normal Paediatric Vital Signs Reference
+        </div>tyle="font-weight:700; color:#e65100; font-size:1.65rem; margin-bottom:14px;">
           📊 Normal Paediatric Vital Signs Reference
         </div>
 
@@ -8519,7 +8563,7 @@
 
       <!-- ── PERIOPERATIVE / INTRAOPERATIVE GUIDE ── -->
       <div style="background:#f3e5f5; border:2px solid #8e24aa; border-radius:12px; padding:18px; margin-bottom:8px;">
-        <div style="font-weight:700; color:#4a148c; font-size:2rem; margin-bottom:14px;">
+        <div style="font-weight:700; color:#4a148c; font-size:1.65rem; margin-bottom:14px;">
           🟣 Perioperative Fluid Guide
         </div>
 
