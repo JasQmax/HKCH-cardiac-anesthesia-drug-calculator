@@ -1120,7 +1120,7 @@
         <span class="nav-icon">🍬</span>Glucose
       </button>
       <button class="top-nav-btn" id="navIVFluids" onclick="showIVFluidsCalculator()">
-        <span class="nav-icon">💧</span>IV Fluids
+        <span class="nav-icon">💧</span>IV Fluids &amp; Vitals
       </button>
       <button class="top-nav-btn" id="navPain" onclick="showPainCalculator()">
         <span class="nav-icon">😢</span>Pain
@@ -2889,6 +2889,10 @@
 
       <!-- ── TAB 1: BLOOD PRODUCTS ── -->
       <div id="bloodTabProducts">
+        <div style="background:#fff3e0; border-left:4px solid #e65100; border-radius:8px; padding:12px 14px; margin-bottom:14px; font-size:1.45rem; color:#555; line-height:1.7;">
+          <strong style="color:#e65100; font-size:1.55rem;">🩸 Transfusion Volume Calculator</strong><br>
+          Calculates transfusion volumes for <strong>packed red blood cells (pRBC)</strong>, <strong>fresh frozen plasma (FFP)</strong>, <strong>platelets</strong>, and <strong>cryoprecipitate</strong> based on patient weight — and estimates pRBC volume using current and target Hb when provided.
+        </div>
         <div class="input-section">
           <div class="input-group" style="flex-direction:column; align-items:stretch;">
             <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:11.2px;">
@@ -4620,7 +4624,7 @@
         { 
           containerId: 'ivFluidsCalculator', 
           tabId: 'navIVFluids', 
-          tabName: 'IV Fluids', 
+          tabName: 'IV Fluids & Vitals',
           tabClass: 'fluids',
           showFn: 'showIVFluidsCalculator',
           selectors: ['table td', '.section-title', 'h2', 'h3', '.note']
@@ -6632,7 +6636,7 @@
        ═══════════════════════════════════════════════ */
 
     function showGenTab(tab) {
-      ['pca','ibw','abw','bsa','fluids'].forEach(t => {
+      ['pca','ibw','abw','bsa'].forEach(t => {
         document.getElementById('genTab' + t.toUpperCase()).style.display = t === tab ? 'block' : 'none';
         document.getElementById('genTabBtn' + t.toUpperCase()).classList.toggle('pals-tab-active', t === tab);
       });
@@ -6834,68 +6838,6 @@
     }
 
     // ── IV Fluids ──
-    function calcFluids() {
-      const wt  = parseFloat(document.getElementById('fluidWeight').value);
-      const res = document.getElementById('fluidResult');
-      if (isNaN(wt) || wt <= 0) { res.style.display = 'none'; return; }
-
-      // Holliday-Segar maintenance
-      let maintDay;
-      if (wt <= 10)       maintDay = wt * 100;
-      else if (wt <= 20)  maintDay = 1000 + (wt - 10) * 50;
-      else                maintDay = 1500 + (wt - 20) * 20;
-      maintDay = Math.min(maintDay, 2400); // practical daily cap
-      const maintHr = maintDay / 24;
-
-      let formula;
-      if (wt <= 10)       formula = wt.toFixed(1) + ' kg × 100 = ' + maintDay.toFixed(0) + ' mL/day';
-      else if (wt <= 20)  formula = '1000 + (' + (wt-10).toFixed(1) + ' × 50) = ' + maintDay.toFixed(0) + ' mL/day';
-      else                formula = '1500 + (' + (wt-20).toFixed(1) + ' × 20) = ' + maintDay.toFixed(0) + ' mL/day' + (maintDay === 2400 ? ' (capped at 2400)' : '');
-
-      document.getElementById('fluidMaintDay').textContent     = maintDay.toFixed(0) + ' mL';
-      document.getElementById('fluidMaintHr').textContent      = maintHr.toFixed(1)  + ' mL';
-      document.getElementById('fluidMaintFormula').textContent = formula;
-
-      // Bolus
-      document.getElementById('fluidBolus10').textContent   = (wt * 10).toFixed(0)  + ' mL';
-      document.getElementById('fluidBolus20').textContent   = (wt * 20).toFixed(0)  + ' mL';
-      document.getElementById('fluidBolusMax').textContent  = (wt * 60).toFixed(0)  + ' mL';
-
-      // Intraoperative
-      document.getElementById('fluidIntraopMinor').textContent = (wt * 4).toFixed(1) + ' mL';
-      document.getElementById('fluidIntraopMod').textContent   = (wt * 6).toFixed(1) + ' mL';
-      document.getElementById('fluidIntraopMajor').textContent = (wt * 8).toFixed(1) + ' mL';
-
-      res.style.display = 'block';
-    }
-
-    // ── IV Fluids (General tab — existing calcFluids kept for back-compat) ──
-    function calcFluids() {
-      const wt  = parseFloat(document.getElementById('fluidWeight').value);
-      const res = document.getElementById('fluidResult');
-      if (isNaN(wt) || wt <= 0) { res.style.display = 'none'; return; }
-      let maintDay;
-      if (wt <= 10)       maintDay = wt * 100;
-      else if (wt <= 20)  maintDay = 1000 + (wt - 10) * 50;
-      else                maintDay = 1500 + (wt - 20) * 20;
-      maintDay = Math.min(maintDay, 2400);
-      const maintHr = maintDay / 24;
-      let formula;
-      if (wt <= 10)       formula = wt.toFixed(1) + ' kg × 100 = ' + maintDay.toFixed(0) + ' mL/day';
-      else if (wt <= 20)  formula = '1000 + (' + (wt-10).toFixed(1) + ' × 50) = ' + maintDay.toFixed(0) + ' mL/day';
-      else                formula = '1500 + (' + (wt-20).toFixed(1) + ' × 20) = ' + maintDay.toFixed(0) + ' mL/day' + (maintDay === 2400 ? ' (capped)' : '');
-      document.getElementById('fluidMaintDay').textContent     = maintDay.toFixed(0) + ' mL';
-      document.getElementById('fluidMaintHr').textContent      = maintHr.toFixed(1)  + ' mL';
-      document.getElementById('fluidMaintFormula').textContent = formula;
-      document.getElementById('fluidBolus10').textContent   = (wt * 10).toFixed(0)  + ' mL';
-      document.getElementById('fluidBolus20').textContent   = (wt * 20).toFixed(0)  + ' mL';
-      document.getElementById('fluidBolusMax').textContent  = (wt * 60).toFixed(0)  + ' mL';
-      document.getElementById('fluidIntraopMinor').textContent = (wt * 4).toFixed(1) + ' mL';
-      document.getElementById('fluidIntraopMod').textContent   = (wt * 6).toFixed(1) + ' mL';
-      document.getElementById('fluidIntraopMajor').textContent = (wt * 8).toFixed(1) + ' mL';
-      res.style.display = 'block';
-    }
-
     // ── IV Fluids standalone tab ──
     function calcIVF() {
       const wt = parseFloat(document.getElementById('ivfWeight').value);
@@ -6991,6 +6933,20 @@
 
       // Weight band label
       bandEl.textContent = '→ ' + ageName + ' (' + ageDesc + ')';
+    }
+
+    function calcMedianSBP() {
+      const age = parseFloat(document.getElementById('medSBPAge').value);
+      const res = document.getElementById('medSBPResult');
+      const note = document.getElementById('medSBPNote');
+      if (isNaN(age) || age < 1 || age > 10) {
+        res.textContent = '';
+        note.textContent = age > 10 ? '⚠️ Formula applies to ages 1–10 yr only.' : '';
+        return;
+      }
+      const sbp = 90 + (2 * Math.floor(age));
+      res.textContent = 'Median SBP ≈ ' + sbp + ' mmHg';
+      note.textContent = '= 90 + (2 × ' + Math.floor(age) + ')';
     }
 
   </script>
@@ -7729,7 +7685,6 @@
         <button id="genTabBtnIBW"  onclick="showGenTab('ibw')"  class="pals-tab-btn">⚖️ Ideal Body Weight</button>
         <button id="genTabBtnABW"  onclick="showGenTab('abw')"  class="pals-tab-btn">🧮 Adjusted Body Weight</button>
         <button id="genTabBtnBSA"    onclick="showGenTab('bsa')"    class="pals-tab-btn">📐 Body Surface Area</button>
-        <button id="genTabBtnFLUIDS" onclick="showGenTab('fluids')" class="pals-tab-btn">💧 IV Fluids &amp; Vital Signs</button>
       </div>
 
       <!-- ── PCA TAB ── -->
@@ -8094,181 +8049,6 @@
         </div>
       </div>
 
-      <!-- ── FLUIDS & VITAL SIGNS TAB ── -->
-      <div id="genTabFLUIDS" class="pals-tab-panel" style="display:none;">
-        <h3 style="color:#0277bd; border-bottom:2px solid #0288d1; padding-bottom:8px; margin:20px 0 16px;">💧 IV Fluids &amp; Paediatric Vital Signs</h3>
-
-        <!-- Weight input -->
-        <div class="input-section">
-          <div class="input-group" style="flex-wrap:wrap; gap:20px;">
-            <div>
-              <label for="fluidWeight">Weight (kg):</label>
-              <input type="number" id="fluidWeight" min="1" max="150" step="0.1" placeholder="e.g. 15"
-                oninput="calcFluids()" style="width:130px;">
-            </div>
-          </div>
-        </div>
-
-        <!-- Results -->
-        <div id="fluidResult" style="display:none; margin-top:4px;">
-
-          <!-- Maintenance -->
-          <div style="background:#e1f5fe; border:2px solid #0288d1; border-radius:12px; padding:18px; margin-bottom:16px;">
-            <div style="font-weight:700; color:#01579b; font-size:26px; margin-bottom:12px;">🔵 Maintenance Fluid — Holliday-Segar Method</div>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-bottom:12px;">
-              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #0288d1;">
-                <div style="font-size:24px; color:#555; margin-bottom:4px;">Daily Rate</div>
-                <div id="fluidMaintDay" style="font-size:28px; font-weight:700; color:#01579b;">—</div>
-                <div style="font-size:22px; color:#777;">mL/day</div>
-              </div>
-              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #0288d1;">
-                <div style="font-size:24px; color:#555; margin-bottom:4px;">Hourly Rate</div>
-                <div id="fluidMaintHr" style="font-size:28px; font-weight:700; color:#01579b;">—</div>
-                <div style="font-size:22px; color:#777;">mL/hr</div>
-              </div>
-              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #0288d1;">
-                <div style="font-size:24px; color:#555; margin-bottom:4px;">Formula Used</div>
-                <div id="fluidMaintFormula" style="font-size:22px; font-weight:600; color:#0277bd; line-height:1.6;">—</div>
-              </div>
-            </div>
-            <div class="note" style="background:#e1f5fe; border-left-color:#0288d1; margin:0; font-size:24px;">
-              <strong>Holliday-Segar:</strong> 0–10 kg → 100 mL/kg/day (4 mL/kg/hr) &nbsp;|&nbsp;
-              10–20 kg → 1000 + 50 mL/kg/day for each kg &gt;10 &nbsp;|&nbsp;
-              &gt;20 kg → 1500 + 20 mL/kg/day for each kg &gt;20 &nbsp;(max ~2400 mL/day)
-            </div>
-          </div>
-
-          <!-- Bolus -->
-          <div style="background:#fce4ec; border:2px solid #e91e63; border-radius:12px; padding:18px; margin-bottom:16px;">
-            <div style="font-weight:700; color:#880e4f; font-size:26px; margin-bottom:12px;">🔴 Fluid Bolus</div>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:12px;">
-              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #e91e63;">
-                <div style="font-size:24px; color:#555; margin-bottom:4px;">10 mL/kg bolus</div>
-                <div id="fluidBolus10" style="font-size:28px; font-weight:700; color:#880e4f;">—</div>
-                <div style="font-size:22px; color:#777;">mL</div>
-              </div>
-              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #e91e63;">
-                <div style="font-size:24px; color:#555; margin-bottom:4px;">20 mL/kg bolus</div>
-                <div id="fluidBolus20" style="font-size:28px; font-weight:700; color:#880e4f;">—</div>
-                <div style="font-size:22px; color:#777;">mL</div>
-              </div>
-              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #c62828;">
-                <div style="font-size:24px; color:#555; margin-bottom:4px;">Max bolus (60 mL/kg)</div>
-                <div id="fluidBolusMax" style="font-size:28px; font-weight:700; color:#c62828;">—</div>
-                <div style="font-size:22px; color:#777;">mL cumulative</div>
-              </div>
-            </div>
-            <div class="note" style="background:#fce4ec; border-left-color:#c62828; margin:0; font-size:24px;">
-              <strong>Bolus fluid:</strong> Use isotonic crystalloid (0.9% NaCl or Plasmalyte). Give 10 mL/kg over 5–10 min; reassess after each bolus.
-              Repeat up to 20–60 mL/kg total in first hour for septic shock. Reassess frequently for fluid overload. In neonates and cardiac patients, use smaller boluses (5–10 mL/kg).
-            </div>
-          </div>
-
-          <!-- Intraoperative -->
-          <div style="background:#f3e5f5; border:2px solid #8e24aa; border-radius:12px; padding:18px; margin-bottom:16px;">
-            <div style="font-weight:700; color:#4a148c; font-size:26px; margin-bottom:12px;">🟣 Intraoperative Fluid (Perioperative)</div>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:12px;">
-              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #8e24aa;">
-                <div style="font-size:24px; color:#555; margin-bottom:4px;">Minor surgery</div>
-                <div id="fluidIntraopMinor" style="font-size:26px; font-weight:700; color:#4a148c;">—</div>
-                <div style="font-size:22px; color:#777;">mL/hr (4 mL/kg/hr)</div>
-              </div>
-              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #8e24aa;">
-                <div style="font-size:24px; color:#555; margin-bottom:4px;">Moderate surgery</div>
-                <div id="fluidIntraopMod" style="font-size:26px; font-weight:700; color:#4a148c;">—</div>
-                <div style="font-size:22px; color:#777;">mL/hr (6 mL/kg/hr)</div>
-              </div>
-              <div style="background:#fff; border-radius:8px; padding:14px; text-align:center; border:1.5px solid #8e24aa;">
-                <div style="font-size:24px; color:#555; margin-bottom:4px;">Major surgery</div>
-                <div id="fluidIntraopMajor" style="font-size:26px; font-weight:700; color:#4a148c;">—</div>
-                <div style="font-size:22px; color:#777;">mL/hr (8 mL/kg/hr)</div>
-              </div>
-            </div>
-            <div class="note" style="background:#f3e5f5; border-left-color:#8e24aa; margin:0; font-size:24px;">
-              Intraoperative rates are estimates; titrate to urine output ≥0.5–1 mL/kg/hr, haemodynamic response, and surgical blood loss.
-              Use isotonic balanced crystalloid (Plasmalyte or Hartmann's) perioperatively.
-            </div>
-          </div>
-        </div>
-
-        <!-- Vital Signs Reference — always visible regardless of weight entry -->
-        <div style="background:#fff8e1; border:2px solid #f9a825; border-radius:12px; padding:18px; margin-top:8px;">
-          <div style="font-weight:700; color:#e65100; font-size:1.65rem; margin-bottom:14px;">📊 Normal Paediatric Vital Signs Reference</div>
-          <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
-            <table style="width:100%; font-size:1.5rem; min-width:560px;">
-              <thead>
-                <tr style="background:#f57f17; color:#fff;">
-                  <th style="padding:9px 12px; text-align:left;">Age Group</th>
-                  <th style="padding:9px 12px; text-align:center;">HR<br><span style="font-weight:400; font-size:1.3rem;">(beats/min)</span></th>
-                  <th style="padding:9px 12px; text-align:center;">RR<br><span style="font-weight:400; font-size:1.3rem;">(breaths/min)</span></th>
-                  <th style="padding:9px 12px; text-align:center;">Systolic BP<br><span style="font-weight:400; font-size:1.3rem;">(mmHg)</span></th>
-                  <th style="padding:9px 12px; text-align:center;">SBP Hypotension<br><span style="font-weight:400; font-size:1.3rem;">(&lt; mmHg)</span></th>
-                  <th style="padding:9px 12px; text-align:center;">SpO₂<br><span style="font-weight:400; font-size:1.3rem;">(%)</span></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="background:#fff9c4;">
-                  <td style="padding:8px 12px;"><strong>Neonate</strong><br><small>0–28 days</small></td>
-                  <td style="padding:8px 12px; text-align:center;">100–180</td>
-                  <td style="padding:8px 12px; text-align:center;">30–60</td>
-                  <td style="padding:8px 12px; text-align:center;">60–90</td>
-                  <td style="padding:8px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 60</td>
-                  <td style="padding:8px 12px; text-align:center;">95–100</td>
-                </tr>
-                <tr>
-                  <td style="padding:8px 12px;"><strong>Infant</strong><br><small>1–12 months</small></td>
-                  <td style="padding:8px 12px; text-align:center;">100–160</td>
-                  <td style="padding:8px 12px; text-align:center;">25–50</td>
-                  <td style="padding:8px 12px; text-align:center;">70–100</td>
-                  <td style="padding:8px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 70</td>
-                  <td style="padding:8px 12px; text-align:center;">95–100</td>
-                </tr>
-                <tr style="background:#fff9c4;">
-                  <td style="padding:8px 12px;"><strong>Toddler</strong><br><small>1–3 years</small></td>
-                  <td style="padding:8px 12px; text-align:center;">90–150</td>
-                  <td style="padding:8px 12px; text-align:center;">20–40</td>
-                  <td style="padding:8px 12px; text-align:center;">80–110</td>
-                  <td style="padding:8px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 70</td>
-                  <td style="padding:8px 12px; text-align:center;">95–100</td>
-                </tr>
-                <tr>
-                  <td style="padding:8px 12px;"><strong>Preschool</strong><br><small>3–5 years</small></td>
-                  <td style="padding:8px 12px; text-align:center;">80–140</td>
-                  <td style="padding:8px 12px; text-align:center;">20–30</td>
-                  <td style="padding:8px 12px; text-align:center;">80–115</td>
-                  <td style="padding:8px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 75</td>
-                  <td style="padding:8px 12px; text-align:center;">95–100</td>
-                </tr>
-                <tr style="background:#fff9c4;">
-                  <td style="padding:8px 12px;"><strong>School age</strong><br><small>6–12 years</small></td>
-                  <td style="padding:8px 12px; text-align:center;">70–120</td>
-                  <td style="padding:8px 12px; text-align:center;">18–25</td>
-                  <td style="padding:8px 12px; text-align:center;">85–120</td>
-                  <td style="padding:8px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 80</td>
-                  <td style="padding:8px 12px; text-align:center;">95–100</td>
-                </tr>
-                <tr>
-                  <td style="padding:8px 12px;"><strong>Adolescent</strong><br><small>12–18 years</small></td>
-                  <td style="padding:8px 12px; text-align:center;">60–100</td>
-                  <td style="padding:8px 12px; text-align:center;">12–20</td>
-                  <td style="padding:8px 12px; text-align:center;">100–135</td>
-                  <td style="padding:8px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 90</td>
-                  <td style="padding:8px 12px; text-align:center;">95–100</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div style="margin-top:12px; background:#fff; border-radius:8px; padding:12px; font-size:1.5rem; line-height:1.9; border:1px solid #ffcc02;">
-            <strong>Hypotension rule of thumb (PALS 2025):</strong>
-            SBP &lt; 70 + (2 × age in years) mmHg for children 1–10 yr &nbsp;|&nbsp;
-            SBP &lt; 90 mmHg for ≥ 10 yr
-          </div>
-          <div class="note" style="background:#fff8e1; border-left-color:#f9a825; margin-top:10px; font-size:1.4rem;">
-            <strong>References:</strong> AHA/PALS 2025; APLS 6th Ed.; Fleming S et al. <em>Arch Dis Child.</em> 2011;96:323–328 (normal HR/RR ranges); PICU reference ranges. Values are approximate — always interpret in clinical context.
-          </div>
-        </div>
-
-      </div><!-- end genTabFLUIDS -->
 
     </div><!-- end content -->
   </div><!-- end generalCalculator -->
@@ -8278,7 +8058,7 @@
        ══════════════════════════════════════════════════════════ -->
   <div class="container" id="ivFluidsCalculator" style="display:none; border-radius:0 0 16px 16px; margin-top:0;">
     <div class="content">
-      <h2 class="section-title" style="margin-top:8px;">💧 IV Fluids Calculator</h2>
+      <h2 class="section-title" style="margin-top:8px;">💧 IV Fluids &amp; Vitals</h2>
       <p class="subtitle" style="color:#555; margin-bottom:14.4px;">Maintenance Fluids · Fluid Bolus · Paediatric Vital Signs Reference</p>
 
       <!-- Weight input -->
@@ -8346,11 +8126,6 @@
                 <td style="padding:8px 12px;">+20 mL/kg/day</td>
                 <td style="padding:8px 12px;">+1 mL/kg/hr</td>
               </tr>
-              <tr style="background:#fff9c4;">
-                <td style="padding:8px 12px;"><strong>Examples</strong></td>
-                <td style="padding:8px 12px;">10 kg → 1000 mL/day<br>20 kg → 1500 mL/day<br>30 kg → 1700 mL/day</td>
-                <td style="padding:8px 12px;">10 kg → 40 mL/hr<br>20 kg → 60 mL/hr<br>30 kg → 70 mL/hr</td>
-              </tr>
             </tbody>
           </table>
         </div>
@@ -8358,6 +8133,12 @@
           <strong>Fluid choice:</strong> Use isotonic solutions (0.9% NaCl, Hartmann's/Plasmalyte) for maintenance in most
           paediatric patients. Hypotonic solutions (&lt;0.45% NaCl) carry risk of hyponatraemia and are generally avoided
           unless specifically indicated. Always add appropriate potassium (20 mmol/L) once urine output confirmed.
+        </div>
+        <div class="note" style="background:#fff8e1; border-left-color:#f9a825; margin:8px 0 0; font-size:1.5rem;">
+          🧪 <strong>Need to add dextrose to maintenance fluids?</strong>
+          Use the <a href="#" onclick="showGlucoseCalculator(); return false;"
+            style="color:#e65100; font-weight:700; text-decoration:underline;">Dextrose Dilution Calculator →</a>
+          (Glucose tab) to calculate volumes when diluting D50% to D5% or D10%.
         </div>
       </div>
 
@@ -8430,42 +8211,77 @@
           </table>
           </div><!-- end overflow-x:auto bolus guide -->
           <div class="note" style="background:#fce4ec; border-left-color:#c62828; margin:10px 0 0; font-size:1.5rem;">
-          <div class="note" style="background:#fce4ec; border-left-color:#c62828; margin:10px 0 0; font-size:1.5rem;">
             <strong>⚠️ After each bolus:</strong> Reassess HR, BP, capillary refill, urine output, lung bases (crackles),
             and hepatomegaly. Stop fluid if signs of overload develop. For cardiogenic shock, start with 5 mL/kg.
           </div>
         </div>
       </div>
 
+      <!-- ── VITAL SIGNS REFERENCE ── -->
+      <div style="background:#fff8e1; border:2px solid #f9a825; border-radius:12px; padding:18px; margin-bottom:18px;">
         <div style="font-weight:700; color:#e65100; font-size:1.65rem; margin-bottom:14px;">
           📊 Normal Paediatric Vital Signs Reference
-        </div>tyle="font-weight:700; color:#e65100; font-size:1.65rem; margin-bottom:14px;">
-          📊 Normal Paediatric Vital Signs Reference
+        </div>
+
+        <!-- Median SBP Calculator -->
+        <div style="background:#e8f5e9; border:1.5px solid #43a047; border-radius:10px; padding:14px; margin-bottom:14px;">
+          <div style="font-weight:700; color:#2e7d32; font-size:1.65rem; margin-bottom:10px;">🧮 Median SBP Estimator (Age 1–10 yr)</div>
+          <div style="font-size:1.45rem; color:#555; margin-bottom:10px;">Formula: <strong>90 + (2 × age in years)</strong> mmHg</div>
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <label style="font-size:1.5rem; font-weight:600; color:#2e7d32;">Age (years):</label>
+            <input type="number" id="medSBPAge" min="1" max="10" step="1" placeholder="1–10"
+              style="width:90px; padding:8px 10px; font-size:1.5rem; border:2px solid #43a047; border-radius:8px; text-align:center;"
+              oninput="calcMedianSBP()">
+            <div id="medSBPResult" style="font-size:1.7rem; font-weight:700; color:#1b5e20;"></div>
+          </div>
+          <div id="medSBPNote" style="font-size:1.35rem; color:#888; margin-top:6px;"></div>
         </div>
 
         <!-- Age-group highlight if weight entered -->
         <div id="ivfVSHighlight" style="display:none; margin-bottom:14px;"></div>
 
         <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
-          <table style="width:100%; font-size:1.5rem; min-width:620px; margin:0;">
+          <table style="width:100%; font-size:1.5rem; min-width:720px; margin:0;">
             <thead>
               <tr style="background:#f57f17; color:#fff;">
                 <th style="padding:10px 12px; text-align:left;">Age Group</th>
                 <th style="padding:10px 12px; text-align:center;">HR<br><span style="font-weight:400; font-size:1.3rem;">(beats/min)</span></th>
                 <th style="padding:10px 12px; text-align:center;">RR<br><span style="font-weight:400; font-size:1.3rem;">(breaths/min)</span></th>
-                <th style="padding:10px 12px; text-align:center;">Systolic BP<br><span style="font-weight:400; font-size:1.3rem;">(mmHg)</span></th>
-                <th style="padding:10px 12px; text-align:center;">Mean BP<br><span style="font-weight:400; font-size:1.3rem;">(mmHg)</span></th>
+                <th style="padding:10px 12px; text-align:center;">SBP<br><span style="font-weight:400; font-size:1.3rem;">(mmHg)</span></th>
+                <th style="padding:10px 12px; text-align:center;">DBP<br><span style="font-weight:400; font-size:1.3rem;">(mmHg)</span></th>
+                <th style="padding:10px 12px; text-align:center;">MAP<br><span style="font-weight:400; font-size:1.3rem;">(mmHg)</span></th>
                 <th style="padding:10px 12px; text-align:center; color:#ffcdd2;">Hypotension<br><span style="font-weight:400; font-size:1.3rem;">SBP &lt; mmHg</span></th>
                 <th style="padding:10px 12px; text-align:center;">SpO₂<br><span style="font-weight:400; font-size:1.3rem;">(%)</span></th>
               </tr>
             </thead>
             <tbody>
-              <tr id="vsRowNeonate" style="background:#fff9c4;">
-                <td style="padding:9px 12px;"><strong>Neonate</strong><br><small style="color:#777;">0–28 days</small></td>
+              <tr style="background:#fff9c4;">
+                <td style="padding:9px 12px;"><strong>Birth (12 h)</strong><br><small style="color:#777;">&lt;1000 g</small></td>
                 <td style="padding:9px 12px; text-align:center;"><strong>100–180</strong></td>
                 <td style="padding:9px 12px; text-align:center;"><strong>30–60</strong></td>
-                <td style="padding:9px 12px; text-align:center;"><strong>60–90</strong></td>
-                <td style="padding:9px 12px; text-align:center;"><strong>35–60</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>39–59</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>16–36</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>28–42</strong><br><small style="color:#888;">≈ PCA in wks</small></td>
+                <td style="padding:9px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 60</td>
+                <td style="padding:9px 12px; text-align:center;">95–100</td>
+              </tr>
+              <tr>
+                <td style="padding:9px 12px;"><strong>Birth (12 h)</strong><br><small style="color:#777;">3 kg term</small></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>100–180</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>30–60</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>60–76</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>31–45</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>48–57</strong></td>
+                <td style="padding:9px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 60</td>
+                <td style="padding:9px 12px; text-align:center;">95–100</td>
+              </tr>
+              <tr id="vsRowNeonate" style="background:#fff9c4;">
+                <td style="padding:9px 12px;"><strong>Neonate</strong><br><small style="color:#777;">96 h – 28 days</small></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>100–180</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>30–60</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>67–84</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>35–53</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>45–60</strong></td>
                 <td style="padding:9px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 60</td>
                 <td style="padding:9px 12px; text-align:center;">95–100</td>
               </tr>
@@ -8473,17 +8289,19 @@
                 <td style="padding:9px 12px;"><strong>Infant</strong><br><small style="color:#777;">1–12 months</small></td>
                 <td style="padding:9px 12px; text-align:center;"><strong>100–160</strong></td>
                 <td style="padding:9px 12px; text-align:center;"><strong>25–50</strong></td>
-                <td style="padding:9px 12px; text-align:center;"><strong>70–100</strong></td>
-                <td style="padding:9px 12px; text-align:center;"><strong>40–60</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>72–104</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>37–56</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>50–62</strong></td>
                 <td style="padding:9px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 70</td>
                 <td style="padding:9px 12px; text-align:center;">95–100</td>
               </tr>
               <tr id="vsRowToddler" style="background:#fff9c4;">
-                <td style="padding:9px 12px;"><strong>Toddler</strong><br><small style="color:#777;">1–3 years</small></td>
+                <td style="padding:9px 12px;"><strong>Toddler</strong><br><small style="color:#777;">1–2 years</small></td>
                 <td style="padding:9px 12px; text-align:center;"><strong>90–150</strong></td>
                 <td style="padding:9px 12px; text-align:center;"><strong>20–40</strong></td>
-                <td style="padding:9px 12px; text-align:center;"><strong>80–110</strong></td>
-                <td style="padding:9px 12px; text-align:center;"><strong>45–70</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>86–106</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>42–63</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>49–62</strong></td>
                 <td style="padding:9px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 70</td>
                 <td style="padding:9px 12px; text-align:center;">95–100</td>
               </tr>
@@ -8491,26 +8309,39 @@
                 <td style="padding:9px 12px;"><strong>Preschool</strong><br><small style="color:#777;">3–5 years</small></td>
                 <td style="padding:9px 12px; text-align:center;"><strong>80–140</strong></td>
                 <td style="padding:9px 12px; text-align:center;"><strong>20–30</strong></td>
-                <td style="padding:9px 12px; text-align:center;"><strong>80–115</strong></td>
-                <td style="padding:9px 12px; text-align:center;"><strong>50–75</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>89–112</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>46–72</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>58–69</strong></td>
                 <td style="padding:9px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 75</td>
                 <td style="padding:9px 12px; text-align:center;">95–100</td>
               </tr>
               <tr id="vsRowSchool" style="background:#fff9c4;">
-                <td style="padding:9px 12px;"><strong>School age</strong><br><small style="color:#777;">6–12 years</small></td>
+                <td style="padding:9px 12px;"><strong>School age</strong><br><small style="color:#777;">6–9 years</small></td>
                 <td style="padding:9px 12px; text-align:center;"><strong>70–120</strong></td>
                 <td style="padding:9px 12px; text-align:center;"><strong>18–25</strong></td>
-                <td style="padding:9px 12px; text-align:center;"><strong>85–120</strong></td>
-                <td style="padding:9px 12px; text-align:center;"><strong>55–80</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>97–115</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>57–76</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>66–72</strong></td>
                 <td style="padding:9px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 80</td>
                 <td style="padding:9px 12px; text-align:center;">95–100</td>
               </tr>
-              <tr id="vsRowAdolescent">
-                <td style="padding:9px 12px;"><strong>Adolescent</strong><br><small style="color:#777;">12–18 years</small></td>
+              <tr>
+                <td style="padding:9px 12px;"><strong>Preadolescent</strong><br><small style="color:#777;">10–12 years</small></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>60–110</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>16–22</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>102–120</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>61–80</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>71–79</strong></td>
+                <td style="padding:9px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 80</td>
+                <td style="padding:9px 12px; text-align:center;">95–100</td>
+              </tr>
+              <tr id="vsRowAdolescent" style="background:#fff9c4;">
+                <td style="padding:9px 12px;"><strong>Adolescent</strong><br><small style="color:#777;">12–15 years</small></td>
                 <td style="padding:9px 12px; text-align:center;"><strong>60–100</strong></td>
                 <td style="padding:9px 12px; text-align:center;"><strong>12–20</strong></td>
-                <td style="padding:9px 12px; text-align:center;"><strong>100–135</strong></td>
-                <td style="padding:9px 12px; text-align:center;"><strong>65–90</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>110–131</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>64–83</strong></td>
+                <td style="padding:9px 12px; text-align:center;"><strong>73–84</strong></td>
                 <td style="padding:9px 12px; text-align:center; color:#c62828; font-weight:700;">&lt; 90</td>
                 <td style="padding:9px 12px; text-align:center;">95–100</td>
               </tr>
@@ -8551,6 +8382,7 @@
             <li><strong>Respiratory rate:</strong> Tachypnoea may indicate respiratory distress, metabolic acidosis, or pain. Count for a full minute in infants.</li>
             <li><strong>SpO₂:</strong> Target ≥ 95% for most children. Neonates with cyanotic congenital heart disease may have lower acceptable saturations — confirm with cardiology team.</li>
             <li><strong>Temperature:</strong> Normal 36.5–37.5 °C. Fever &gt; 38 °C increases HR by ~10 bpm per degree.</li>
+            <li><strong>Clinical context:</strong> Always consider the patient's normal range and clinical condition. Heart rate will normally increase with fever and stress.</li>
           </ul>
         </div>
 
