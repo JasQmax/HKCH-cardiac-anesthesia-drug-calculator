@@ -6840,9 +6840,9 @@
     // ── IV Fluids ──
     // ── IV Fluids standalone tab ──
     function calcIVF() {
-      const wt = parseFloat(document.getElementById('ivfWeight').value);
+      const wt  = parseFloat(document.getElementById('ivfWeight').value);
+      const age = parseFloat(document.getElementById('ivfAge').value);
 
-      // ── Weight band label ──
       const bandEl = document.getElementById('ivfWeightBand');
       if (isNaN(wt) || wt <= 0) {
         bandEl.textContent = '';
@@ -6850,7 +6850,7 @@
         document.getElementById('ivfBolusCards').style.display  = 'none';
         document.getElementById('ivfPeriopCards').style.display = 'none';
         document.getElementById('ivfVSHighlight').style.display = 'none';
-        document.getElementById('ivfHypotensionCalc').style.display = 'none';
+        document.getElementById('ivfBPSummary').style.display   = 'none';
         return;
       }
 
@@ -6879,17 +6879,6 @@
       document.getElementById('ivfBolus10').textContent  = (wt * 10).toFixed(0) + ' mL';
       document.getElementById('ivfBolus20').textContent  = (wt * 20).toFixed(0) + ' mL';
       document.getElementById('ivfBolusMax').textContent = (wt * 60).toFixed(0) + ' mL';
-
-      // Contextual bolus note
-      var bolusNote = '';
-      if (wt < 3) {
-        bolusNote = '<strong>⚠️ Neonate / very low weight:</strong> Use 5–10 mL/kg boluses. Reassess carefully after each.';
-      } else if (wt <= 10) {
-        bolusNote = '10 mL/kg = <strong>' + (wt*10).toFixed(0) + ' mL</strong>. Give over 5–10 min. Reassess HR, perfusion, capillary refill after each bolus.';
-      } else {
-        bolusNote = '10 mL/kg = <strong>' + (wt*10).toFixed(0) + ' mL</strong> &nbsp;|&nbsp; 20 mL/kg = <strong>' + (wt*20).toFixed(0) + ' mL</strong>. Reassess after each bolus. Max 60 mL/kg in first hour for septic shock.';
-      }
-      document.getElementById('ivfBolusNote').innerHTML  = bolusNote;
       document.getElementById('ivfBolusCards').style.display = 'block';
 
       // ── Intraoperative ──
@@ -6898,20 +6887,19 @@
       document.getElementById('ivfIntraopMajor').textContent = (wt * 8).toFixed(1) + ' mL';
       document.getElementById('ivfPeriopCards').style.display = 'block';
 
-      // ── Age-group inference from weight + vital sign highlight ──
-      var ageGroup = '', vsRows = ['vsRowNeonate','vsRowInfant','vsRowToddler','vsRowPreschool','vsRowSchool','vsRowAdolescent'];
+      // ── Age-group inference from weight (for vital sign highlight) ──
+      var vsRows = ['vsRowNeonate','vsRowInfant','vsRowToddler','vsRowPreschool','vsRowSchool','vsRowAdolescent'];
       vsRows.forEach(function(id) {
         var row = document.getElementById(id);
         if (row) row.style.outline = '';
       });
-      var highlightId = '';
-      var hypSBP = 0, ageName = '', ageDesc = '';
-      if (wt < 3.5)        { highlightId='vsRowNeonate';    hypSBP=60;  ageName='Neonate';     ageDesc='0–28 days'; }
-      else if (wt <= 10)   { highlightId='vsRowInfant';     hypSBP=70;  ageName='Infant';      ageDesc='1–12 months'; }
-      else if (wt <= 14)   { highlightId='vsRowToddler';    hypSBP=72;  ageName='Toddler';     ageDesc='1–3 years'; }
-      else if (wt <= 18)   { highlightId='vsRowPreschool';  hypSBP=78;  ageName='Preschool';   ageDesc='3–5 years'; }
-      else if (wt <= 40)   { highlightId='vsRowSchool';     hypSBP=82;  ageName='School age';  ageDesc='6–12 years'; }
-      else                  { highlightId='vsRowAdolescent'; hypSBP=90;  ageName='Adolescent';  ageDesc='12–18 years'; }
+      var highlightId = '', hypSBPwt = 0, ageName = '', ageDesc = '';
+      if (wt < 3.5)       { highlightId='vsRowNeonate';    hypSBPwt=60;  ageName='Neonate';    ageDesc='0–28 days'; }
+      else if (wt <= 10)  { highlightId='vsRowInfant';     hypSBPwt=70;  ageName='Infant';     ageDesc='1–12 months'; }
+      else if (wt <= 14)  { highlightId='vsRowToddler';    hypSBPwt=72;  ageName='Toddler';    ageDesc='1–3 years'; }
+      else if (wt <= 18)  { highlightId='vsRowPreschool';  hypSBPwt=78;  ageName='Preschool';  ageDesc='3–5 years'; }
+      else if (wt <= 40)  { highlightId='vsRowSchool';     hypSBPwt=82;  ageName='School age'; ageDesc='6–12 years'; }
+      else                { highlightId='vsRowAdolescent'; hypSBPwt=90;  ageName='Adolescent'; ageDesc='12–18 years'; }
 
       var targetRow = document.getElementById(highlightId);
       if (targetRow) targetRow.style.outline = '3px solid #f57f17';
@@ -6919,17 +6907,36 @@
       var hlEl = document.getElementById('ivfVSHighlight');
       hlEl.style.display = 'block';
       hlEl.innerHTML = '<div style="background:#fff3e0; border:2px solid #f57f17; border-radius:8px; padding:12px 16px; font-size:1.5rem;">' +
-        '📌 <strong>Estimated age group for ' + wt.toFixed(1) + ' kg:</strong> ' + ageName + ' (' + ageDesc + ') — ' +
-        'row highlighted in table below.' +
-        '</div>';
+        '📌 <strong>Estimated age group for ' + wt.toFixed(1) + ' kg:</strong> ' + ageName + ' (' + ageDesc + ') — row highlighted in table below.</div>';
 
-      // Hypotension threshold calc
       var hypEl = document.getElementById('ivfHypotensionCalc');
-      hypEl.style.display = 'block';
-      hypEl.innerHTML = '<div style="background:#ffebee; border:2px solid #e53935; border-radius:8px; padding:12px 16px; font-size:1.5rem; margin-top:10px;">' +
-        '🩺 <strong>Estimated hypotension threshold for ' + wt.toFixed(1) + ' kg (' + ageName + '):</strong> ' +
-        'SBP &lt; <strong style="font-size:1.8rem; color:#c62828;">' + hypSBP + ' mmHg</strong>' +
-        '</div>';
+      // ── BP Summary cards (top of page) ──ge if provided, else weight-based estimate
+      var hypSBPCalc = hypSBPwt;
+      var hypSource  = 'estimated from weight';
+      if (!isNaN(age) && age >= 0) {
+        if (age < (1/12))   { hypSBPCalc = 60;                       hypSource = 'Neonate (<1 month)'; }
+        else if (age < 1)   { hypSBPCalc = 70;                       hypSource = 'Infant (<1 yr)'; }
+        else if (age <= 10) { hypSBPCalc = Math.round(70 + 2 * age); hypSource = '70 + (2 × ' + age.toFixed(1) + ' yr)'; }
+        else                { hypSBPCalc = 90;                        hypSource = 'Child ≥10 yr'; }
+      }
+
+      // Median SBP (formula valid 1–10 yr)
+      var medSBPEl  = document.getElementById('ivfMedianSBP');
+      var medSBPFEl = document.getElementById('ivfMedianSBPFormula');
+      if (!isNaN(age) && age >= 1 && age <= 10) {
+        medSBPEl.textContent  = Math.round(90 + 2 * age) + ' mmHg';
+        medSBPFEl.textContent = '90 + (2 × ' + age.toFixed(1) + ')';
+      } else if (!isNaN(age)) {
+        medSBPEl.textContent  = 'N/A';
+        medSBPFEl.textContent = 'Formula for age 1–10 yr only';
+      } else {
+        medSBPEl.textContent  = '—';
+        medSBPFEl.textContent = 'Enter age above';
+      }
+
+      document.getElementById('ivfHypThresh').textContent  = 'SBP < ' + hypSBPCalc + ' mmHg';
+      document.getElementById('ivfHypThreshLabel').textContent = hypSource;
+      document.getElementById('ivfBPSummary').style.display = 'block';
 
       // Weight band label
       bandEl.textContent = '→ ' + ageName + ' (' + ageDesc + ')';
@@ -8061,13 +8068,23 @@
       <h2 class="section-title" style="margin-top:8px;">💧 IV Fluids &amp; Vitals</h2>
       <p class="subtitle" style="color:#555; margin-bottom:14.4px;">Maintenance Fluids · Fluid Bolus · Paediatric Vital Signs Reference</p>
 
-      <!-- Weight input -->
+      <div style="background:#e3f2fd; border-left:4px solid #0288d1; border-radius:8px; padding:12px 16px; margin-bottom:16px; font-size:1.45rem; color:#444; line-height:1.75;">
+        Enter <strong>weight</strong> to instantly calculate <strong>maintenance fluid rate</strong>, <strong>fluid bolus volumes</strong>, and <strong>intraoperative fluid requirements</strong>.<br>
+        Add <strong>age</strong> to also get the <strong>median SBP estimate</strong> and a precise <strong>hypotension threshold</strong> — both shown under the Vital Signs Reference below.
+      </div>
+
+      <!-- Weight + Age input -->
       <div class="input-section">
         <div class="input-group" style="flex-wrap:wrap; gap:20px; align-items:flex-end;">
           <div>
             <label for="ivfWeight">Body weight (kg):</label>
             <input type="number" id="ivfWeight" min="0.5" max="150" step="0.1" placeholder="e.g. 15"
               oninput="calcIVF()" style="width:140px;">
+          </div>
+          <div>
+            <label for="ivfAge">Patient age (years):</label>
+            <input type="number" id="ivfAge" min="0" max="18" step="0.1" placeholder="e.g. 4"
+              oninput="calcIVF()" style="width:130px;">
           </div>
           <div id="ivfWeightBand" style="font-size:1.6rem; font-weight:700; color:#0277bd; padding-bottom:2px;"></div>
         </div>
@@ -8167,7 +8184,6 @@
               <div style="font-size:1.4rem; color:#777;">mL total (1st hour)</div>
             </div>
           </div>
-          <div id="ivfBolusNote" style="background:#fff; border-radius:8px; padding:12px 14px; border:1.5px solid #f48fb1; font-size:1.5rem; line-height:1.7;"></div>
         </div>
 
         <!-- Bolus quick reference — always visible -->
@@ -8223,18 +8239,20 @@
           📊 Normal Paediatric Vital Signs Reference
         </div>
 
-        <!-- Median SBP Calculator -->
-        <div style="background:#e8f5e9; border:1.5px solid #43a047; border-radius:10px; padding:14px; margin-bottom:14px;">
-          <div style="font-weight:700; color:#2e7d32; font-size:1.65rem; margin-bottom:10px;">🧮 Median SBP Estimator (Age 1–10 yr)</div>
-          <div style="font-size:1.45rem; color:#555; margin-bottom:10px;">Formula: <strong>90 + (2 × age in years)</strong> mmHg</div>
-          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-            <label style="font-size:1.5rem; font-weight:600; color:#2e7d32;">Age (years):</label>
-            <input type="number" id="medSBPAge" min="1" max="10" step="1" placeholder="1–10"
-              style="width:90px; padding:8px 10px; font-size:1.5rem; border:2px solid #43a047; border-radius:8px; text-align:center;"
-              oninput="calcMedianSBP()">
-            <div id="medSBPResult" style="font-size:1.7rem; font-weight:700; color:#1b5e20;"></div>
+        <!-- BP summary cards — auto-populated from weight/age inputs above -->
+        <div id="ivfBPSummary" style="display:none; margin-bottom:14px;">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px;">
+            <div style="background:#e8f5e9; border:2px solid #43a047; border-radius:10px; padding:14px; text-align:center;">
+              <div style="font-size:1.4rem; color:#555; margin-bottom:4px;">🧮 Median SBP (1–10 yr)</div>
+              <div id="ivfMedianSBP" style="font-size:2rem; font-weight:800; color:#2e7d32;">—</div>
+              <div id="ivfMedianSBPFormula" style="font-size:1.3rem; color:#888; margin-top:2px;"></div>
+            </div>
+            <div style="background:#ffebee; border:2px solid #e53935; border-radius:10px; padding:14px; text-align:center;">
+              <div style="font-size:1.4rem; color:#555; margin-bottom:4px;">⚠️ Hypotension Threshold</div>
+              <div id="ivfHypThresh" style="font-size:2rem; font-weight:800; color:#c62828;">—</div>
+              <div id="ivfHypThreshLabel" style="font-size:1.3rem; color:#888; margin-top:2px;"></div>
+            </div>
           </div>
-          <div id="medSBPNote" style="font-size:1.35rem; color:#888; margin-top:6px;"></div>
         </div>
 
         <!-- Age-group highlight if weight entered -->
@@ -8370,7 +8388,6 @@
               SBP &lt; 90 mmHg
             </div>
           </div>
-          <div id="ivfHypotensionCalc" style="display:none; margin-top:12px;"></div>
         </div>
 
         <!-- Additional vital sign notes -->
