@@ -3116,8 +3116,8 @@
         </div>
 
         <!-- ══ REWARMING PHASE 32°C FLOWCHART ══ -->
-        <div style="font-weight:700; color:#b71c1c; font-size:1.65rem; margin-bottom:14px; border-bottom:2px solid #ef9a9a; padding-bottom:8px;">
-          🌡️ Rewarming Phase (≈32 °C) — ROTEM-Guided Algorithm
+        <div style="font-weight:700; color:#b71c1c; font-size:2rem; margin-bottom:14px; border-bottom:2px solid #ef9a9a; padding-bottom:8px;">
+          🌡️ Part 1 — Rewarming Phase (≈32 °C) — ROTEM-Guided Algorithm
         </div>
 
         <!-- STEP 1 -->
@@ -3262,8 +3262,14 @@
         </div>
 
         <!-- ══ POST-PROTAMINE REASSESSMENT FLOWCHART ══ -->
-        <div style="font-weight:700; color:#1565c0; font-size:1.65rem; margin:28px 0 14px; border-bottom:2px solid #90caf9; padding-bottom:8px;">
-          🔄 Part 2 — Post-Protamine Reassessment
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin:28px 0 14px; border-bottom:2px solid #90caf9; padding-bottom:8px;">
+          <div style="font-weight:700; color:#1565c0; font-size:2rem;">
+            🔄 Part 2 — Post-Protamine Reassessment
+          </div>
+          <button onclick="resetRotemP2()"
+            style="background:#e53935; color:#fff; border:none; border-radius:8px; padding:8px 20px; font-size:1.4rem; font-weight:700; cursor:pointer; white-space:nowrap;">
+            🔄 Reset Part 2
+          </button>
         </div>
 
         <!-- P2 STEP 1: Fibrinogen -->
@@ -7591,6 +7597,16 @@
           '<strong>⚠️ Additional protamine required.</strong> Infuse over 10–20 min. Max rate 5 mg/min. Reassess ROTEM after administration.';
       }
       resDiv.style.display = 'block';
+    }
+
+    // ── Reset Part 2 — Post-Protamine Reassessment ──
+    function resetRotemP2() {
+      ['p2A5FIB','p2A5EXTEM','p2CTEX','p2A5FIBcheck','p2CTIN','p2CTHEP','p2CTINint','p2CTHEPint'].forEach(function(id) {
+        document.getElementById(id).value = '';
+      });
+      ['p2Step1Result','p2Step2Result','p2Step3Result','p2Step4Result','p2Step5Result'].forEach(function(id) {
+        document.getElementById(id).style.display = 'none';
+      });
     }
 
   </script>
