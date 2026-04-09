@@ -2885,6 +2885,7 @@
       <div class="pals-tab-bar" style="margin-bottom:14.4px;">
         <button id="bloodTabBtnProducts"   onclick="showBloodTab('Products')"   class="pals-tab-btn pals-tab-active">🩸 Blood Products</button>
         <button id="bloodTabBtnHemostatic" onclick="showBloodTab('Hemostatic')" class="pals-tab-btn">🧬 Hemostatic Agents</button>
+        <button id="bloodTabBtnRotem"      onclick="showBloodTab('Rotem')"      class="pals-tab-btn">📊 ROTEM-Guided Resuscitation</button>
       </div>
 
       <!-- ── TAB 1: BLOOD PRODUCTS ── -->
@@ -3094,6 +3095,345 @@
         </div>
       </div>
     </div>
+
+      <!-- ── TAB 3: ROTEM-GUIDED HEMOSTATIC RESUSCITATION ── -->
+      <div id="bloodTabRotem" style="display:none;">
+
+        <div style="background:#e8eaf6; border-left:4px solid #3949ab; border-radius:8px; padding:12px 16px; margin-bottom:16px; font-size:1.45rem; color:#444; line-height:1.75;">
+          <strong style="color:#3949ab; font-size:1.55rem;">📊 ROTEM-Guided Hemostatic Resuscitation</strong><br>
+          Stepwise flowchart for managing coagulopathy during cardiac surgery. Enter patient weight to calculate doses at each step.
+        </div>
+
+        <!-- Body weight input -->
+        <div style="background:#fff; border:1.5px solid #9fa8da; border-radius:10px; padding:14px 18px; margin-bottom:20px; display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+          <div>
+            <label for="rotemWeight" style="font-weight:700; font-size:1.5rem; color:#3949ab;">Body weight (kg):</label>
+            <input type="number" id="rotemWeight" min="1" max="200" step="0.1" placeholder="e.g. 20"
+              style="width:130px; padding:9px 12px; font-size:1.6rem; border:2px solid #3949ab; border-radius:8px; margin-left:10px;"
+              oninput="calcRotem()">
+          </div>
+          <div id="rotemWeightNote" style="font-size:1.4rem; color:#666;"></div>
+        </div>
+
+        <!-- ══ REWARMING PHASE 32°C FLOWCHART ══ -->
+        <div style="font-weight:700; color:#b71c1c; font-size:1.65rem; margin-bottom:14px; border-bottom:2px solid #ef9a9a; padding-bottom:8px;">
+          🌡️ Rewarming Phase (≈32 °C) — ROTEM-Guided Algorithm
+        </div>
+
+        <!-- STEP 1 -->
+        <div style="position:relative; padding-left:28px; margin-bottom:6px;">
+          <div style="position:absolute; left:0; top:0; bottom:0; width:4px; background:#1565c0; border-radius:4px;"></div>
+          <div style="background:#e3f2fd; border:2px solid #1565c0; border-radius:12px; padding:16px 18px;">
+            <div style="font-weight:700; color:#0d47a1; font-size:1.6rem; margin-bottom:8px;">
+              Step 1 — Initial Checks: Correct Physiological Derangements
+            </div>
+            <div style="font-size:1.45rem; color:#333; line-height:1.8;">
+              Before addressing coagulopathy, ensure:
+              <ul style="margin:6px 0 0 1.5em; padding:0;">
+                <li>Temperature ≥ 35 °C (core warming target before protamine)</li>
+                <li>pH &gt; 7.2 &nbsp;|&nbsp; Ionised Ca²⁺ &gt; 1.1 mmol/L</li>
+                <li>Hb/Hct within acceptable range &nbsp;|&nbsp; Surgical bleeding controlled</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Arrow -->
+        <div style="text-align:center; font-size:2rem; color:#1565c0; margin:4px 0;">↓</div>
+
+        <!-- STEP 2 -->
+        <div style="position:relative; padding-left:28px; margin-bottom:6px;">
+          <div style="position:absolute; left:0; top:0; bottom:0; width:4px; background:#6a1b9a; border-radius:4px;"></div>
+          <div style="background:#f3e5f5; border:2px solid #6a1b9a; border-radius:12px; padding:16px 18px;">
+            <div style="font-weight:700; color:#4a148c; font-size:1.6rem; margin-bottom:10px;">
+              Step 2 — Heparin Reversal (Protamine)
+            </div>
+            <!-- Decision -->
+            <div style="background:#fff; border:1.5px solid #ce93d8; border-radius:8px; padding:12px 14px; margin-bottom:12px; font-size:1.5rem;">
+              <strong>❓ CT<sub>INTEM</sub> / CT<sub>HEPTEM</sub> &gt; 1.25?</strong>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+                <div>
+                  <label style="font-size:1.4rem; font-weight:600;">CT<sub>INTEM</sub> (sec):</label>
+                  <input type="number" id="rotemCTIN" min="0" step="1" placeholder="e.g. 240"
+                    style="width:100%; padding:7px 10px; font-size:1.45rem; border:1.5px solid #ce93d8; border-radius:7px; margin-top:3px;"
+                    oninput="calcRotem()">
+                </div>
+                <div>
+                  <label style="font-size:1.4rem; font-weight:600;">CT<sub>HEPTEM</sub> (sec):</label>
+                  <input type="number" id="rotemCTHEP" min="0" step="1" placeholder="e.g. 180"
+                    style="width:100%; padding:7px 10px; font-size:1.45rem; border:1.5px solid #ce93d8; border-radius:7px; margin-top:3px;"
+                    oninput="calcRotem()">
+                </div>
+              </div>
+              <div style="margin-top:10px;">
+                <label style="font-size:1.4rem; font-weight:600;">Initial UFH dose given (units):</label>
+                <input type="number" id="rotemUFH" min="0" step="100" placeholder="e.g. 300"
+                  style="width:180px; padding:7px 10px; font-size:1.45rem; border:1.5px solid #ce93d8; border-radius:7px; margin-top:3px;"
+                  oninput="calcRotem()">
+              </div>
+            </div>
+            <div id="rotemStep2Result" style="font-size:1.5rem; border-radius:8px; padding:10px 14px; display:none;"></div>
+            <div style="font-size:1.35rem; color:#777; margin-top:8px; background:#fce4ec; border-radius:6px; padding:8px 12px;">
+              <strong>⚠️ Administration:</strong> Dilute in D5W or NS · Infuse over 10–20 min · Max rate 5 mg/min · Use slower rate in high-risk patients (prior NPH insulin, fish allergy, prior protamine)
+            </div>
+          </div>
+        </div>
+
+        <!-- Arrow -->
+        <div style="text-align:center; font-size:2rem; color:#6a1b9a; margin:4px 0;">↓</div>
+
+        <!-- STEP 3 -->
+        <div style="position:relative; padding-left:28px; margin-bottom:6px;">
+          <div style="position:absolute; left:0; top:0; bottom:0; width:4px; background:#e65100; border-radius:4px;"></div>
+          <div style="background:#fff3e0; border:2px solid #e65100; border-radius:12px; padding:16px 18px;">
+            <div style="font-weight:700; color:#bf360c; font-size:1.6rem; margin-bottom:10px;">
+              Step 3 — Fibrinogen Replacement
+            </div>
+            <div style="background:#fff; border:1.5px solid #ffcc80; border-radius:8px; padding:12px 14px; margin-bottom:12px; font-size:1.5rem;">
+              <strong>❓ A5<sub>FIB</sub> &lt; 8 mm?</strong>
+              <div style="margin-top:10px;">
+                <label style="font-size:1.4rem; font-weight:600;">A5<sub>FIB</sub> / FIBTEM (mm):</label>
+                <input type="number" id="rotemA5FIB" min="0" max="30" step="0.1" placeholder="e.g. 6"
+                  style="width:150px; padding:7px 10px; font-size:1.45rem; border:1.5px solid #ffcc80; border-radius:7px; margin-left:10px;"
+                  oninput="calcRotem()">
+              </div>
+            </div>
+            <div id="rotemStep3Result" style="font-size:1.5rem; border-radius:8px; padding:10px 14px; display:none;"></div>
+            <div style="font-size:1.35rem; color:#777; margin-top:8px; background:#fff8e1; border-radius:6px; padding:8px 12px;">
+              <strong>Target:</strong> A5<sub>FIB</sub> ≥ 12 mm &nbsp;|&nbsp; Formula: (12 − A5<sub>FIB</sub>) × 10 × weight (kg) mg
+            </div>
+          </div>
+        </div>
+
+        <!-- Arrow -->
+        <div style="text-align:center; font-size:2rem; color:#e65100; margin:4px 0;">↓</div>
+
+        <!-- STEP 4 -->
+        <div style="position:relative; padding-left:28px; margin-bottom:6px;">
+          <div style="position:absolute; left:0; top:0; bottom:0; width:4px; background:#2e7d32; border-radius:4px;"></div>
+          <div style="background:#e8f5e9; border:2px solid #2e7d32; border-radius:12px; padding:16px 18px;">
+            <div style="font-weight:700; color:#1b5e20; font-size:1.6rem; margin-bottom:10px;">
+              Step 4 — Platelet Transfusion
+            </div>
+            <div style="background:#fff; border:1.5px solid #a5d6a7; border-radius:8px; padding:12px 14px; margin-bottom:12px; font-size:1.5rem;">
+              <strong>❓ A5<sub>EXTEM</sub> &lt; 25 mm?</strong>
+              <div style="margin-top:10px;">
+                <label style="font-size:1.4rem; font-weight:600;">A5<sub>EXTEM</sub> (mm):</label>
+                <input type="number" id="rotemA5EXTEM" min="0" max="80" step="0.1" placeholder="e.g. 20"
+                  style="width:150px; padding:7px 10px; font-size:1.45rem; border:1.5px solid #a5d6a7; border-radius:7px; margin-left:10px;"
+                  oninput="calcRotem()">
+              </div>
+            </div>
+            <div id="rotemStep4Result" style="font-size:1.5rem; border-radius:8px; padding:10px 14px; display:none;"></div>
+            <div style="font-size:1.35rem; color:#777; margin-top:8px; background:#f1f8e9; border-radius:6px; padding:8px 12px;">
+              <strong>Target:</strong> A5<sub>EXTEM</sub> ≥ 25 mm &nbsp;|&nbsp; Dose: <strong>10 mL/kg</strong> platelet concentrate
+            </div>
+          </div>
+        </div>
+
+        <!-- Arrow -->
+        <div style="text-align:center; font-size:2rem; color:#2e7d32; margin:4px 0;">↓</div>
+
+        <!-- STEP 5 -->
+        <div style="position:relative; padding-left:28px; margin-bottom:6px;">
+          <div style="position:absolute; left:0; top:0; bottom:0; width:4px; background:#00838f; border-radius:4px;"></div>
+          <div style="background:#e0f2f1; border:2px solid #00838f; border-radius:12px; padding:16px 18px;">
+            <div style="font-weight:700; color:#004d40; font-size:1.6rem; margin-bottom:10px;">
+              Step 5 — Factor XIII Supplementation
+              <span style="font-weight:400; font-size:1.35rem; color:#555;"> (suspected FXIII deficiency)</span>
+            </div>
+            <div style="background:#fff; border:1.5px solid #80cbc4; border-radius:8px; padding:12px 14px; margin-bottom:10px; font-size:1.5rem;">
+              <strong>❓ Prolonged mechanical support / refractory coagulopathy?</strong>
+              <div style="display:flex; gap:16px; margin-top:10px; flex-wrap:wrap;">
+                <label style="font-size:1.45rem; display:flex; align-items:center; gap:8px; cursor:pointer;">
+                  <input type="radio" name="rotemFXIII" value="yes" onchange="calcRotem()"
+                    style="width:18px; height:18px; accent-color:#00838f;">
+                  <strong>Yes</strong> — Give Cryoprecipitate 1 bag / 5 kg
+                </label>
+                <label style="font-size:1.45rem; display:flex; align-items:center; gap:8px; cursor:pointer;">
+                  <input type="radio" name="rotemFXIII" value="no" onchange="calcRotem()"
+                    style="width:18px; height:18px; accent-color:#00838f;">
+                  <strong>No</strong> — Continue to reassess / escalate to clinical team
+                </label>
+              </div>
+            </div>
+            <div id="rotemStep5Result" style="font-size:1.5rem; border-radius:8px; padding:10px 14px; display:none;"></div>
+          </div>
+        </div>
+
+        <!-- ══ POST-PROTAMINE REASSESSMENT FLOWCHART ══ -->
+        <div style="font-weight:700; color:#1565c0; font-size:1.65rem; margin:28px 0 14px; border-bottom:2px solid #90caf9; padding-bottom:8px;">
+          🔄 Part 2 — Post-Protamine Reassessment
+        </div>
+
+        <!-- P2 STEP 1: Fibrinogen -->
+        <div style="position:relative; padding-left:28px; margin-bottom:6px;">
+          <div style="position:absolute; left:0; top:0; bottom:0; width:4px; background:#e65100; border-radius:4px;"></div>
+          <div style="background:#fff3e0; border:2px solid #e65100; border-radius:12px; padding:16px 18px;">
+            <div style="font-weight:700; color:#bf360c; font-size:1.6rem; margin-bottom:10px;">
+              Step 1 — Fibrinogen Replacement
+            </div>
+            <div style="background:#fff; border:1.5px solid #ffcc80; border-radius:8px; padding:12px 14px; margin-bottom:12px; font-size:1.5rem;">
+              <strong>❓ A5<sub>FIB</sub> &lt; 12 mm?</strong>
+              <div style="margin-top:10px;">
+                <label style="font-size:1.4rem; font-weight:600;">A5<sub>FIB</sub> / FIBTEM (mm):</label>
+                <input type="number" id="p2A5FIB" min="0" max="30" step="0.1" placeholder="e.g. 9"
+                  style="width:150px; padding:7px 10px; font-size:1.45rem; border:1.5px solid #ffcc80; border-radius:7px; margin-left:10px;"
+                  oninput="calcRotemP2()">
+              </div>
+            </div>
+            <div id="p2Step1Result" style="font-size:1.5rem; border-radius:8px; padding:10px 14px; display:none;"></div>
+            <div style="font-size:1.35rem; color:#777; margin-top:8px; background:#fff8e1; border-radius:6px; padding:8px 12px;">
+              <strong>Target:</strong> A5<sub>FIB</sub> ≥ 12 mm &nbsp;|&nbsp; Formula: (12 − A5<sub>FIB</sub>) × 10 × weight (kg) mg
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center; font-size:2rem; color:#e65100; margin:4px 0;">↓</div>
+
+        <!-- P2 STEP 2: Platelets -->
+        <div style="position:relative; padding-left:28px; margin-bottom:6px;">
+          <div style="position:absolute; left:0; top:0; bottom:0; width:4px; background:#2e7d32; border-radius:4px;"></div>
+          <div style="background:#e8f5e9; border:2px solid #2e7d32; border-radius:12px; padding:16px 18px;">
+            <div style="font-weight:700; color:#1b5e20; font-size:1.6rem; margin-bottom:10px;">
+              Step 2 — Platelet Transfusion
+            </div>
+            <div style="background:#fff; border:1.5px solid #a5d6a7; border-radius:8px; padding:12px 14px; margin-bottom:12px; font-size:1.5rem;">
+              <strong>❓ A5<sub>EXTEM</sub> &lt; 25 mm?</strong>
+              <div style="margin-top:10px;">
+                <label style="font-size:1.4rem; font-weight:600;">A5<sub>EXTEM</sub> (mm):</label>
+                <input type="number" id="p2A5EXTEM" min="0" max="80" step="0.1" placeholder="e.g. 20"
+                  style="width:150px; padding:7px 10px; font-size:1.45rem; border:1.5px solid #a5d6a7; border-radius:7px; margin-left:10px;"
+                  oninput="calcRotemP2()">
+              </div>
+            </div>
+            <div id="p2Step2Result" style="font-size:1.5rem; border-radius:8px; padding:10px 14px; display:none;"></div>
+            <div style="font-size:1.35rem; color:#777; margin-top:8px; background:#f1f8e9; border-radius:6px; padding:8px 12px;">
+              <strong>Target:</strong> A5<sub>EXTEM</sub> ≥ 25 mm &nbsp;|&nbsp; Dose: <strong>10 mL/kg</strong> platelet concentrate
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center; font-size:2rem; color:#2e7d32; margin:4px 0;">↓</div>
+
+        <!-- P2 STEP 3: Coagulation factors extrinsic -->
+        <div style="position:relative; padding-left:28px; margin-bottom:6px;">
+          <div style="position:absolute; left:0; top:0; bottom:0; width:4px; background:#6a1b9a; border-radius:4px;"></div>
+          <div style="background:#f3e5f5; border:2px solid #6a1b9a; border-radius:12px; padding:16px 18px;">
+            <div style="font-weight:700; color:#4a148c; font-size:1.6rem; margin-bottom:10px;">
+              Step 3 — Coagulation Factors (Extrinsic Pathway)
+            </div>
+            <div style="background:#fff; border:1.5px solid #ce93d8; border-radius:8px; padding:12px 14px; margin-bottom:12px; font-size:1.5rem;">
+              <strong>❓ CT<sub>EXTEM</sub> &gt; 90 s AND A5<sub>FIB</sub> &gt; 8 mm?</strong>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+                <div>
+                  <label style="font-size:1.4rem; font-weight:600;">CT<sub>EXTEM</sub> (sec):</label>
+                  <input type="number" id="p2CTEX" min="0" step="1" placeholder="e.g. 100"
+                    style="width:100%; padding:7px 10px; font-size:1.45rem; border:1.5px solid #ce93d8; border-radius:7px; margin-top:3px;"
+                    oninput="calcRotemP2()">
+                </div>
+                <div>
+                  <label style="font-size:1.4rem; font-weight:600;">A5<sub>FIB</sub> (mm) <span style="font-weight:400; color:#888;">if not re-entered above</span>:</label>
+                  <input type="number" id="p2A5FIBcheck" min="0" max="30" step="0.1" placeholder="e.g. 10"
+                    style="width:100%; padding:7px 10px; font-size:1.45rem; border:1.5px solid #ce93d8; border-radius:7px; margin-top:3px;"
+                    oninput="calcRotemP2()">
+                </div>
+              </div>
+            </div>
+            <div id="p2Step3Result" style="font-size:1.5rem; border-radius:8px; padding:10px 14px; display:none;"></div>
+            <div style="font-size:1.35rem; color:#777; margin-top:8px; background:#f3e5f5; border-radius:6px; padding:8px 12px;">
+              <strong>Options:</strong> FFP <strong>10 mL/kg</strong> &nbsp;or&nbsp; Beriplex (PCC) <strong>10 units/kg</strong>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center; font-size:2rem; color:#6a1b9a; margin:4px 0;">↓</div>
+
+        <!-- P2 STEP 4: Residual heparin -->
+        <div style="position:relative; padding-left:28px; margin-bottom:6px;">
+          <div style="position:absolute; left:0; top:0; bottom:0; width:4px; background:#c62828; border-radius:4px;"></div>
+          <div style="background:#fce4ec; border:2px solid #c62828; border-radius:12px; padding:16px 18px;">
+            <div style="font-weight:700; color:#b71c1c; font-size:1.6rem; margin-bottom:10px;">
+              Step 4 — Residual Heparin (Additional Protamine)
+            </div>
+            <div style="background:#fff; border:1.5px solid #ef9a9a; border-radius:8px; padding:12px 14px; margin-bottom:12px; font-size:1.5rem;">
+              <strong>❓ CT<sub>INTEM</sub> / CT<sub>HEPTEM</sub> &gt; 1.25?</strong>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+                <div>
+                  <label style="font-size:1.4rem; font-weight:600;">CT<sub>INTEM</sub> (sec):</label>
+                  <input type="number" id="p2CTIN" min="0" step="1" placeholder="e.g. 240"
+                    style="width:100%; padding:7px 10px; font-size:1.45rem; border:1.5px solid #ef9a9a; border-radius:7px; margin-top:3px;"
+                    oninput="calcRotemP2()">
+                </div>
+                <div>
+                  <label style="font-size:1.4rem; font-weight:600;">CT<sub>HEPTEM</sub> (sec):</label>
+                  <input type="number" id="p2CTHEP" min="0" step="1" placeholder="e.g. 180"
+                    style="width:100%; padding:7px 10px; font-size:1.45rem; border:1.5px solid #ef9a9a; border-radius:7px; margin-top:3px;"
+                    oninput="calcRotemP2()">
+                </div>
+              </div>
+            </div>
+            <div id="p2Step4Result" style="font-size:1.5rem; border-radius:8px; padding:10px 14px; display:none;"></div>
+            <div style="font-size:1.35rem; color:#777; margin-top:8px; background:#fce4ec; border-radius:6px; padding:8px 12px;">
+              <strong>Formula:</strong> [(0.4 × CT<sub>INTEM</sub>/CT<sub>HEPTEM</sub>) − 0.4] × weight (kg) × 70 ÷ 100 = mg &nbsp;·&nbsp; Max rate 5 mg/min
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center; font-size:2rem; color:#c62828; margin:4px 0;">↓</div>
+
+        <!-- P2 STEP 5: Coagulation factors intrinsic -->
+        <div style="position:relative; padding-left:28px; margin-bottom:6px;">
+          <div style="position:absolute; left:0; top:0; bottom:0; width:4px; background:#1565c0; border-radius:4px;"></div>
+          <div style="background:#e3f2fd; border:2px solid #1565c0; border-radius:12px; padding:16px 18px;">
+            <div style="font-weight:700; color:#0d47a1; font-size:1.6rem; margin-bottom:10px;">
+              Step 5 — Coagulation Factors (Intrinsic Pathway)
+            </div>
+            <div style="background:#fff; border:1.5px solid #90caf9; border-radius:8px; padding:12px 14px; margin-bottom:12px; font-size:1.5rem;">
+              <strong>❓ CT<sub>INTEM</sub> AND CT<sub>HEPTEM</sub> both &gt; 280 s?</strong>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+                <div>
+                  <label style="font-size:1.4rem; font-weight:600;">CT<sub>INTEM</sub> (sec):</label>
+                  <input type="number" id="p2CTINint" min="0" step="1" placeholder="e.g. 300"
+                    style="width:100%; padding:7px 10px; font-size:1.45rem; border:1.5px solid #90caf9; border-radius:7px; margin-top:3px;"
+                    oninput="calcRotemP2()">
+                </div>
+                <div>
+                  <label style="font-size:1.4rem; font-weight:600;">CT<sub>HEPTEM</sub> (sec):</label>
+                  <input type="number" id="p2CTHEPint" min="0" step="1" placeholder="e.g. 300"
+                    style="width:100%; padding:7px 10px; font-size:1.45rem; border:1.5px solid #90caf9; border-radius:7px; margin-top:3px;"
+                    oninput="calcRotemP2()">
+                </div>
+              </div>
+            </div>
+            <div id="p2Step5Result" style="font-size:1.5rem; border-radius:8px; padding:10px 14px; display:none;"></div>
+            <div style="font-size:1.35rem; color:#777; margin-top:8px; background:#e3f2fd; border-radius:6px; padding:8px 12px;">
+              <strong>Options:</strong> FFP <strong>10 mL/kg</strong> &nbsp;or&nbsp; Beriplex (PCC) <strong>10 units/kg</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- References (collapsed by default) -->
+        <div style="margin-top:20px;">
+          <button onclick="var d=this.nextElementSibling; d.style.display=d.style.display==='none'?'block':'none'; this.textContent=this.textContent.includes('▶')?'▼ Hide References':'▶ References';"
+            style="background:#eceff1; border:1.5px solid #90a4ae; border-radius:8px; padding:8px 18px; font-size:1.45rem; font-weight:600; color:#37474f; cursor:pointer; width:100%; text-align:left;">
+            ▶ References
+          </button>
+          <div style="display:none; background:#fafafa; border:1.5px solid #cfd8dc; border-radius:0 0 8px 8px; padding:14px 18px; font-size:1.35rem; color:#555; line-height:1.9;">
+            <ol style="margin:0; padding-left:1.8em;">
+              <li>Dirkmann D, Albrecht AA, Görlinger K et al. Additional protamine dosing based on INTEM/HEPTEM CT ratio after protamine administration. <em>In preparation.</em></li>
+              <li>ROTEM manufacturer's advice (Tem Innovations GmbH).</li>
+              <li>Mittermayr M et al. Haemostatic changes after crystalloid or colloid fluid administration during major orthopaedic surgery. <em>Br J Anaesth.</em> 2005 Sep;95(3):372–8.</li>
+              <li>Kammerer T, Görlinger K, Kapoor PM. Point-of-care coagulation management in cardiac surgery. <em>J Card Crit Care.</em> 2025.</li>
+              <li>Gruenwald CE et al. Coagulation management in paediatric cardiac surgery. <em>J Extra Corpor Technol.</em> 2010 Mar;42(1):6–14.</li>
+              <li>Crivellari M et al. ROTEM-guided hemostatic therapy in cardiac surgery. <em>Ann Card Anaesth.</em> 2024 Jul;27(8).</li>
+              <li>Boer C et al. 2017 EACTS/EACTA guidelines on patient blood management for adult cardiac surgery. <em>Br J Anaesth.</em> 2018 May;120(5):954–970.</li>
+            </ol>
+          </div>
+        </div>
+
+      </div><!-- end bloodTabRotem -->
+
   </div>
 </div><!-- end hemostaticCalculator -->
 
@@ -4808,10 +5148,10 @@
     }
 
     function showBloodTab(tab) {
-      ['bloodTabProducts','bloodTabHemostatic'].forEach(id => {
+      ['bloodTabProducts','bloodTabHemostatic','bloodTabRotem'].forEach(id => {
         document.getElementById(id).style.display = 'none';
       });
-      ['bloodTabBtnProducts','bloodTabBtnHemostatic'].forEach(id => {
+      ['bloodTabBtnProducts','bloodTabBtnHemostatic','bloodTabBtnRotem'].forEach(id => {
         document.getElementById(id).classList.remove('pals-tab-active');
       });
       document.getElementById('bloodTab' + tab.charAt(0).toUpperCase() + tab.slice(1)).style.display = 'block';
@@ -6942,8 +7282,7 @@
       bandEl.textContent = '→ ' + ageName + ' (' + ageDesc + ')';
     }
 
-    function calcMedianSBP() {
-      const age = parseFloat(document.getElementById('medSBPAge').value);
+    function calcMedianSBP() {      const age = parseFloat(document.getElementById('medSBPAge').value);
       const res = document.getElementById('medSBPResult');
       const note = document.getElementById('medSBPNote');
       if (isNaN(age) || age < 1 || age > 10) {
@@ -6954,6 +7293,154 @@
       const sbp = 90 + (2 * Math.floor(age));
       res.textContent = 'Median SBP ≈ ' + sbp + ' mmHg';
       note.textContent = '= 90 + (2 × ' + Math.floor(age) + ')';
+    }
+
+    // ── ROTEM-Guided Hemostatic Resuscitation flowchart ──
+    function calcRotem() {
+      const wt     = parseFloat(document.getElementById('rotemWeight').value);
+      const ctIN   = parseFloat(document.getElementById('rotemCTIN').value);
+      const ctHEP  = parseFloat(document.getElementById('rotemCTHEP').value);
+      const ufh    = parseFloat(document.getElementById('rotemUFH').value);
+      const a5fib  = parseFloat(document.getElementById('rotemA5FIB').value);
+      const a5ext  = parseFloat(document.getElementById('rotemA5EXTEM').value);
+      const fxiiiEl = document.querySelector('input[name="rotemFXIII"]:checked');
+
+      const noteEl = document.getElementById('rotemWeightNote');
+      noteEl.textContent = (!isNaN(wt) && wt > 0) ? '✔ ' + wt.toFixed(1) + ' kg' : 'Enter weight for dose calculations';
+
+      // ── Step 2: Protamine ──
+      const s2 = document.getElementById('rotemStep2Result');
+      if (!isNaN(ctIN) && !isNaN(ctHEP) && ctHEP > 0) {
+        const ratio = ctIN / ctHEP;
+        if (ratio > 1.25) {
+          let doseHTML, formulaHTML = '';
+          if (!isNaN(ufh) && ufh > 0) {
+            const dose = (ufh / 100) * 0.6;
+            doseHTML    = '<span style="font-size:2.4rem; font-weight:900; color:#b71c1c;">' + dose.toFixed(1) + ' mg</span>';
+            formulaHTML = '<div style="font-size:1.3rem; color:#888; margin-top:2px;">(' + ufh.toFixed(0) + ' ÷ 100) × 0.6</div>';
+          } else {
+            doseHTML = '<span style="font-size:1.5rem; color:#888;">Enter UFH dose to calculate</span>';
+          }
+          s2.style.cssText = 'display:block; background:#fce4ec; border:2px solid #c62828; border-radius:10px; padding:12px 16px;';
+          s2.innerHTML =
+            '<div style="font-size:1.35rem; color:#c62828; font-weight:700; margin-bottom:6px;">⚠️ YES — CT ratio ' + ratio.toFixed(2) + ' &gt; 1.25 &nbsp;·&nbsp; Give Protamine</div>' +
+            '<div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">' +
+              '<div style="text-align:center;">' + doseHTML + formulaHTML + '</div>' +
+            '</div>';
+        } else {
+          s2.style.cssText = 'display:block; background:#e8f5e9; border-left:4px solid #2e7d32; border-radius:8px; padding:10px 14px; font-size:1.45rem; color:#1b5e20;';
+          s2.innerHTML = '✅ CT ratio ' + ratio.toFixed(2) + ' — no residual heparin effect. Proceed to Step 3.';
+        }
+      } else { s2.style.display = 'none'; }
+
+      // ── Step 3: Fibrinogen ──
+      const s3 = document.getElementById('rotemStep3Result');
+      if (!isNaN(a5fib)) {
+        if (a5fib < 8) {
+          let doseHTML, formulaHTML = '';
+          if (!isNaN(wt) && wt > 0) {
+            const dose = (12 - a5fib) * 10 * wt;
+            doseHTML    = '<span style="font-size:2.4rem; font-weight:900; color:#bf360c;">' + dose.toFixed(0) + ' mg</span>';
+            formulaHTML = '<div style="font-size:1.3rem; color:#888; margin-top:2px;">(12 − ' + a5fib.toFixed(1) + ') × 10 × ' + wt.toFixed(1) + ' kg</div>';
+          } else {
+            doseHTML = '<span style="font-size:1.5rem; color:#888;">Enter weight to calculate</span>';
+          }
+          s3.style.cssText = 'display:block; background:#fff3e0; border:2px solid #e65100; border-radius:10px; padding:12px 16px;';
+          s3.innerHTML =
+            '<div style="font-size:1.35rem; color:#e65100; font-weight:700; margin-bottom:6px;">⚠️ YES — A5<sub>FIB</sub> ' + a5fib.toFixed(1) + ' mm &lt; 8 mm &nbsp;·&nbsp; Give Fibrinogen Concentrate</div>' +
+            '<div>' + doseHTML + formulaHTML + '</div>';
+        } else {
+          s3.style.cssText = 'display:block; background:#e8f5e9; border-left:4px solid #2e7d32; border-radius:8px; padding:10px 14px; font-size:1.45rem; color:#1b5e20;';
+          s3.innerHTML = '✅ A5<sub>FIB</sub> ' + a5fib.toFixed(1) + ' mm — fibrinogen acceptable. Proceed to Step 4.';
+        }
+      } else { s3.style.display = 'none'; }
+
+      // ── Step 4: Platelets ──
+      const s4 = document.getElementById('rotemStep4Result');
+      if (!isNaN(a5ext)) {
+        if (a5ext < 25) {
+          let doseHTML, formulaHTML = '';
+          if (!isNaN(wt) && wt > 0) {
+            const vol = (wt * 10).toFixed(0);
+            doseHTML    = '<span style="font-size:2.4rem; font-weight:900; color:#1b5e20;">' + vol + ' mL</span>';
+            formulaHTML = '<div style="font-size:1.3rem; color:#888; margin-top:2px;">10 mL/kg × ' + wt.toFixed(1) + ' kg &nbsp;·&nbsp; Target A5<sub>EXTEM</sub> ≥ 25 mm</div>';
+          } else {
+            doseHTML = '<span style="font-size:1.5rem; color:#888;">Enter weight to calculate</span>';
+          }
+          s4.style.cssText = 'display:block; background:#fce4ec; border:2px solid #c62828; border-radius:10px; padding:12px 16px;';
+          s4.innerHTML =
+            '<div style="font-size:1.35rem; color:#c62828; font-weight:700; margin-bottom:6px;">⚠️ YES — A5<sub>EXTEM</sub> ' + a5ext.toFixed(1) + ' mm &lt; 25 mm &nbsp;·&nbsp; Give Platelet Concentrate</div>' +
+            '<div>' + doseHTML + formulaHTML + '</div>';
+        } else {
+          s4.style.cssText = 'display:block; background:#e8f5e9; border-left:4px solid #2e7d32; border-radius:8px; padding:10px 14px; font-size:1.45rem; color:#1b5e20;';
+          s4.innerHTML = '✅ A5<sub>EXTEM</sub> ' + a5ext.toFixed(1) + ' mm — platelet function adequate. Proceed to Step 5.';
+        }
+      } else { s4.style.display = 'none'; }
+
+      // ── Step 5: FXIII / Cryoprecipitate ──
+      const s5 = document.getElementById('rotemStep5Result');
+      if (fxiiiEl) {
+        if (fxiiiEl.value === 'yes') {
+          let doseHTML, formulaHTML = '';
+          if (!isNaN(wt) && wt > 0) {
+            const bags = Math.ceil(wt / 5);
+            doseHTML    = '<span style="font-size:2.4rem; font-weight:900; color:#e65100;">' + bags + ' bag' + (bags > 1 ? 's' : '') + '</span>';
+            formulaHTML = '<div style="font-size:1.3rem; color:#888; margin-top:2px;">1 bag / 5 kg &nbsp;·&nbsp; ' + wt.toFixed(1) + ' kg</div>';
+          } else {
+            doseHTML = '<span style="font-size:1.5rem; color:#888;">Enter weight to calculate</span>';
+          }
+          s5.style.cssText = 'display:block; background:#fff3e0; border:2px solid #f57c00; border-radius:10px; padding:12px 16px;';
+          s5.innerHTML =
+            '<div style="font-size:1.35rem; color:#e65100; font-weight:700; margin-bottom:6px;">⚠️ YES — Give Cryoprecipitate</div>' +
+            '<div>' + doseHTML + formulaHTML + '</div>';
+        } else {
+          s5.style.cssText = 'display:block; background:#e8f5e9; border-left:4px solid #2e7d32; border-radius:8px; padding:10px 14px; font-size:1.45rem; color:#1b5e20;';
+          s5.innerHTML = '✅ No prolonged mechanical support — continue monitoring. Reassess ROTEM and escalate if bleeding persists.';
+        }
+      } else { s5.style.display = 'none'; }
+    }
+
+    // ── Protamine ROTEM calculators ──
+    function calcProtamineInitial() {
+      const ufh = parseFloat(document.getElementById('protUFH').value);
+      const resDiv = document.getElementById('protInitialResult');
+      if (isNaN(ufh) || ufh <= 0) { resDiv.style.display = 'none'; return; }
+      const dose = (ufh / 100) * 0.6;
+      document.getElementById('protInitialDose').textContent    = dose.toFixed(1);
+      document.getElementById('protInitialFormula').textContent = '(' + ufh.toFixed(0) + ' ÷ 100) × 0.6 = ' + dose.toFixed(1) + ' mg';
+      resDiv.style.display = 'block';
+    }
+
+    function calcProtamineAdditional() {
+      const wt    = parseFloat(document.getElementById('protWeight').value);
+      const ctIN  = parseFloat(document.getElementById('protCTIN').value);
+      const ctHEP = parseFloat(document.getElementById('protCTHEP').value);
+      const resDiv = document.getElementById('protAddlResult');
+      if (isNaN(wt) || wt <= 0 || isNaN(ctIN) || isNaN(ctHEP) || ctHEP <= 0) {
+        resDiv.style.display = 'none'; return;
+      }
+      const ratio = ctIN / ctHEP;
+      const ratioEl = document.getElementById('protRatio');
+      const flagEl  = document.getElementById('protRatioFlag');
+      ratioEl.textContent = ratio.toFixed(2);
+
+      if (ratio <= 1.25) {
+        flagEl.innerHTML = '<span style="color:#2e7d32; font-weight:700;">✅ ≤ 1.25 — No residual heparin effect</span>';
+        document.getElementById('protAddlDose').textContent    = '0';
+        document.getElementById('protAddlFormula').textContent = 'Ratio ≤ 1.25 — no additional protamine needed';
+        document.getElementById('protAddlNote').style.cssText  = 'display:block; background:#e8f5e9; border-left:4px solid #43a047; color:#1b5e20;';
+        document.getElementById('protAddlNote').textContent    = '✅ CT ratio within acceptable range. No further protamine required.';
+      } else {
+        const dose = ((0.4 * ratio) - 0.4) * wt * 70 / 100;
+        flagEl.innerHTML = '<span style="color:#c62828; font-weight:700;">⚠️ &gt; 1.25 — Residual heparin effect</span>';
+        document.getElementById('protAddlDose').textContent    = dose.toFixed(1);
+        document.getElementById('protAddlFormula').textContent =
+          '[(0.4 × ' + ratio.toFixed(2) + ') − 0.4] × ' + wt.toFixed(1) + ' × 70 ÷ 100 = ' + dose.toFixed(1) + ' mg';
+        document.getElementById('protAddlNote').style.cssText  = 'display:block; background:#fff3e0; border-left:4px solid #f57c00; color:#e65100;';
+        document.getElementById('protAddlNote').innerHTML      =
+          '<strong>⚠️ Additional protamine required.</strong> Infuse over 10–20 min. Max rate 5 mg/min. Reassess ROTEM after administration.';
+      }
+      resDiv.style.display = 'block';
     }
 
   </script>
