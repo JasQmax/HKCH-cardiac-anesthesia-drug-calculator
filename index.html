@@ -7400,6 +7400,156 @@
       } else { s5.style.display = 'none'; }
     }
 
+    // ── ROTEM Part 2 — Post-Protamine Reassessment flowchart ──
+    function calcRotemP2() {
+      const wt         = parseFloat(document.getElementById('rotemWeight').value);
+      const a5fib      = parseFloat(document.getElementById('p2A5FIB').value);
+      const a5ext      = parseFloat(document.getElementById('p2A5EXTEM').value);
+      const ctEx       = parseFloat(document.getElementById('p2CTEX').value);
+      const a5fibCheck = parseFloat(document.getElementById('p2A5FIBcheck').value);
+      const ctIN       = parseFloat(document.getElementById('p2CTIN').value);
+      const ctHEP      = parseFloat(document.getElementById('p2CTHEP').value);
+      const ctINint    = parseFloat(document.getElementById('p2CTINint').value);
+      const ctHEPint   = parseFloat(document.getElementById('p2CTHEPint').value);
+
+      const wtOK = !isNaN(wt) && wt > 0;
+
+      // ── Step 1: Fibrinogen Replacement ──
+      const s1 = document.getElementById('p2Step1Result');
+      if (!isNaN(a5fib)) {
+        if (a5fib < 12) {
+          let doseHTML, formulaHTML = '';
+          if (wtOK) {
+            const dose = (12 - a5fib) * 10 * wt;
+            doseHTML    = '<span style="font-size:2.4rem; font-weight:900; color:#bf360c;">' + dose.toFixed(0) + ' mg</span>';
+            formulaHTML = '<div style="font-size:1.3rem; color:#888; margin-top:2px;">(12 − ' + a5fib.toFixed(1) + ') × 10 × ' + wt.toFixed(1) + ' kg</div>';
+          } else {
+            doseHTML = '<span style="font-size:1.5rem; color:#888;">Enter weight to calculate dose</span>';
+          }
+          s1.style.cssText = 'display:block; background:#fff3e0; border:2px solid #e65100; border-radius:10px; padding:12px 16px;';
+          s1.innerHTML =
+            '<div style="font-size:1.35rem; color:#e65100; font-weight:700; margin-bottom:6px;">⚠️ YES — A5<sub>FIB</sub> ' + a5fib.toFixed(1) + ' mm &lt; 12 mm &nbsp;·&nbsp; Give Fibrinogen Concentrate</div>' +
+            '<div>' + doseHTML + formulaHTML + '</div>';
+        } else {
+          s1.style.cssText = 'display:block; background:#e8f5e9; border-left:4px solid #2e7d32; border-radius:8px; padding:10px 14px; font-size:1.45rem; color:#1b5e20;';
+          s1.innerHTML = '✅ A5<sub>FIB</sub> ' + a5fib.toFixed(1) + ' mm — fibrinogen acceptable. Proceed to Step 2.';
+        }
+      } else { s1.style.display = 'none'; }
+
+      // ── Step 2: Platelet Transfusion ──
+      const s2 = document.getElementById('p2Step2Result');
+      if (!isNaN(a5ext)) {
+        if (a5ext < 25) {
+          let doseHTML, formulaHTML = '';
+          if (wtOK) {
+            const vol = (wt * 10).toFixed(0);
+            doseHTML    = '<span style="font-size:2.4rem; font-weight:900; color:#1b5e20;">' + vol + ' mL</span>';
+            formulaHTML = '<div style="font-size:1.3rem; color:#888; margin-top:2px;">10 mL/kg × ' + wt.toFixed(1) + ' kg &nbsp;·&nbsp; Target A5<sub>EXTEM</sub> ≥ 25 mm</div>';
+          } else {
+            doseHTML = '<span style="font-size:1.5rem; color:#888;">Enter weight to calculate dose</span>';
+          }
+          s2.style.cssText = 'display:block; background:#fce4ec; border:2px solid #c62828; border-radius:10px; padding:12px 16px;';
+          s2.innerHTML =
+            '<div style="font-size:1.35rem; color:#c62828; font-weight:700; margin-bottom:6px;">⚠️ YES — A5<sub>EXTEM</sub> ' + a5ext.toFixed(1) + ' mm &lt; 25 mm &nbsp;·&nbsp; Give Platelet Concentrate</div>' +
+            '<div>' + doseHTML + formulaHTML + '</div>';
+        } else {
+          s2.style.cssText = 'display:block; background:#e8f5e9; border-left:4px solid #2e7d32; border-radius:8px; padding:10px 14px; font-size:1.45rem; color:#1b5e20;';
+          s2.innerHTML = '✅ A5<sub>EXTEM</sub> ' + a5ext.toFixed(1) + ' mm — platelet function adequate. Proceed to Step 3.';
+        }
+      } else { s2.style.display = 'none'; }
+
+      // ── Step 3: Coagulation Factors (Extrinsic Pathway) ──
+      // Use p2A5FIBcheck if provided, otherwise fall back to p2A5FIB
+      const a5fibForStep3 = !isNaN(a5fibCheck) ? a5fibCheck : a5fib;
+      const s3 = document.getElementById('p2Step3Result');
+      if (!isNaN(ctEx) && !isNaN(a5fibForStep3)) {
+        if (ctEx > 90 && a5fibForStep3 > 8) {
+          let doseHTML = '';
+          if (wtOK) {
+            const ffpVol    = (wt * 10).toFixed(0);
+            const pccUnits  = (wt * 10).toFixed(0);
+            doseHTML =
+              '<div style="display:flex; gap:24px; flex-wrap:wrap; align-items:center;">' +
+                '<div style="text-align:center;">' +
+                  '<span style="font-size:2.4rem; font-weight:900; color:#4a148c;">' + ffpVol + ' mL</span>' +
+                  '<div style="font-size:1.3rem; color:#888; margin-top:2px;">FFP &nbsp;·&nbsp; 10 mL/kg × ' + wt.toFixed(1) + ' kg</div>' +
+                '</div>' +
+                '<div style="font-size:1.4rem; color:#777; font-weight:700;">OR</div>' +
+                '<div style="text-align:center;">' +
+                  '<span style="font-size:2.4rem; font-weight:900; color:#4a148c;">' + pccUnits + ' units</span>' +
+                  '<div style="font-size:1.3rem; color:#888; margin-top:2px;">Beriplex (PCC) &nbsp;·&nbsp; 10 units/kg × ' + wt.toFixed(1) + ' kg</div>' +
+                '</div>' +
+              '</div>';
+          } else {
+            doseHTML = '<span style="font-size:1.5rem; color:#888;">Enter weight to calculate dose</span>';
+          }
+          s3.style.cssText = 'display:block; background:#f3e5f5; border:2px solid #6a1b9a; border-radius:10px; padding:12px 16px;';
+          s3.innerHTML =
+            '<div style="font-size:1.35rem; color:#4a148c; font-weight:700; margin-bottom:6px;">⚠️ YES — CT<sub>EXTEM</sub> ' + ctEx.toFixed(0) + ' s &gt; 90 s AND A5<sub>FIB</sub> ' + a5fibForStep3.toFixed(1) + ' mm &gt; 8 mm &nbsp;·&nbsp; Give Coagulation Factors</div>' +
+            doseHTML;
+        } else {
+          s3.style.cssText = 'display:block; background:#e8f5e9; border-left:4px solid #2e7d32; border-radius:8px; padding:10px 14px; font-size:1.45rem; color:#1b5e20;';
+          s3.innerHTML = '✅ Criteria not met — extrinsic coagulation factors not indicated. Proceed to Step 4.';
+        }
+      } else { s3.style.display = 'none'; }
+
+      // ── Step 4: Residual Heparin (Additional Protamine) ──
+      const s4 = document.getElementById('p2Step4Result');
+      if (!isNaN(ctIN) && !isNaN(ctHEP) && ctHEP > 0) {
+        const ratio = ctIN / ctHEP;
+        if (ratio > 1.25) {
+          let doseHTML, formulaHTML = '';
+          if (wtOK) {
+            const dose = ((0.4 * ratio) - 0.4) * wt * 70 / 100;
+            doseHTML    = '<span style="font-size:2.4rem; font-weight:900; color:#b71c1c;">' + dose.toFixed(1) + ' mg</span>';
+            formulaHTML = '<div style="font-size:1.3rem; color:#888; margin-top:2px;">[(0.4 × ' + ratio.toFixed(2) + ') − 0.4] × ' + wt.toFixed(1) + ' × 70 ÷ 100 &nbsp;·&nbsp; Max rate 5 mg/min</div>';
+          } else {
+            doseHTML = '<span style="font-size:1.5rem; color:#888;">Enter weight to calculate dose</span>';
+          }
+          s4.style.cssText = 'display:block; background:#fce4ec; border:2px solid #c62828; border-radius:10px; padding:12px 16px;';
+          s4.innerHTML =
+            '<div style="font-size:1.35rem; color:#c62828; font-weight:700; margin-bottom:6px;">⚠️ YES — CT ratio ' + ratio.toFixed(2) + ' &gt; 1.25 &nbsp;·&nbsp; Give Additional Protamine</div>' +
+            '<div>' + doseHTML + formulaHTML + '</div>';
+        } else {
+          s4.style.cssText = 'display:block; background:#e8f5e9; border-left:4px solid #2e7d32; border-radius:8px; padding:10px 14px; font-size:1.45rem; color:#1b5e20;';
+          s4.innerHTML = '✅ CT ratio ' + ratio.toFixed(2) + ' — no residual heparin effect. Proceed to Step 5.';
+        }
+      } else { s4.style.display = 'none'; }
+
+      // ── Step 5: Coagulation Factors (Intrinsic Pathway) ──
+      const s5 = document.getElementById('p2Step5Result');
+      if (!isNaN(ctINint) && !isNaN(ctHEPint)) {
+        if (ctINint > 280 && ctHEPint > 280) {
+          let doseHTML = '';
+          if (wtOK) {
+            const ffpVol   = (wt * 10).toFixed(0);
+            const pccUnits = (wt * 10).toFixed(0);
+            doseHTML =
+              '<div style="display:flex; gap:24px; flex-wrap:wrap; align-items:center;">' +
+                '<div style="text-align:center;">' +
+                  '<span style="font-size:2.4rem; font-weight:900; color:#0d47a1;">' + ffpVol + ' mL</span>' +
+                  '<div style="font-size:1.3rem; color:#888; margin-top:2px;">FFP &nbsp;·&nbsp; 10 mL/kg × ' + wt.toFixed(1) + ' kg</div>' +
+                '</div>' +
+                '<div style="font-size:1.4rem; color:#777; font-weight:700;">OR</div>' +
+                '<div style="text-align:center;">' +
+                  '<span style="font-size:2.4rem; font-weight:900; color:#0d47a1;">' + pccUnits + ' units</span>' +
+                  '<div style="font-size:1.3rem; color:#888; margin-top:2px;">Beriplex (PCC) &nbsp;·&nbsp; 10 units/kg × ' + wt.toFixed(1) + ' kg</div>' +
+                '</div>' +
+              '</div>';
+          } else {
+            doseHTML = '<span style="font-size:1.5rem; color:#888;">Enter weight to calculate dose</span>';
+          }
+          s5.style.cssText = 'display:block; background:#e3f2fd; border:2px solid #1565c0; border-radius:10px; padding:12px 16px;';
+          s5.innerHTML =
+            '<div style="font-size:1.35rem; color:#0d47a1; font-weight:700; margin-bottom:6px;">⚠️ YES — CT<sub>INTEM</sub> ' + ctINint.toFixed(0) + ' s AND CT<sub>HEPTEM</sub> ' + ctHEPint.toFixed(0) + ' s both &gt; 280 s &nbsp;·&nbsp; Give Coagulation Factors</div>' +
+            doseHTML;
+        } else {
+          s5.style.cssText = 'display:block; background:#e8f5e9; border-left:4px solid #2e7d32; border-radius:8px; padding:10px 14px; font-size:1.45rem; color:#1b5e20;';
+          s5.innerHTML = '✅ Criteria not met — intrinsic coagulation factors not indicated. Continue monitoring.';
+        }
+      } else { s5.style.display = 'none'; }
+    }
+
     // ── Protamine ROTEM calculators ──
     function calcProtamineInitial() {
       const ufh = parseFloat(document.getElementById('protUFH').value);
