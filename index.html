@@ -1141,6 +1141,10 @@
             <label for="weight">Body weight (kg):</label>
             <input type="number" id="weight" min="0" step="0.1" placeholder="Enter weight">
           </div>
+          <div>
+            <label for="drugAge">Age <span style="font-weight:400; color:#888;">(months, for heparin dosing)</span>:</label>
+            <input type="number" id="drugAge" min="0" step="1" placeholder="e.g. 6" style="width:130px;">
+          </div>
           <label class="checkbox-label">
             <input type="checkbox" id="fluidRestriction">
             <span>>10 kg fluid restriction regime</span>
@@ -1417,14 +1421,26 @@
     <tbody>
       <tr data-drug="heparin" class="heparin">
         <td>Heparin</td>
-        <td>300 units/kg</td>
+        <td>
+          <span id="heparinDoseLabel">300 units/kg</span><br>
+          <small style="font-weight:400; line-height:1.6;">
+            Neonate: 400–500 u/kg<br>
+            Infant: 400 u/kg<br>
+            &gt;1 yr: 300 u/kg
+          </small>
+        </td>
         <td>1000 units/ml</td>
         <td class="calcDose"></td>
         <td class="volume"></td>
       </tr>
       <tr data-drug="protamine" class="protamine">
         <td>Protamine</td>
-        <td>4 mg/kg</td>
+        <td>4 mg/kg<br><small style="font-weight:400;">(initial, empirical)</small><br>
+          <a href="#" onclick="showHemostaticCalculator(); setTimeout(function(){ showBloodTab('Rotem'); }, 50); return false;"
+            style="color:#004d40; font-size:0.85em; font-weight:700; text-decoration:underline;">
+            📊 ROTEM-guided dose →
+          </a>
+        </td>
         <td>10 mg/ml</td>
         <td class="calcDose"></td>
         <td class="volume"></td>
@@ -4127,8 +4143,23 @@
 
         let dose, conc, unit;
         if (drugKey === 'heparin') {
-          dose = 300 * wt; // units
-          conc = 1000; // units/ml
+          // Age-based dosing: drugAge is in months
+          const ageMonths = parseFloat(document.getElementById('drugAge').value);
+          let heparinDosePerKg, heparinLabel;
+          if (!isNaN(ageMonths) && ageMonths < 1) {
+            heparinDosePerKg = 450;
+            heparinLabel = '450 units/kg (neonate, midpoint 400–500)';
+          } else if (!isNaN(ageMonths) && ageMonths < 12) {
+            heparinDosePerKg = 400;
+            heparinLabel = '400 units/kg (infant)';
+          } else {
+            heparinDosePerKg = 300;
+            heparinLabel = '300 units/kg (>1 year)';
+          }
+          const labelEl = document.getElementById('heparinDoseLabel');
+          if (labelEl) labelEl.textContent = heparinLabel;
+          dose = heparinDosePerKg * wt;
+          conc = 1000;
           unit = 'units';
         } else if (drugKey === 'protamine') {
           dose = 4 * wt; // mg
@@ -7302,7 +7333,7 @@
     }
 
     // ── ROTEM-Guided Hemostatic Resuscitation flowchart ──
-    function calcRotem() {
+    window.calcRotem = function calcRotem() {
       const wt     = parseFloat(document.getElementById('rotemWeight').value);
       const ctIN   = parseFloat(document.getElementById('rotemCTIN').value);
       const ctHEP  = parseFloat(document.getElementById('rotemCTHEP').value);
@@ -7407,7 +7438,7 @@
     }
 
     // ── ROTEM Part 2 — Post-Protamine Reassessment flowchart ──
-    function calcRotemP2() {
+    window.calcRotemP2 = function calcRotemP2() {
       const wt         = parseFloat(document.getElementById('rotemWeight').value);
       const a5fib      = parseFloat(document.getElementById('p2A5FIB').value);
       const a5ext      = parseFloat(document.getElementById('p2A5EXTEM').value);
@@ -7600,7 +7631,7 @@
     }
 
     // ── Reset Part 2 — Post-Protamine Reassessment ──
-    function resetRotemP2() {
+    window.resetRotemP2 = function resetRotemP2() {
       ['p2A5FIB','p2A5EXTEM','p2CTEX','p2A5FIBcheck','p2CTIN','p2CTHEP','p2CTINint','p2CTHEPint'].forEach(function(id) {
         document.getElementById(id).value = '';
       });
