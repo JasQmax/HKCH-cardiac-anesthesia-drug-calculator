@@ -7381,6 +7381,76 @@
       res.style.display = 'block';
     }
 
+    // ── Date ↔ PCA Converter ──
+    function calcPCAConv() {
+      const dobVal = document.getElementById('pcaConvDOB').value;
+      const ga     = parseFloat(document.getElementById('pcaConvGA').value);
+
+      // Helper: format a Date as "D Mon YYYY (Day)"
+      function fmtDate(d) {
+        const days  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        const months= ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+      }
+
+      // Both shared fields must be valid before anything shows
+      const sharedOK = dobVal && !isNaN(ga) && ga >= 22 && ga <= 42;
+
+      // ── Mode A: Date → PCA ──
+      const targetDateVal = document.getElementById('pcaConvTargetDate').value;
+      const resA = document.getElementById('pcaConvDateResult');
+      if (sharedOK && targetDateVal) {
+        const dob        = new Date(dobVal + 'T00:00:00');
+        const targetDate = new Date(targetDateVal + 'T00:00:00');
+        const diffDays   = Math.round((targetDate - dob) / 86400000);
+        if (diffDays >= 0) {
+          const totalDays  = ga * 7 + diffDays;
+          const pcaWks     = Math.floor(totalDays / 7);
+          const pcaDays    = totalDays % 7;
+          const isPrem     = ga < 37;
+          const threshold  = isPrem ? 60 : 44;
+          const risk       = pcaWks + pcaDays / 7 < threshold ? '⚠️ High apnoea risk' : '✅ Low apnoea risk';
+          const riskColor  = pcaWks + pcaDays / 7 < threshold ? '#c62828' : '#2e7d32';
+
+          document.getElementById('pcaConvDateValue').textContent = pcaWks + ' wks' + (pcaDays > 0 ? ' + ' + pcaDays + ' d' : '');
+          document.getElementById('pcaConvDateExtra').innerHTML =
+            'Postnatal age: ' + Math.floor(diffDays / 7) + ' wks ' + (diffDays % 7) + ' d' +
+            ' &nbsp;·&nbsp; <span style="color:' + riskColor + '; font-weight:700;">' + risk + '</span>';
+          resA.style.display = 'block';
+        } else {
+          document.getElementById('pcaConvDateValue').textContent = '—';
+          document.getElementById('pcaConvDateExtra').textContent = 'Target date is before date of birth';
+          resA.style.display = 'block';
+        }
+      } else {
+        resA.style.display = 'none';
+      }
+
+      // ── Mode B: PCA → Date ──
+      const targetPCAWks  = parseFloat(document.getElementById('pcaConvTargetWks').value);
+      const targetPCADays = parseFloat(document.getElementById('pcaConvTargetDays').value) || 0;
+      const resB = document.getElementById('pcaConvPCAResult');
+      if (sharedOK && !isNaN(targetPCAWks) && targetPCAWks >= ga) {
+        const dob            = new Date(dobVal + 'T00:00:00');
+        const postnatalDays  = (targetPCAWks - ga) * 7 + targetPCADays;
+        const resultDate     = new Date(dob.getTime() + postnatalDays * 86400000);
+        const postnatalWks   = Math.floor(postnatalDays / 7);
+        const postnatalRem   = Math.round(postnatalDays % 7);
+        const isPrem         = ga < 37;
+        const threshold      = isPrem ? 60 : 44;
+        const risk           = targetPCAWks + targetPCADays / 7 < threshold ? '⚠️ High apnoea risk' : '✅ Low apnoea risk';
+        const riskColor      = targetPCAWks + targetPCADays / 7 < threshold ? '#c62828' : '#2e7d32';
+
+        document.getElementById('pcaConvPCAValue').textContent = fmtDate(resultDate);
+        document.getElementById('pcaConvPCAExtra').innerHTML =
+          'Postnatal age: ' + postnatalWks + ' wks' + (postnatalRem > 0 ? ' + ' + postnatalRem + ' d' : '') +
+          ' &nbsp;·&nbsp; <span style="color:' + riskColor + '; font-weight:700;">' + risk + '</span>';
+        resB.style.display = 'block';
+      } else {
+        resB.style.display = 'none';
+      }
+    }
+
     // ── IBW sex state ──
     let ibwSex = 'M';
     function setIBWSex(sex) {
@@ -8811,7 +8881,11 @@
       <!-- ── PCA TAB ── -->
       <div id="genTabPCA" class="pals-tab-panel">
         <h3 style="color:#1565c0; border-bottom:1.6px solid #1976d2; padding-bottom:8px; margin:20px 0 16px;">🗓️ Post-Conceptual Age (PCA)</h3>
-        <div class="input-section">
+
+        <!-- PCA Calculator box -->
+        <div style="background:#e3f2fd; border:2px solid #1565c0; border-radius:12px; padding:18px; margin-bottom:22px;">
+          <div style="font-weight:700; color:#0d47a1; font-size:1.65rem; margin-bottom:14px;">🧮 PCA Calculator</div>
+          <div class="input-section" style="background:#fff; border:1.5px solid #90caf9; margin-bottom:0;">
           <div class="input-group" style="flex-wrap:wrap; gap:16px;">
             <div>
               <label for="pcaGestAge">Gestational age at birth (weeks):</label>
@@ -8829,27 +8903,97 @@
                 oninput="calcPCA()" style="width:90px;">
             </div>
           </div>
-        </div>
-        <div id="pcaResult" style="display:none; margin-top:4.8px;">
-          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:11.2px; margin-bottom:12.8px;">
-            <div style="background:#e3f2fd; border-radius:6.4px; padding:12.8px; text-align:center; border:1.6px solid #1976d2;">
-              <div style="font-size:20.8px; color:#555; margin-bottom:4px;">Post-Conceptual Age</div>
-              <div id="pcaValue" style="font-size:22.4px; font-weight:700; color:#1565c0;">—</div>
-              <div style="font-size:20.8px; color:#777;">weeks + days</div>
+          </div>
+          <div id="pcaResult" style="display:none; margin-top:14px;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:11.2px; margin-bottom:12.8px;">
+              <div style="background:#e3f2fd; border-radius:6.4px; padding:12.8px; text-align:center; border:1.6px solid #1976d2;">
+                <div style="font-size:20.8px; color:#555; margin-bottom:4px;">Post-Conceptual Age</div>
+                <div id="pcaValue" style="font-size:22.4px; font-weight:700; color:#1565c0;">—</div>
+                <div style="font-size:20.8px; color:#777;">weeks + days</div>
+              </div>
+              <div style="background:#f3e5f5; border-radius:6.4px; padding:12.8px; text-align:center; border:1.6px solid #8e24aa;">
+                <div style="font-size:20.8px; color:#555; margin-bottom:4px;">Premature?</div>
+                <div id="pcaPremLabel" style="font-size:22.4px; font-weight:700; color:#6a1b9a;">—</div>
+              </div>
+              <div id="pcaRiskBox" style="background:#fff8e1; border-radius:6.4px; padding:12.8px; text-align:center; border:1.6px solid #f9a825;">
+                <div style="font-size:20.8px; color:#555; margin-bottom:4px;">Apnoea Risk</div>
+                <div id="pcaRiskLabel" style="font-size:20.8px; font-weight:700;">—</div>
+              </div>
             </div>
-            <div style="background:#f3e5f5; border-radius:6.4px; padding:12.8px; text-align:center; border:1.6px solid #8e24aa;">
-              <div style="font-size:20.8px; color:#555; margin-bottom:4px;">Premature?</div>
-              <div id="pcaPremLabel" style="font-size:22.4px; font-weight:700; color:#6a1b9a;">—</div>
+            <div id="pcaClinNote" style="border-radius:6.4px; padding:14px; font-size:22.4px; line-height:1.8;"></div>
+          </div>
+        </div><!-- end PCA calculator box -->
+
+        <!-- ── DATE ↔ PCA CONVERTER ── -->
+        <div style="background:#f3e5f5; border:2px solid #7b1fa2; border-radius:12px; padding:18px; margin-top:22px;">
+          <div style="font-weight:700; color:#4a148c; font-size:1.65rem; margin-bottom:6px;">📅 Date ↔ PCA Week Converter</div>
+          <div style="font-size:1.4rem; color:#666; margin-bottom:16px; line-height:1.6;">
+            Enter the baby's <strong>date of birth</strong> and <strong>gestational age at birth</strong>, then either:<br>
+            &nbsp;• pick a <strong>target date</strong> to find PCA on that day, or<br>
+            &nbsp;• enter a <strong>target PCA</strong> to find the corresponding calendar date.
+          </div>
+
+          <!-- Shared inputs -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
+            <div>
+              <label style="font-weight:600; font-size:1.5rem; color:#4a148c;">Date of birth:</label>
+              <input type="date" id="pcaConvDOB"
+                style="width:100%; padding:9px 12px; font-size:1.5rem; border:2px solid #ce93d8; border-radius:8px; margin-top:4px;"
+                oninput="calcPCAConv()">
             </div>
-            <div id="pcaRiskBox" style="background:#fff8e1; border-radius:6.4px; padding:12.8px; text-align:center; border:1.6px solid #f9a825;">
-              <div style="font-size:20.8px; color:#555; margin-bottom:4px;">Apnoea Risk</div>
-              <div id="pcaRiskLabel" style="font-size:20.8px; font-weight:700;">—</div>
+            <div>
+              <label style="font-weight:600; font-size:1.5rem; color:#4a148c;">Gestational age at birth (weeks):</label>
+              <input type="number" id="pcaConvGA" min="22" max="42" step="1" placeholder="e.g. 28"
+                style="width:100%; padding:9px 12px; font-size:1.5rem; border:2px solid #ce93d8; border-radius:8px; margin-top:4px;"
+                oninput="calcPCAConv()">
             </div>
           </div>
-          <div id="pcaClinNote" style="border-radius:6.4px; padding:14px; font-size:22.4px; line-height:1.8;"></div>
-        </div>
+
+          <!-- Two mode cards side by side -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+
+            <!-- Mode A: Date → PCA -->
+            <div style="background:#fff; border:1.5px solid #ce93d8; border-radius:10px; padding:14px;">
+              <div style="font-weight:700; color:#6a1b9a; font-size:1.5rem; margin-bottom:10px;">📆 Date → PCA</div>
+              <label style="font-size:1.4rem; font-weight:600; color:#555;">Target date:</label>
+              <input type="date" id="pcaConvTargetDate"
+                style="width:100%; padding:8px 12px; font-size:1.5rem; border:1.5px solid #ce93d8; border-radius:7px; margin:4px 0 10px;"
+                oninput="calcPCAConv()">
+              <div id="pcaConvDateResult" style="display:none; background:#f3e5f5; border-radius:8px; padding:12px; text-align:center;">
+                <div style="font-size:1.35rem; color:#666; margin-bottom:4px;">PCA on that date</div>
+                <div id="pcaConvDateValue" style="font-size:2.2rem; font-weight:900; color:#4a148c;"></div>
+                <div id="pcaConvDateExtra" style="font-size:1.3rem; color:#888; margin-top:4px;"></div>
+              </div>
+            </div>
+
+            <!-- Mode B: PCA → Date -->
+            <div style="background:#fff; border:1.5px solid #ce93d8; border-radius:10px; padding:14px;">
+              <div style="font-weight:700; color:#6a1b9a; font-size:1.5rem; margin-bottom:10px;">🗓️ PCA → Date</div>
+              <div style="display:flex; gap:8px; align-items:flex-end; margin-bottom:10px;">
+                <div style="flex:1;">
+                  <label style="font-size:1.4rem; font-weight:600; color:#555;">Target PCA (weeks):</label>
+                  <input type="number" id="pcaConvTargetWks" min="22" max="100" step="1" placeholder="e.g. 44"
+                    style="width:100%; padding:8px 12px; font-size:1.5rem; border:1.5px solid #ce93d8; border-radius:7px; margin-top:4px;"
+                    oninput="calcPCAConv()">
+                </div>
+                <div style="flex:0 0 70px;">
+                  <label style="font-size:1.4rem; font-weight:600; color:#555;">+ days:</label>
+                  <input type="number" id="pcaConvTargetDays" min="0" max="6" step="1" placeholder="0"
+                    style="width:100%; padding:8px 12px; font-size:1.5rem; border:1.5px solid #ce93d8; border-radius:7px; margin-top:4px;"
+                    oninput="calcPCAConv()">
+                </div>
+              </div>
+              <div id="pcaConvPCAResult" style="display:none; background:#f3e5f5; border-radius:8px; padding:12px; text-align:center;">
+                <div style="font-size:1.35rem; color:#666; margin-bottom:4px;">Calendar date at that PCA</div>
+                <div id="pcaConvPCAValue" style="font-size:2.2rem; font-weight:900; color:#4a148c;"></div>
+                <div id="pcaConvPCAExtra" style="font-size:1.3rem; color:#888; margin-top:4px;"></div>
+              </div>
+            </div>
+
+          </div><!-- end grid -->
+        </div><!-- end converter card -->
         <!-- Quick reference -->
-        <details style="margin-top:18px;" open>
+        <details style="margin-top:18px;">
           <summary style="cursor:pointer; font-weight:700; color:#1565c0; font-size:20.8px; padding:4.8px 0;">📋 PCA &amp; Apnoea Risk — Quick Reference</summary>
           <div style="background:#e3f2fd; border-radius:6.4px; padding:14px; margin-top:8px; font-size:22.4px; line-height:1.7;">
 
