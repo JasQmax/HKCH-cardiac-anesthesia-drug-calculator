@@ -1706,6 +1706,40 @@
               <td class="abdVolume"></td>
             </tr>
 
+            <!-- ANALGESICS -->
+            <tr><td colspan="6" class="group-header">💊 Analgesics</td></tr>
+
+            <tr data-abx="parecoxib" style="background:#e8f5e9;">
+              <td><strong>Parecoxib</strong><br><small>COX-2 inhibitor — IV</small></td>
+              <td>1 mg/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Max 40 mg/dose; give over 15–30 sec</small></td>
+              <td>20 mg/mL<br><small>(40 mg vial reconstituted in 2 mL NS)</small></td>
+              <td>Reconstitute 40 mg vial with 2 mL NS → 20 mg/mL; give undiluted</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="paracetamol-iv" style="background:#f0fce8;">
+              <td><strong>Paracetamol</strong><br><small>IV infusion — age-based dosing</small></td>
+              <td>
+                <strong>&gt;1 month:</strong> 15 mg/kg <strong style="color:#6a1b9a;">IV</strong><br>
+                <strong>28–44 wks PCA:</strong> 10 mg/kg <strong style="color:#6a1b9a;">IV</strong> (single dose)<br>
+                <small>Infuse over 15 min. Max 60 mg/kg/day (>1 m); max 30 mg/kg/day (premature/neonates)</small>
+              </td>
+              <td>10 mg/mL (ready-to-use bottle)</td>
+              <td>Infuse over 15 min; no dilution required; use within 1 h of opening</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
+            <tr data-abx="morphine-bolus" style="background:#e8f0fe;">
+              <td><strong>Morphine</strong><br><small>IV bolus analgesia</small></td>
+              <td>0.05–0.1 mg/kg <strong style="color:#6a1b9a;">IV</strong><br><small>Titrate to effect; reduce in neonates/infants &lt;3 m</small></td>
+              <td>1 mg/mL<br><small>(1 mL of 15 mg/mL stock + 14 mL NS)</small></td>
+              <td>Dilute to 1 mg/mL; give slowly over 3–5 min; monitor for respiratory depression</td>
+              <td class="abdCalcDose"></td>
+              <td class="abdVolume"></td>
+            </tr>
+
             <!-- INDUCTION AGENTS -->
             <tr><td colspan="6" class="group-header">💉 Induction Agents</td></tr>
 
@@ -4572,6 +4606,67 @@
               break;
             }
 
+            /* ── Parecoxib IV ── */
+            case 'parecoxib': {
+              const d = +(Math.min(1 * wt, 40)).toFixed(1);
+              const maxHit = 1 * wt > 40;
+              doseLabel = d + ' mg' + (maxHit ? ' (max 40 mg)' : '');
+              volLabel  = (d / 20).toFixed(2) + ' mL of 20 mg/mL';
+              break;
+            }
+
+            /* ── Paracetamol IV ── */
+            case 'paracetamol-iv': {
+              // Determine age in months from the main drugAge field
+              const ageMonths = parseFloat(document.getElementById('drugAge').value);
+              const isNeonateByAge = !isNaN(ageMonths) && ageMonths === 0;
+              const ageNotEntered = isNaN(ageMonths);
+
+              // Also check PCA weeks for prematurity (28–44 wks PCA)
+              let pcaTotalWks = NaN;
+              const gestEl = document.getElementById('pcaGestAge');
+              const pnWkEl = document.getElementById('pcaPostnatalWeeks');
+              if (gestEl && pnWkEl) {
+                const ga = parseFloat(gestEl.value);
+                const pn = parseFloat(pnWkEl.value || '0');
+                if (!isNaN(ga)) pcaTotalWks = ga + pn;
+              }
+              const isPremature = !isNaN(pcaTotalWks) && pcaTotalWks < 44;
+
+              let dosePerKg, ageLabel;
+              if (isPremature) {
+                dosePerKg = 10;
+                ageLabel = 'PCA 28–44 wks — single dose only';
+              } else if (isNeonateByAge) {
+                dosePerKg = 10;
+                ageLabel = 'Neonate (0 months) — single dose, max 30 mg/kg/day';
+              } else if (ageNotEntered && wt < 6) {
+                dosePerKg = 10;
+                ageLabel = 'Weight < 6 kg, age not entered — assumed neonate/young infant, single dose, max 30 mg/kg/day';
+              } else {
+                dosePerKg = 15;
+                ageLabel = '> 1 month — max 60 mg/kg/day';
+              }
+
+              const d = +(dosePerKg * wt).toFixed(1);
+              doseLabel = d + ' mg (' + dosePerKg + ' mg/kg — ' + ageLabel + ')';
+              volLabel  = (d / 10).toFixed(1) + ' mL of 10 mg/mL — infuse over 15 min';
+              break;
+            }
+
+            /* ── Morphine IV bolus ── */
+            case 'morphine-bolus': {
+              const lo = +(0.05 * wt).toFixed(3);
+              const hi = +(0.1  * wt).toFixed(3);
+              // Stock 15 mg/mL → dilute 1 mL + 14 mL NS = 15 mL → 1 mg/mL working solution
+              const stockLo = (lo / 15).toFixed(2);
+              const stockHi = (hi / 15).toFixed(2);
+              doseLabel = lo + '–' + hi + ' mg';
+              volLabel  = lo.toFixed(2) + '–' + hi.toFixed(2) + ' mL of 1 mg/mL'
+                        + ' (draw ' + stockLo + '–' + stockHi + ' mL of 15 mg/mL + NS to 15 mL total)';
+              break;
+            }
+
             default:
               doseLabel = '—'; volLabel = '—';
           }
@@ -4689,6 +4784,218 @@
         });
       })(wt);
 
+      // ── Post-Op Analgesic Suggestions Table ──
+      (function calcPostOpAnalgesics(wt) {
+        // Oxycodone IR
+        const oxyEl = document.getElementById('poOxycodone');
+        if (oxyEl) {
+          if (wt < 5) { // rough proxy for <6 months — no dose
+            oxyEl.textContent = 'Age <6 m — not recommended';
+          } else {
+            // Assume age >1y unless weight implies infant; show age-banded suggestions
+            const lo6m1y   = +(0.05 * wt).toFixed(2) + '–' + +(0.1 * wt).toFixed(2) + ' mg (6m–1y band)';
+            const lo1y     = +(0.1  * wt).toFixed(2) + '–' + +(0.2 * wt).toFixed(2) + ' mg (>1y band, max ~10 mg)';
+            const gt12     = '2.5–5 mg (>12y flat dose)';
+            oxyEl.innerHTML = '<small>' + lo6m1y + '<br>' + lo1y + '<br>' + gt12 + '</small>';
+          }
+        }
+        // Naloxone PO (co-prescribed with oxycodone)
+        const nxEl = document.getElementById('poNaloxone');
+        if (nxEl) {
+          if (wt < 5) {
+            nxEl.textContent = 'Age <6 m — see above';
+          } else {
+            const lo6m1y = +(0.05 * wt).toFixed(2) + '–' + +(0.1 * wt).toFixed(2) + ' mg (6m–1y band)';
+            const lo1y   = +(0.1  * wt).toFixed(2) + '–' + +(0.2 * wt).toFixed(2) + ' mg (>1y band)';
+            nxEl.innerHTML = '<small>' + lo6m1y + '<br>' + lo1y + '</small>';
+          }
+        }
+        // Celecoxib (≥2 y; assume age adequate if wt ≥10 kg as rough proxy, clinician to verify)
+        const cxEl = document.getElementById('poCelecoxib');
+        if (cxEl) {
+          const doseInit    = +(Math.min(3 * wt, 200)).toFixed(1);
+          const doseRepLo   = +(Math.min(2 * wt, 200)).toFixed(1);
+          const doseRepHi   = +(Math.min(4 * wt, 200)).toFixed(1);
+          const maxHit      = 3 * wt > 200;
+          cxEl.innerHTML = '<small>'
+            + 'Initial: ' + doseInit + ' mg q12h' + (maxHit ? ' (max 200 mg)' : '') + '<br>'
+            + 'Repeated: ' + doseRepLo + '–' + doseRepHi + ' mg q12h'
+            + '</small>';
+        }
+        // Gabapentin (≥3 y)
+        const gbEl = document.getElementById('poGabapentin');
+        if (gbEl) {
+          const d = +(5 * wt).toFixed(1);
+          gbEl.textContent = d + ' mg nocte × 5 days';
+        }
+        // Pregabalin (≥2 y AND ≥11 kg; max 75 mg)
+        const pgEl = document.getElementById('poPregabalin');
+        if (pgEl) {
+          if (wt < 11) {
+            pgEl.textContent = '< 11 kg — not recommended';
+          } else {
+            const d = +(Math.min(1 * wt, 75)).toFixed(1);
+            const maxHit = 1 * wt > 75;
+            pgEl.textContent = d + ' mg nocte' + (maxHit ? ' (max 75 mg)' : '');
+          }
+        }
+      })(wt);
+
+    }
+
+    // ── Standalone Post-Op Analgesics calculator (called from post-op tab inputs) ──
+    function calcPostOpDoses() {
+      var wt  = parseFloat(document.getElementById('poWeight').value);
+      var ageYrs = parseFloat(document.getElementById('poAgeYears').value);
+      var ageMos = parseFloat(document.getElementById('poAgeMonths').value);
+
+      var hasWt   = !isNaN(wt) && wt > 0;
+      var hasAgeY = !isNaN(ageYrs) && ageYrs >= 0;
+      var hasAgeM = !isNaN(ageMos) && ageMos >= 0;
+      var hasAge  = hasAgeY || hasAgeM;
+
+      // Convert to total months
+      var ageM = (hasAgeY ? ageYrs * 12 : 0) + (hasAgeM ? ageMos : 0);
+      hasAge = hasAgeY || hasAgeM; // re-confirm
+
+      var summary = document.getElementById('poPatientSummary');
+
+      if (!hasWt && !hasAge) {
+        summary.innerHTML = '';
+        ['poOxycodone','poNaloxone','poCelecoxib','poGabapentin','poPregabalin'].forEach(function(id){
+          var el = document.getElementById(id); if(el) el.innerHTML = '—';
+        });
+        return;
+      }
+
+      // Build patient summary line
+      var sumParts = [];
+      if (hasWt) sumParts.push('<strong>' + wt + ' kg</strong>');
+      if (hasAge) {
+        var dispYrs = Math.floor(ageM / 12);
+        var dispMos = Math.round(ageM % 12);
+        var ageStr = dispYrs > 0 ? dispYrs + ' y ' + dispMos + ' m' : dispMos + ' m';
+        sumParts.push('<strong>' + ageStr + ' (' + ageM + ' months)</strong>');
+      }
+      summary.innerHTML = '📋 Patient: ' + sumParts.join(', ');
+
+      function caution(msg) {
+        return '<span style="color:#c62828; font-weight:600;">⚠️ ' + msg + '</span>';
+      }
+      function ok(msg) { return '<span style="color:#2e7d32;">' + msg + '</span>'; }
+
+      // ── Oxycodone IR (≥6 months)
+      var oxyEl = document.getElementById('poOxycodone');
+      if (oxyEl) {
+        if (hasAge && ageM < 6) {
+          oxyEl.innerHTML = caution('Age ' + ageM + ' m — NOT recommended (&lt;6 months)');
+        } else if (!hasAge && hasWt && wt < 5) {
+          oxyEl.innerHTML = caution('Weight ' + wt + ' kg — likely &lt;6 months, use with caution');
+        } else if (hasWt) {
+          var lines = [];
+          if (hasAge && ageM >= 6 && ageM < 12) {
+            var lo = (0.05*wt).toFixed(2), hi = (0.1*wt).toFixed(2);
+            lines.push(ok(lo + '–' + hi + ' mg PO q4h PRN <em>(6m–1y dose)</em>'));
+            lines.push('<small style="color:#555;">Co-prescribe naloxone PO. Limit 3 days.</small>');
+          } else if (hasAge && ageM >= 12 && ageM < 144) {
+            var lo = (0.1*wt).toFixed(2), hi = Math.min(0.2*wt,10).toFixed(2);
+            lines.push(ok(lo + '–' + hi + ' mg PO q4h PRN <em>(&gt;1y dose)</em>'));
+            if (0.2*wt > 10) lines.push('<small style="color:#888;">(capped at 10 mg/dose)</small>');
+            lines.push('<small style="color:#555;">Co-prescribe naloxone PO. Limit 3 days.</small>');
+          } else if (hasAge && ageM >= 144) {
+            lines.push(ok('2.5–5 mg PO q4h PRN <em>(&gt;12y flat dose)</em>'));
+            lines.push('<small style="color:#555;">Max 10 mg/dose. Limit 3 days.</small>');
+          } else {
+            // Age unknown — show all bands
+            var lo6 = (0.05*wt).toFixed(2), hi6 = (0.1*wt).toFixed(2);
+            var lo1 = (0.1*wt).toFixed(2),  hi1 = Math.min(0.2*wt,10).toFixed(2);
+            lines.push('<em>Age not entered — all bands shown:</em>');
+            lines.push('6m–1y: ' + lo6 + '–' + hi6 + ' mg q4h PRN');
+            lines.push('&gt;1y: ' + lo1 + '–' + hi1 + ' mg q4h PRN');
+            lines.push('&gt;12y: 2.5–5 mg q4h PRN');
+            lines.push('<small style="color:#555;">Co-prescribe naloxone. Limit 3 days.</small>');
+          }
+          oxyEl.innerHTML = lines.join('<br>');
+        } else {
+          oxyEl.innerHTML = '<em style="color:#888;">Enter weight to calculate</em>';
+        }
+      }
+
+      // ── Naloxone PO (co-prescribed; ≥6 months)
+      var nxEl = document.getElementById('poNaloxone');
+      if (nxEl) {
+        if (hasAge && ageM < 6) {
+          nxEl.innerHTML = caution('Age ' + ageM + ' m — see oxycodone caution');
+        } else if (hasWt) {
+          var lines = [];
+          if (hasAge && ageM >= 6 && ageM < 12) {
+            lines.push(ok((0.05*wt).toFixed(2) + '–' + (0.1*wt).toFixed(2) + ' mg PO q4h <em>(6m–1y)</em>'));
+          } else if (hasAge && ageM >= 12) {
+            lines.push(ok((0.1*wt).toFixed(2) + '–' + Math.min(0.2*wt,10).toFixed(2) + ' mg PO q4h <em>(&gt;1y)</em>'));
+          } else {
+            lines.push('6m–1y: ' + (0.05*wt).toFixed(2) + '–' + (0.1*wt).toFixed(2) + ' mg q4h');
+            lines.push('&gt;1y: ' + (0.1*wt).toFixed(2) + '–' + Math.min(0.2*wt,10).toFixed(2) + ' mg q4h');
+          }
+          nxEl.innerHTML = lines.join('<br>');
+        } else {
+          nxEl.innerHTML = '<em style="color:#888;">Enter weight to calculate</em>';
+        }
+      }
+
+      // ── Celecoxib (≥2 years = ≥24 months)
+      var cxEl = document.getElementById('poCelecoxib');
+      if (cxEl) {
+        if (hasAge && ageM < 24) {
+          cxEl.innerHTML = caution('Age ' + ageM + ' m — NOT recommended (&lt;2 years)');
+        } else if (!hasAge && hasWt && wt < 10) {
+          cxEl.innerHTML = caution('Weight ' + wt + ' kg — likely &lt;2y, use with caution');
+        } else if (hasWt) {
+          var init   = Math.min(3*wt, 200).toFixed(1);
+          var repLo  = Math.min(2*wt, 200).toFixed(1);
+          var repHi  = Math.min(4*wt, 200).toFixed(1);
+          var capNote = (3*wt > 200) ? ' (max 200 mg)' : '';
+          var html = ok('Initial: ' + init + ' mg PO q12h' + capNote) + '<br>'
+                   + ok('Repeated: ' + repLo + '–' + repHi + ' mg PO q12h') + '<br>'
+                   + '<small style="color:#555;">Limit 3 days.</small>';
+          if (hasAge && ageM >= 24) { /* no extra note */ }
+          cxEl.innerHTML = html;
+        } else {
+          cxEl.innerHTML = '<em style="color:#888;">Enter weight to calculate</em>';
+        }
+      }
+
+      // ── Gabapentin (≥3 years = ≥36 months)
+      var gbEl = document.getElementById('poGabapentin');
+      if (gbEl) {
+        if (hasAge && ageM < 36) {
+          gbEl.innerHTML = caution('Age ' + ageM + ' m — NOT recommended (&lt;3 years)');
+        } else if (!hasAge && hasWt && wt < 12) {
+          gbEl.innerHTML = caution('Weight ' + wt + ' kg — likely &lt;3y, use with caution');
+        } else if (hasWt) {
+          var d = (5*wt).toFixed(1);
+          gbEl.innerHTML = ok(d + ' mg PO nocte × 5 days');
+        } else {
+          gbEl.innerHTML = '<em style="color:#888;">Enter weight to calculate</em>';
+        }
+      }
+
+      // ── Pregabalin (≥2 years AND ≥11 kg; max 75 mg)
+      var pgEl = document.getElementById('poPregabalin');
+      if (pgEl) {
+        var ageOk = !hasAge || ageM >= 24;
+        var wtOk  = !hasWt  || wt  >= 11;
+        if (hasAge && ageM < 24) {
+          pgEl.innerHTML = caution('Age ' + ageM + ' m — NOT recommended (&lt;2 years)');
+        } else if (hasWt && wt < 11) {
+          pgEl.innerHTML = caution('Weight ' + wt + ' kg — NOT recommended (&lt;11 kg)');
+        } else if (hasWt) {
+          var d = Math.min(wt, 75).toFixed(1);
+          var capNote = wt > 75 ? ' (max 75 mg)' : '';
+          pgEl.innerHTML = ok(d + ' mg PO nocte' + capNote);
+        } else {
+          pgEl.innerHTML = '<em style="color:#888;">Enter weight to calculate</em>';
+        }
+      }
     }
 
     // Calculator Navigation functions
@@ -8146,6 +8453,7 @@
       <div style="display:flex; gap:0; margin:0 0 0; border-bottom:1.6px solid #e0e0e0; flex-wrap:wrap;">
         <button id="painTabBtnFLACC" onclick="showPainTab('flacc')" class="pals-tab-btn pals-tab-active">👶 FLACC Scale</button>
         <button id="painTabBtnFACES" onclick="showPainTab('faces')" class="pals-tab-btn">😊 Wong-Baker FACES</button>
+        <button id="painTabBtnPostOp" onclick="showPainTab('postop')" class="pals-tab-btn">💊 Post-Op Analgesics</button>
       </div>
 
       <!-- ══ FLACC Pain Scale ══ -->
@@ -8357,6 +8665,128 @@
         <div class="note" style="margin-top:12px;">
           <strong>Reference:</strong> Wong-Baker FACES Foundation. <a href="https://wongbakerfaces.org" target="_blank" style="color:#1565c0;">wongbakerfaces.org</a>. Used with permission.
         </div>
+      </div>
+
+      <!-- ══ Post-Op Analgesics ══ -->
+      <div id="painPanelPostOp" class="pals-panel" style="display:none;">
+        <h3 style="color:#1e3c72; margin:16px 0 8px; font-size:1.3rem;">💊 Post-Operative Analgesic Suggestions</h3>
+        <p style="color:#555; font-size:0.95rem; margin-bottom:12px;">
+          Enter the patient's weight and age below to calculate weight-based post-operative analgesic doses. Caution messages will appear if the patient does not meet age or weight criteria for a drug.
+        </p>
+
+        <!-- Patient input for post-op tab -->
+        <div class="input-section" style="margin-bottom:16px; background:#f3f6fb; border:1.5px solid #c5cae9; border-radius:8px; padding:16px;">
+          <div class="input-group" style="flex-wrap:wrap; gap:16px; align-items:flex-end;">
+            <div>
+              <label for="poWeight" style="font-weight:600;">Weight (kg):</label>
+              <input type="number" id="poWeight" min="0" step="0.1" placeholder="e.g. 15" style="width:120px;" oninput="calcPostOpDoses()">
+            </div>
+            <div>
+              <label style="font-weight:600;">Age:</label>
+              <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                <input type="number" id="poAgeYears" min="0" step="1" placeholder="yrs" style="width:70px;" oninput="calcPostOpDoses()">
+                <span style="color:#555; font-size:0.9rem;">y</span>
+                <input type="number" id="poAgeMonths" min="0" max="11" step="1" placeholder="mo" style="width:70px;" oninput="calcPostOpDoses()">
+                <span style="color:#555; font-size:0.9rem;">m</span>
+              </div>
+            </div>
+            <button type="button" onclick="calcPostOpDoses()" style="padding:8px 20px; background:linear-gradient(135deg,#3949ab,#1a237e); color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:1rem;">Calculate</button>
+          </div>
+          <div id="poPatientSummary" style="margin-top:10px; font-size:0.9rem; color:#555;"></div>
+        </div>
+
+        <div class="note" style="background:#fff3e0; border-left-color:#ff9800; margin-bottom:12px;">
+          ⚠️ These are suggested starting doses. Always consider individual patient factors, renal/hepatic function, and co-medications. Set duration limits as indicated.
+        </div>
+
+        <div class="table-wrapper">
+          <table class="sticky-table" id="postOpAnalgesicTable">
+            <thead>
+              <tr>
+                <th style="width:20%;">Drug</th>
+                <th style="width:28%;">Dose &amp; Regimen</th>
+                <th style="width:18%;">Age / Weight Criteria</th>
+                <th style="width:34%;">Calculated Dose &amp; Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- OPIOIDS -->
+              <tr><td colspan="4" class="group-header">💊 Opioids</td></tr>
+
+              <tr style="background:#fce8e8;">
+                <td><strong>Oxycodone IR</strong><br><small>Immediate-release — prescribe with naloxone</small></td>
+                <td>
+                  <strong>6 m–1 y:</strong> 0.05–0.1 mg/kg PO q4h PRN<br>
+                  <strong>&gt;1 y:</strong> 0.1–0.2 mg/kg PO q4h PRN<br>
+                  <strong>&gt;12 y:</strong> 2.5–5 mg PO q4h PRN (max 5–10 mg)<br>
+                  <small>Limit: <strong>3 days</strong>. Always co-prescribe oral naloxone.</small>
+                </td>
+                <td>≥ 6 months</td>
+                <td id="poOxycodone" style="font-size:0.88rem;">—</td>
+              </tr>
+
+              <tr style="background:#f9e0e0;">
+                <td><strong>Naloxone PO</strong><br><small>Co-prescribed with oxycodone</small></td>
+                <td>
+                  <strong>6 m–1 y:</strong> 0.05–0.1 mg/kg PO q4h<br>
+                  <strong>&gt;1 y:</strong> 0.1–0.2 mg/kg PO q4h
+                </td>
+                <td>≥ 6 months</td>
+                <td id="poNaloxone" style="font-size:0.88rem;">—</td>
+              </tr>
+
+              <!-- NSAIDS / COX-2 -->
+              <tr><td colspan="4" class="group-header">💊 NSAIDs / COX-2 Inhibitors</td></tr>
+
+              <tr style="background:#e8f5e9;">
+                <td><strong>Celecoxib</strong><br><small>COX-2 inhibitor — capsule/suspension</small></td>
+                <td>
+                  <strong>Initial:</strong> 3 mg/kg PO q12h PRN<br>
+                  <strong>Repeated dosing:</strong> 2–4 mg/kg q12h<br>
+                  <small>Max 200 mg/dose. Limit: <strong>3 days</strong>.</small>
+                </td>
+                <td>≥ 2 years</td>
+                <td id="poCelecoxib" style="font-size:0.88rem;">—</td>
+              </tr>
+
+              <!-- ADJUNCTS -->
+              <tr><td colspan="4" class="group-header">💊 Adjuncts (Neuropathic / Sleep)</td></tr>
+
+              <tr style="background:#e8eaf6;">
+                <td><strong>Gabapentin</strong><br><small>Capsule — nocte</small></td>
+                <td>
+                  5 mg/kg PO nocte PRN<br>
+                  <small>Duration: <strong>5 days</strong>.</small>
+                </td>
+                <td>≥ 3 years</td>
+                <td id="poGabapentin" style="font-size:0.88rem;">—</td>
+              </tr>
+
+              <tr style="background:#ede7f6;">
+                <td><strong>Pregabalin</strong><br><small>Capsule — nocte</small></td>
+                <td>
+                  1 mg/kg PO nocte PRN<br>
+                  <small>Max <strong>75 mg/dose</strong>.</small>
+                </td>
+                <td>≥ 2 years <strong>AND</strong> ≥ 11 kg</td>
+                <td id="poPregabalin" style="font-size:0.88rem;">—</td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        <div class="note" style="margin-top:16px; background:#e3f2fd; border-left-color:#2196f3;">
+          <strong>Multimodal Analgesia — Suggested Combinations:</strong>
+          <ul style="margin:8px 0 0 16px;">
+            <li>Mild pain: Paracetamol IV/PO ± Celecoxib</li>
+            <li>Moderate pain: Paracetamol + Celecoxib + Oxycodone IR PRN (with naloxone)</li>
+            <li>Neuropathic / disturbed sleep: Add Gabapentin nocte (≥3 y) or Pregabalin nocte (≥2 y, ≥11 kg)</li>
+            <li>Limit opioids to 3 days where possible; reassess daily</li>
+          </ul>
+        </div>
+
       </div>
 
     </div>
@@ -9270,8 +9700,8 @@
 
     // Pain sub-tab switcher
     window.showPainTab = function(tab) {
-      var panels = { flacc: 'painPanelFLACC', faces: 'painPanelFACES' };
-      var btns = { flacc: 'painTabBtnFLACC', faces: 'painTabBtnFACES' };
+      var panels = { flacc: 'painPanelFLACC', faces: 'painPanelFACES', postop: 'painPanelPostOp' };
+      var btns = { flacc: 'painTabBtnFLACC', faces: 'painTabBtnFACES', postop: 'painTabBtnPostOp' };
       Object.keys(panels).forEach(function(k) {
         var panel = document.getElementById(panels[k]);
         if (panel) panel.style.display = (k === tab) ? 'block' : 'none';
