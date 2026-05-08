@@ -7754,8 +7754,10 @@
           let doseHTML, formulaHTML = '';
           if (!isNaN(wt) && wt > 0) {
             const dose = (12 - a5fib) * 10 * wt;
+            const fibVol = dose / 20; // 20 mg/mL (1g vial in 50 mL)
             doseHTML    = '<span style="font-size:2.4rem; font-weight:900; color:#bf360c;">' + dose.toFixed(0) + ' mg</span>';
-            formulaHTML = '<div style="font-size:1.3rem; color:#888; margin-top:2px;">(12 − ' + a5fib.toFixed(1) + ') × 10 × ' + wt.toFixed(1) + ' kg</div>';
+            formulaHTML = '<div style="font-size:1.3rem; color:#888; margin-top:2px;">(12 − ' + a5fib.toFixed(1) + ') × 10 × ' + wt.toFixed(1) + ' kg</div>' +
+                          '<div style="font-size:1.35rem; color:#6d4c41; font-weight:600; margin-top:4px;">= <strong>' + fibVol.toFixed(1) + ' mL</strong> <span style="font-weight:400; color:#888;">(stock 20 mg/mL — 1 g vial in 50 mL)</span></div>';
           } else {
             doseHTML = '<span style="font-size:1.5rem; color:#888;">Enter weight to calculate</span>';
           }
@@ -7835,8 +7837,10 @@
           let doseHTML, formulaHTML = '';
           if (wtOK) {
             const dose = (12 - a5fib) * 10 * wt;
+            const fibVol = dose / 20; // 20 mg/mL (1g vial in 50 mL)
             doseHTML    = '<span style="font-size:2.4rem; font-weight:900; color:#bf360c;">' + dose.toFixed(0) + ' mg</span>';
-            formulaHTML = '<div style="font-size:1.3rem; color:#888; margin-top:2px;">(12 − ' + a5fib.toFixed(1) + ') × 10 × ' + wt.toFixed(1) + ' kg</div>';
+            formulaHTML = '<div style="font-size:1.3rem; color:#888; margin-top:2px;">(12 − ' + a5fib.toFixed(1) + ') × 10 × ' + wt.toFixed(1) + ' kg</div>' +
+                          '<div style="font-size:1.35rem; color:#6d4c41; font-weight:600; margin-top:4px;">= <strong>' + fibVol.toFixed(1) + ' mL</strong> <span style="font-weight:400; color:#888;">(stock 20 mg/mL — 1 g vial in 50 mL)</span></div>';
           } else {
             doseHTML = '<span style="font-size:1.5rem; color:#888;">Enter weight to calculate dose</span>';
           }
@@ -7882,6 +7886,7 @@
           if (wtOK) {
             const ffpVol    = (wt * 10).toFixed(0);
             const pccUnits  = (wt * 10).toFixed(0);
+            const pccVol    = (wt * 10 / 25).toFixed(1); // 25 units/mL (e.g. 500 IU/20 mL)
             doseHTML =
               '<div style="display:flex; gap:24px; flex-wrap:wrap; align-items:center;">' +
                 '<div style="text-align:center;">' +
@@ -7892,6 +7897,7 @@
                 '<div style="text-align:center;">' +
                   '<span style="font-size:2.4rem; font-weight:900; color:#4a148c;">' + pccUnits + ' units</span>' +
                   '<div style="font-size:1.3rem; color:#888; margin-top:2px;">Beriplex (PCC) &nbsp;·&nbsp; 10 units/kg × ' + wt.toFixed(1) + ' kg</div>' +
+                  '<div style="font-size:1.35rem; color:#4a148c; font-weight:600; margin-top:3px;">= <strong>' + pccVol + ' mL</strong> <span style="font-weight:400; color:#888;">(stock 25 units/mL)</span></div>' +
                 '</div>' +
               '</div>';
           } else {
@@ -7938,6 +7944,7 @@
           if (wtOK) {
             const ffpVol   = (wt * 10).toFixed(0);
             const pccUnits = (wt * 10).toFixed(0);
+            const pccVol   = (wt * 10 / 25).toFixed(1); // 25 units/mL (e.g. 500 IU/20 mL)
             doseHTML =
               '<div style="display:flex; gap:24px; flex-wrap:wrap; align-items:center;">' +
                 '<div style="text-align:center;">' +
@@ -7948,6 +7955,7 @@
                 '<div style="text-align:center;">' +
                   '<span style="font-size:2.4rem; font-weight:900; color:#0d47a1;">' + pccUnits + ' units</span>' +
                   '<div style="font-size:1.3rem; color:#888; margin-top:2px;">Beriplex (PCC) &nbsp;·&nbsp; 10 units/kg × ' + wt.toFixed(1) + ' kg</div>' +
+                  '<div style="font-size:1.35rem; color:#0d47a1; font-weight:600; margin-top:3px;">= <strong>' + pccVol + ' mL</strong> <span style="font-weight:400; color:#888;">(stock 25 units/mL)</span></div>' +
                 '</div>' +
               '</div>';
           } else {
