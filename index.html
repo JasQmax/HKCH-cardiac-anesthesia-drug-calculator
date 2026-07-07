@@ -11,6 +11,8 @@
     gtag('config', 'G-KXWC93EBKS');
   </script>
   
+  <link rel="icon" type="image/png" href="logo.png">
+  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>PediAnes Smart Buddy</title>
@@ -652,6 +654,24 @@
       .app-header { padding: 9.6px 12.8px 8px; }
       .app-header h1 { font-size: 1.55rem; }
       .app-header .subtitle { font-size: 1rem; }
+      .app-logo {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        object-fit: cover; 
+        margin-bottom: 4px;
+        box-shadow: 0 2px 8px rgba (0,0,0,0,3);
+      }
+
+      @media (max-width: 480px) {
+        .app-logo{
+          height: 64px;
+        }
+        .app-header {
+          gap: 10px;
+          padding: 9.6px;
+        }
+      }
 
       /* Nav tabs */
       .top-nav-btn { min-width: 48px; font-size: 0.65rem; padding: 6.4px 3.2px; }
@@ -794,9 +814,34 @@
       color: white;
       padding: 12.8px 19.2px 9.6px;
       text-align: center;
+      justify-content: center;
+      gap: 16px;
       width: 100%;
+      align-items: center;
     }
 
+    .app-logo {
+      height: 90px;
+      width: auto;
+      flex-shrink: 0;
+      align-self: stretch;
+      object-fit: contain;
+    }
+
+    .app-header-text {
+      flex: 0 1 auto;
+      min-width: 0;
+      text-align: center;
+    }
+
+    .app-header-text h1 {
+      text-align: center;
+    }
+
+    .app-header-text .subtitle {
+      text-align: center;
+    }
+    
     .app-header h1 {
       font-size: 2.2rem;
       font-weight: 700;
@@ -1083,17 +1128,20 @@
 <body>
   <!-- Persistent App Header + Navigation -->
   <div class="app-shell">
-    <div class="app-header">
-      <h1>🏥 PediAnes Smart Buddy</h1>
-      <div class="subtitle">HKCH Paediatric Anaesthesia Drug &amp; Clinical Calculator</div>
-      <!-- Global Search Bar -->
-      <div class="global-search-container">
-        <input type="text" id="globalSearchInput" class="global-search-input" placeholder="Search all tabs (drugs, equipment, protocols...)" onkeydown="if(event.key==='Enter') globalSearch()">
-        <button type="button" class="global-search-btn" onclick="globalSearch()" aria-label="Search all content">
-          🔍
-        </button>
-      </div>
+   <div class="app-header">
+  <img src="logo.png" alt="PediAnes Smart Buddy Logo" class="app-logo">
+  <div class="app-header-text">
+    <h1>PediAnes Smart Buddy</h1>
+    <div class="subtitle">HKCH Paediatric Anaesthesia Drug &amp; Clinical Calculator</div>
+    <div class="global-search-container">
+      <input type="text" id="globalSearchInput" class="global-search-input" placeholder="Search all tabs (drugs, equipment, protocols...)" onkeydown="if(event.key==='Enter') globalSearch()">
+      <button type="button" class="global-search-btn" onclick="globalSearch()" aria-label="Search all content">
+        🔍
+      </button>
     </div>
+  </div>
+</div>
+
     <nav class="top-nav" aria-label="Main navigation">
       <button class="top-nav-btn active" id="navDrug" onclick="showDrugCalculator()">
         <span class="nav-icon">💊</span>Drug
@@ -9759,7 +9807,7 @@
       <hr style="margin: 15px 0; border: none; border-top: 1px solid #ff6b6b;">
       <div style="text-align: center; margin-top: 12px;">
         <p style="margin: 5px 0; font-size: 20.8px;"><strong>Created by:</strong> Jasmin Tong (2025)</p>
-        <p style="margin: 3px 0; font-size: 17.6px; color: #888;"><em>Last updated: May 2026</em></p>
+        <p style="margin: 3px 0; font-size: 17.6px; color: #888;"><em>Last updated: April 2026</em></p>
         <p style="margin: 8px 0; font-size: 20.8px;">
           <strong>License:</strong>
           <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" style="color: #c92a2a; text-decoration: none; font-weight: 600;">CC BY-NC-ND 4.0</a>
