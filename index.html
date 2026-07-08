@@ -813,58 +813,73 @@
       background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
       color: white;
       padding: 12.8px 19.2px 9.6px;
-      text-align: center;
-      justify-content: center;
-      gap: 16px;
-      width: 100%;
-      align-items: center;
+     width: 100%;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     gap: 16px;
+     text-align: center;
+     transition: padding 0.25s ease;
     }
 
     .app-logo {
-      height: 90px;
-      width: auto;
-      flex-shrink: 0;
-      align-self: stretch;
-      object-fit: contain;
+     height: 90px;
+     width: auto;
+     flex-shrink: 0;
+     align-self: stretch;
+     object-fit: contain;
+     transition: height 0.25s ease;
     }
 
+
     .app-header-text {
-      flex: 0 1 auto;
-      min-width: 0;
-      text-align: center;
+     flex: 0 1 auto;
+     min-width: 0;
+     text-align: center;
     }
 
     .app-header-text h1 {
-      text-align: center;
+     text-align: center;
     }
 
     .app-header-text .subtitle {
-      text-align: center;
-    }
-    
-    .app-header h1 {
-      font-size: 2.2rem;
-      font-weight: 700;
-      margin-bottom: 3.2px;
-      letter-spacing: -0.24px;
-    }
-
-    .app-header .subtitle {
-      font-size: 1.25rem;
-      opacity: 0.85;
+     text-align: center;
     }
 
     /* Global Search Bar in Header */
     .global-search-container {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      justify-content: center;
-      margin-top: 10px;
-      max-width: 380px;
-      margin-left: auto;
-      margin-right: auto;
+     display: flex;
+     gap: 6px;
+     align-items: center;
+     justify-content: center;
+     margin-top: 10px;
+     max-width: 380px;
+     margin-left: auto;
+     margin-right: auto;
+     transition: opacity 0.2s ease, max-height 0.2s ease;
     }
+
+    /* Compact state on scroll */
+    .app-shell.compact .app-header {
+     padding: 4px 12px !important;
+    }
+
+    .app-shell.compact .app-logo {
+     height: 40px !important;
+    }
+
+    .app-shell.compact .app-header h1 {
+     font-size: 1.3rem !important;
+    }
+
+    .app-shell.compact .app-header .subtitle {
+     display: none !important;
+    }
+
+    .app-shell.compact .global-search-container {
+     display: none !important;
+    }
+
     .global-search-input {
       flex: 1;
       padding: 8px 14px;
@@ -1125,22 +1140,21 @@
     }
   </style>
 </head>
+
 <body>
   <!-- Persistent App Header + Navigation -->
   <div class="app-shell">
-   <div class="app-header">
-  <img src="logo.png" alt="PediAnes Smart Buddy Logo" class="app-logo">
-  <div class="app-header-text">
-    <h1>PediAnes Smart Buddy</h1>
-    <div class="subtitle">HKCH Paediatric Anaesthesia Drug &amp; Clinical Calculator</div>
-    <div class="global-search-container">
-      <input type="text" id="globalSearchInput" class="global-search-input" placeholder="Search all tabs (drugs, equipment, protocols...)" onkeydown="if(event.key==='Enter') globalSearch()">
-      <button type="button" class="global-search-btn" onclick="globalSearch()" aria-label="Search all content">
-        🔍
-      </button>
+  <div class="app-header">
+    <img src="logo.png" alt="PediAnes Smart Buddy Logo" class="app-logo">
+    <div class="app-header-text">
+      <h1>PediAnes Smart Buddy</h1>
+      <div class="subtitle">HKCH Paediatric Anaesthesia Drug &amp; Clinical Calculator</div>
+      <div class="global-search-container">
+        <input type="text" id="globalSearchInput" class="global-search-input" placeholder="Search all tabs (drugs, equipment, protocols...)" onkeydown="if(event.key==='Enter') globalSearch()">
+        <button type="button" class="global-search-btn" onclick="globalSearch()" aria-label="Search all content">🔍</button>
+      </div>
     </div>
   </div>
-</div>
 
     <nav class="top-nav" aria-label="Main navigation">
       <button class="top-nav-btn active" id="navDrug" onclick="showDrugCalculator()">
@@ -10042,6 +10056,19 @@
       <ul id="globalSearchResults" class="search-results-list"></ul>
     </div>
   </div>
+
+  <script>
+  (function() {
+    const shell = document.querySelector('.app-shell');
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 60) {
+        shell.classList.add('compact');
+      } else {
+        shell.classList.remove('compact');
+      }
+    }, { passive: true });
+  })();
+</script>
 
 </body>
 </html>
