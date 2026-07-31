@@ -676,7 +676,9 @@
       /* Nav tabs */
       .top-nav-btn { min-width: 48px; font-size: 0.65rem; padding: 6.4px 3.2px; }
       .top-nav-btn .nav-icon { width: 20.8px; height: 20.8px; font-size: 0.9rem; }
-
+      .top-nav-btn .nav-icon {
+      pointer-events: none;
+      }
       /* PALS sub-tabs — wrap and shrink */
       .pals-tab-btn { font-size: 11.2px; padding: 6.4px 8px; }
 
@@ -813,73 +815,58 @@
       background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
       color: white;
       padding: 12.8px 19.2px 9.6px;
-     width: 100%;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     gap: 16px;
-     text-align: center;
-     transition: padding 0.25s ease;
+      text-align: center;
+      justify-content: center;
+      gap: 16px;
+      width: 100%;
+      align-items: center;
     }
 
     .app-logo {
-     height: 90px;
-     width: auto;
-     flex-shrink: 0;
-     align-self: stretch;
-     object-fit: contain;
-     transition: height 0.25s ease;
+      height: 90px;
+      width: auto;
+      flex-shrink: 0;
+      align-self: stretch;
+      object-fit: contain;
     }
 
-
     .app-header-text {
-     flex: 0 1 auto;
-     min-width: 0;
-     text-align: center;
+      flex: 0 1 auto;
+      min-width: 0;
+      text-align: center;
     }
 
     .app-header-text h1 {
-     text-align: center;
+      text-align: center;
     }
 
     .app-header-text .subtitle {
-     text-align: center;
+      text-align: center;
+    }
+    
+    .app-header h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 3.2px;
+      letter-spacing: -0.24px;
+    }
+
+    .app-header .subtitle {
+      font-size: 1.25rem;
+      opacity: 0.85;
     }
 
     /* Global Search Bar in Header */
     .global-search-container {
-     display: flex;
-     gap: 6px;
-     align-items: center;
-     justify-content: center;
-     margin-top: 10px;
-     max-width: 380px;
-     margin-left: auto;
-     margin-right: auto;
-     transition: opacity 0.2s ease, max-height 0.2s ease;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+      max-width: 380px;
+      margin-left: auto;
+      margin-right: auto;
     }
-
-    /* Compact state on scroll */
-    .app-shell.compact .app-header {
-     padding: 4px 12px !important;
-    }
-
-    .app-shell.compact .app-logo {
-     height: 40px !important;
-    }
-
-    .app-shell.compact .app-header h1 {
-     font-size: 1.3rem !important;
-    }
-
-    .app-shell.compact .app-header .subtitle {
-     display: none !important;
-    }
-
-    .app-shell.compact .global-search-container {
-     display: none !important;
-    }
-
     .global-search-input {
       flex: 1;
       padding: 8px 14px;
@@ -1140,21 +1127,22 @@
     }
   </style>
 </head>
-
 <body>
   <!-- Persistent App Header + Navigation -->
   <div class="app-shell">
-  <div class="app-header">
-    <img src="logo.png" alt="PediAnes Smart Buddy Logo" class="app-logo">
-    <div class="app-header-text">
-      <h1>PediAnes Smart Buddy</h1>
-      <div class="subtitle">HKCH Paediatric Anaesthesia Drug &amp; Clinical Calculator</div>
-      <div class="global-search-container">
-        <input type="text" id="globalSearchInput" class="global-search-input" placeholder="Search all tabs (drugs, equipment, protocols...)" onkeydown="if(event.key==='Enter') globalSearch()">
-        <button type="button" class="global-search-btn" onclick="globalSearch()" aria-label="Search all content">🔍</button>
-      </div>
+   <div class="app-header">
+  <img src="logo.png" alt="PediAnes Smart Buddy Logo" class="app-logo">
+  <div class="app-header-text">
+    <h1>PediAnes Smart Buddy</h1>
+    <div class="subtitle">HKCH Paediatric Anaesthesia Drug &amp; Clinical Calculator</div>
+    <div class="global-search-container">
+      <input type="text" id="globalSearchInput" class="global-search-input" placeholder="Search all tabs (drugs, equipment, protocols...)" onkeydown="if(event.key==='Enter') globalSearch()">
+      <button type="button" class="global-search-btn" onclick="globalSearch()" aria-label="Search all content">
+        🔍
+      </button>
     </div>
   </div>
+</div>
 
     <nav class="top-nav" aria-label="Main navigation">
       <button class="top-nav-btn active" id="navDrug" onclick="showDrugCalculator()">
@@ -1184,8 +1172,8 @@
       <button class="top-nav-btn" id="navIVFluids" onclick="showIVFluidsCalculator()">
         <span class="nav-icon">💧</span>IV Fluids &amp; Vitals
       </button>
-      <button class="top-nav-btn" id="navPain" onclick="showPainCalculator()">
-        <span class="nav-icon">😢</span>Pain
+      <button type="button" class="top-nav-btn" id="navPain">
+       <span class="nav-icon">😢</span>Pain
       </button>
       <button class="top-nav-btn" id="navGeneral" onclick="showGeneralCalculator()">
         <span class="nav-icon">🔢</span>General
@@ -5734,6 +5722,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    
     function showGeneralCalculator() {
       document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
       document.getElementById('generalCalculator').style.display = 'block';
@@ -9821,7 +9810,7 @@
       <hr style="margin: 15px 0; border: none; border-top: 1px solid #ff6b6b;">
       <div style="text-align: center; margin-top: 12px;">
         <p style="margin: 5px 0; font-size: 20.8px;"><strong>Created by:</strong> Jasmin Tong (2025)</p>
-        <p style="margin: 3px 0; font-size: 17.6px; color: #888;"><em>Last updated: April 2026</em></p>
+        <p style="margin: 3px 0; font-size: 17.6px; color: #888;"><em>Last updated: July 2026</em></p>
         <p style="margin: 8px 0; font-size: 20.8px;">
           <strong>License:</strong>
           <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" style="color: #c92a2a; text-decoration: none; font-weight: 600;">CC BY-NC-ND 4.0</a>
@@ -10044,6 +10033,12 @@
       try { updateDilStockOptions(); } catch (e) { /* ok */ }
     }
   })();
+
+  
+  document.addEventListener('click', function(e) {
+    console.log('Clicked element:', e.target);
+  });
+
   </script>
 
   <!-- Global Search Results Modal -->
@@ -10057,17 +10052,25 @@
     </div>
   </div>
 
-  <script>
-  (function() {
-    const shell = document.querySelector('.app-shell');
-    window.addEventListener('scroll', function() {
-      if (window.scrollY > 60) {
-        shell.classList.add('compact');
-      } else {
-        shell.classList.remove('compact');
-      }
-    }, { passive: true });
-  })();
+<script>
+  function openPainHub() {
+      alert('openPainHub fired');
+      window.location.href = 'pain-management.html';
+    }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const painBtn = document.getElementById('navPain');
+
+    if (painBtn) {
+      painBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        window.location.href = './pain-management.html';
+      });
+    }
+  });
 </script>
 
 </body>
