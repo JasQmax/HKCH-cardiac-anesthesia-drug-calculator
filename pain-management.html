@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Pain Hub | PediAnes Smart Buddy</title>
+<link rel="icon" type="image/png" href="logo.png">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 14.4px; scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-size: 1.4rem;
+    background: #f4f7fb;
+    color: #243447;
+    min-height: 100vh;
+  }
+      .app-shell { position: sticky; top: 0; z-index: 200; box-shadow: 0 8px 30px rgba(10,40,55,0.28); }
+  .app-header {
+    background: linear-gradient(120deg, #0b2540 0%, #0f4c5c 50%, #14818c 100%);
+    background-size: 200% 200%;
+    animation: headerShift 12s ease infinite;
+    color: white; padding: 20px 22px 18px; display: flex; align-items: center; gap: 16px;
+    transition: all 0.25s ease; position: relative; overflow: hidden;
+  }
+  .app-header::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 85% -10%, rgba(255,255,255,0.16) 0%, transparent 55%),
+                radial-gradient(circle at 10% 120%, rgba(255,255,255,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  @keyframes headerShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .hub-back-btn {
+    background: rgba(255,255,255,0.12); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.28); color: white;
+    padding: 10px 14px; border-radius: 12px; font-size: 0.92rem; font-weight: 600; cursor: pointer;
+    white-space: nowrap; transition: all 0.22s ease; position: relative; z-index: 1;
+    letter-spacing: 0.2px;
+  }
+  .hub-back-btn:hover { background: rgba(255,255,255,0.22); transform: translateX(-2px); box-shadow: 0 4px 14px rgba(0,0,0,0.18); }
+  .app-header-text { min-width: 0; flex: 1; position: relative; z-index: 1; }
+  .app-header-text h1 {
+    font-size: 2.1rem; font-weight: 700; margin-bottom: 5px; letter-spacing: 0.3px;
+    display: flex; align-items: center; gap: 10px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  .header-icon-img {
+    width: 34px; height: 34px; object-fit: contain; border-radius: 8px;
+    display: inline-block; vertical-align: middle;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+  }
+  .app-header-text .subtitle {
+    font-size: 1.02rem; opacity: 0.88; font-weight: 400; letter-spacing: 0.2px;
+  }
+
+  /* Pain Hub sub-nav (Scales / Post-Op / PCA-NCA) */
+    .hub-nav {
+    background: #071a2c; display: flex; gap: 8px; overflow-x: auto; padding: 12px 14px;
+    scrollbar-width: none; box-shadow: inset 0 2px 8px rgba(0,0,0,0.25);
+  }
+  .hub-nav::-webkit-scrollbar { display: none; }
+  .hub-nav-btn {
+    flex: 1 0 auto; min-width: 140px; display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 11px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.75); font-size: 0.93rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s ease; letter-spacing: 0.15px;
+  }
+  .hub-nav-btn:hover { background: rgba(255,255,255,0.12); color: white; transform: translateY(-1px); }
+  .hub-nav-btn.active {
+    background: linear-gradient(135deg, rgba(20,129,140,0.32) 0%, rgba(15,76,92,0.36) 100%);
+    border-color: rgba(105,220,225,0.5); color: #a6ecec;
+    box-shadow: 0 3px 12px rgba(20,129,140,0.4);
+  }
+  .page-wrap { max-width: 1150px; margin: 0 auto; padding: 20px; }
+
+  .hub-panel { display: none; }
+  .hub-panel.active { display: block; }
+
+  .section-card {
+    background: white; border-radius: 16px; box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    padding: 20px; margin-bottom: 18px;
+  }
+  .section-title {
+    font-size: 1.5rem; font-weight: 600; color: #1e3c72; margin-bottom: 14px; padding-bottom: 8px;
+    border-bottom: 2px solid #dce7f7;
+  }
+  .subtitle-line { color:#555; margin-bottom:14px; font-size: 1rem; }
+
+  /* Reused table styles (match main dashboard) */
+  .table-wrapper { position: relative; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 0.95rem; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  th, td { border: 1px solid #e0e0e0; padding: 10px; text-align: center; vertical-align: middle; }
+  th { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.4px; }
+  .group-header { background: linear-gradient(135deg, #e0eaff 0%, #d0dfff 100%); font-weight: 600; text-align: left; color: #1e3c72; }
+  tbody tr:hover { background-color: #fffbea; }
+
+  .note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px 14px; margin: 14px 0; border-radius: 6px; font-size: 0.95rem; color: #856404; line-height: 1.6; }
+  .note.blue { background:#e3f2fd; border-left-color:#2196f3; color:#0d3f66; }
+  .note.orange { background:#fff3e0; border-left-color:#ff9800; color:#7a4600; }
+  .note ul, .note ol { margin: 8px 0 0 18px; }
+
+  /* Pain sub-tabs (FLACC / FACES) */
+  .pals-tab-btn {
+    padding: 9px 16px; background: #f5f5f5; border: none; border-bottom: 2.4px solid transparent;
+    border-radius: 6px 6px 0 0; font-size: 0.95rem; font-weight: 600; color: #555; cursor: pointer;
+    transition: all 0.18s; margin-right: 2px;
+  }
+  .pals-tab-btn:hover { background: #e8eaf6; color: #1a237e; }
+  .pals-tab-active { background: white !important; border-bottom-color: #ef5350 !important; color: #c62828 !important; box-shadow: 0 -2px 6px rgba(0,0,0,0.06); }
+  .pals-panel { display: none; }
+  .pals-panel.active-panel { display: block; }
+
+  input[type="number"], select {
+    padding: 8px 12px; border: 1.5px solid #ddd; border-radius: 6px; font-size: 0.95rem; width: 100%;
+  }
+  input[type="number"]:focus, select:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+  label { font-weight: 500; color: #2c3e50; font-size: 0.95rem; display:block; margin-bottom:4px; }
+
+  button.primary-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;
+    padding: 10px 22px; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; box-shadow: 0 4px 14px rgba(102,126,234,0.35);
+  }
+  button.primary-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(102,126,234,0.5); }
+  button.secondary-btn {
+    background: #78909c; color: white; border: none; padding: 10px 22px; border-radius: 8px;
+    font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  button.secondary-btn:hover { background:#607d8b; }
+
+  .faces-option { text-align:center; cursor:pointer; padding:8px; border-radius:8px; transition:background 0.2s; flex:1; min-width:60px; }
+  .faces-option:hover { background:#f0f2f5; }
+
+  /* PCA/NCA workflow */
+  .phase-card {
+    border: 1px solid #dbe6f5; border-radius: 14px; padding: 18px; margin-bottom: 16px; background: #f9fbfe;
+  }
+  .phase-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  }
+  .phase-badge {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; font-weight: 700;
+    font-size: 0.85rem; padding: 6px 12px; border-radius: 999px; white-space: nowrap;
+  }
+  .phase-title { font-size: 1.15rem; font-weight: 600; color: #1e3c72; }
+  .phase-body { display: none; }
+  .phase-body.open { display: block; }
+
+  .risk-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin: 12px 0;
+  }
+  .risk-item {
+    display: flex; align-items: flex-start; gap: 8px; background: white; border: 1px solid #e2ebf8;
+    border-radius: 10px; padding: 10px 12px; font-size: 0.92rem;
+  }
+  .risk-item input[type="checkbox"] { width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; cursor:pointer; }
+
+  .decision-box {
+    display: none; margin-top: 14px; padding: 16px; border-radius: 12px; font-size: 0.95rem; line-height: 1.6;
+  }
+  .decision-box.show { display: block; }
+  .decision-box.risk-high { background:#fdecea; border:1.5px solid #f5c6cb; color:#7a1f1f; }
+  .decision-box.risk-low { background:#e8f5e9; border:1.5px solid #c8e6c9; color:#1b4d20; }
+  .decision-box.info { background:#e3f2fd; border:1.5px solid #bbdefb; color:#0d3f66; }
+
+  .radio-group { display: flex; gap: 16px; flex-wrap: wrap; margin: 10px 0; }
+  .radio-option { display: flex; align-items: center; gap: 6px; font-size: 0.95rem; cursor: pointer; }
+  .radio-option input { width: 18px; height: 18px; cursor:pointer; }
+
+  .weight-input-row {
+    display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; margin: 12px 0;
+  }
+  .weight-input-row > div { min-width: 140px; }
+
+  .result-box {
+    margin-top: 16px; padding: 18px; border-radius: 12px; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 100%);
+    border: 1.5px solid #c7d2fe; text-align: center;
+  }
+  .result-box .result-label { font-size: 0.9rem; color: #555; margin-bottom: 4px; }
+  .result-box .result-value { font-size: 2rem; font-weight: 700; color: #3730a3; }
+  .result-box .result-sub { font-size: 0.95rem; color: #444; margin-top: 6px; }
+
+  .hidden { display: none !important; }
+
+  .dilution-card-recommended {
+    border-color: #2e7d32 !important;
+    box-shadow: 0 6px 20px rgba(46,125,50,0.25) !important;
+  }
+  .dilution-card-dimmed {
+    opacity: 0.45; filter: grayscale(35%);
+  }
+
+  @media (max-width: 768px) {
+    html { font-size: 11.2px; }
+    .app-header { padding: 10px 12px; gap: 10px; }
+    .app-header-text h1 { font-size: 1.5rem; }
+    .app-header-text .subtitle { font-size: 0.95rem; }
+    .page-wrap { padding: 12px; }
+    .section-card { padding: 16px; border-radius: 14px; }
+    .hub-nav-btn { min-width: 110px; font-size: 0.85rem; padding: 8px 10px; }
+    .risk-grid { grid-template-columns: 1fr; }
+    .weight-input-row { flex-direction: column; align-items: stretch; }
+      .phase-card { padding: 12px; }
+    #regimenCard { padding: 12px; }
+    input[name="regimenMode"] { width: 22px; height: 22px; }
+    #regimenCard table td { font-size: 0.85rem; padding: 8px 6px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-shell" id="appShell">
+  <div class="app-header">
+    <button type="button" class="hub-back-btn" id="hubBackBtn">← Dashboard</button>
+    <div class="app-header-text">
+      <h1><img src="pain-hub-icon.png" alt="Pain Hub icon" class="header-icon-img"> Pain Hub</h1>
+      <div class="subtitle">Assessment scales, post-op analgesics &amp; PCA/NCA workflow</div>
+    </div>
+  </div>
+
+  <nav class="hub-nav" aria-label="Pain Hub navigation">
+    <button type="button" class="hub-nav-btn active" id="hubNavScales">📏 Pain Assessment Scales</button>
+    <button type="button" class="hub-nav-btn" id="hubNavPostOp">💊 Common Post-Op Analgesics</button>
+    <button type="button" class="hub-nav-btn" id="hubNavPCA">🧭 PCA / NCA</button>
+  </nav>
+</div>
+
+<main class="page-wrap">
+
+  <!-- ══════════════════════════════════════════════
+       PANEL 1 — PAIN ASSESSMENT SCALES (reused)
+       ══════════════════════════════════════════════ -->
+  <div class="hub-panel active" id="hubPanelScales">
+    <div class="section-card">
+      <h2 class="section-title">📏 Pain Assessment Scales</h2>
+      <p class="subtitle-line">FLACC (0–7 years / non-verbal) &amp; Wong-Baker FACES (3+ years / verbal)</p>
+
+      <div style="display:flex; gap:0; border-bottom:1.6px solid #e0e0e0; flex-wrap:wrap;">
+        <button type="button" id="painTabBtnFLACC" onclick="showPainTab('flacc')" class="pals-tab-btn pals-tab-active">👶 FLACC Scale</button>
+        <button type="button" id="painTabBtnFACES" onclick="showPainTab('faces')" class="pals-tab-btn">😊 Wong-Baker FACES</button>
+      </div>
+
+      <!-- FLACC -->
+      <div id="painPanelFLACC" class="pals-panel active-panel">
+        <h3 style="color:#1e3c72; margin:16px 0 8px; font-size:1.2rem;">FLACC Behavioural Pain Scale</h3>
+        <p style="color:#555; font-size:0.92rem; margin-bottom:12px;">
+          For infants/children <strong>0–7 years</strong> or <strong>non-verbal/cognitively impaired</strong> patients. Observe for 1–5 minutes. Score each category 0–2.
+        </p>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th style="width:15%;">Category</th><th style="width:28%;">0</th><th style="width:28%;">1</th><th style="width:28%;">2</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>F</strong>ace</td><td>No particular expression or smile</td><td>Occasional grimace or frown, withdrawn, disinterested</td><td>Frequent to constant frown, clenched jaw, quivering chin</td></tr>
+              <tr><td><strong>L</strong>egs</td><td>Normal position or relaxed</td><td>Uneasy, restless, tense</td><td>Kicking or legs drawn up</td></tr>
+              <tr><td><strong>A</strong>ctivity</td><td>Lying quietly, normal position, moves easily</td><td>Squirming, shifting back and forth, tense</td><td>Arched, rigid, or jerking</td></tr>
+              <tr><td><strong>C</strong>ry</td><td>No cry (awake or asleep)</td><td>Moans or whimpers, occasional complaint</td><td>Crying steadily, screams or sobs, frequent complaints</td></tr>
+              <tr><td><strong>C</strong>onsolability</td><td>Content, relaxed</td><td>Reassured by occasional touching, hugging, or being talked to; distractible</td><td>Difficult to console or comfort</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section-card" style="margin-top:16px; box-shadow:none; border:1.5px solid #e2ebf8; padding:16px;">
+          <h4 style="margin-bottom:12px; color:#1e3c72;">Calculate FLACC Score</h4>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+            <div><label for="flaccFace"><strong>F</strong>ace:</label>
+              <select id="flaccFace"><option value="0">0 — No expression / smile</option><option value="1">1 — Occasional grimace / frown</option><option value="2">2 — Frequent frown / clenched jaw</option></select></div>
+            <div><label for="flaccLegs"><strong>L</strong>egs:</label>
+              <select id="flaccLegs"><option value="0">0 — Normal / relaxed</option><option value="1">1 — Uneasy / restless / tense</option><option value="2">2 — Kicking / drawn up</option></select></div>
+            <div><label for="flaccActivity"><strong>A</strong>ctivity:</label>
+              <select id="flaccActivity"><option value="0">0 — Lying quietly / moves easily</option><option value="1">1 — Squirming / shifting / tense</option><option value="2">2 — Arched / rigid / jerking</option></select></div>
+            <div><label for="flaccCry"><strong>C</strong>ry:</label>
+              <select id="flaccCry"><option value="0">0 — No cry</option><option value="1">1 — Moans / whimpers / occasional</option><option value="2">2 — Crying steadily / screams</option></select></div>
+            <div><label for="flaccConsolability"><strong>C</strong>onsolability:</label>
+              <select id="flaccConsolability"><option value="0">0 — Content / relaxed</option><option value="1">1 — Reassured by touch / distractible</option><option value="2">2 — Difficult to console</option></select></div>
+          </div>
+          <div style="margin-top:16px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+            <button type="button" class="primary-btn" onclick="calculateFLACC()">Calculate FLACC Score</button>
+            <button type="button" class="secondary-btn" onclick="resetFLACC()">Reset</button>
+          </div>
+        </div>
+
+        <div id="flaccResult" class="hidden" style="margin-top:16px;">
+          <div id="flaccScoreBox" class="result-box">
+            <div class="result-label">FLACC Score</div>
+            <div id="flaccScoreValue" class="result-value"></div>
+            <div id="flaccScoreLabel" class="result-sub"></div>
+          </div>
+        </div>
+
+        <div class="note blue" style="margin-top:16px;">
+          <strong>Interpretation:</strong>
+          <ul>
+            <li><strong>0:</strong> Relaxed &amp; comfortable — no pain intervention needed</li>
+            <li><strong>1–3:</strong> Mild discomfort — consider non-pharmacological interventions, reassess</li>
+            <li><strong>4–6:</strong> Moderate pain — consider analgesia, reassess after intervention</li>
+            <li><strong>7–10:</strong> Severe pain/discomfort — analgesia indicated, escalate if needed</li>
+          </ul>
+        </div>
+        <div class="note" style="margin-top:12px;">
+          <strong>Reference:</strong> Merkel SI, et al. The FLACC: a behavioral scale for scoring postoperative pain in young children. <em>Pediatr Nurs</em> 1997;23(3):293-7.
+        </div>
+      </div>
+
+      <!-- FACES -->
+      <div id="painPanelFACES" class="pals-panel">
+        <h3 style="color:#1e3c72; margin:16px 0 8px; font-size:1.2rem;">Wong-Baker FACES® Pain Rating Scale</h3>
+        <p style="color:#555; font-size:0.92rem; margin-bottom:12px;">
+          For children <strong>3 years and older</strong> who can self-report. Ask the child to choose the face that best describes how they feel.
+        </p>
+        <div style="background:#fff; border:2px solid #e0e0e0; border-radius:12px; padding:20px; margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
+            <div class="faces-option" onclick="selectFace(0)"><div style="font-size:2.5rem;">😊</div><div style="font-weight:700; color:#4caf50; font-size:1.2rem;">0</div><div style="font-size:0.7rem; color:#555;">No Hurt</div></div>
+            <div class="faces-option" onclick="selectFace(2)"><div style="font-size:2.5rem;">🙂</div><div style="font-weight:700; color:#8bc34a; font-size:1.2rem;">2</div><div style="font-size:0.7rem; color:#555;">Hurts Little Bit</div></div>
+            <div class="faces-option" onclick="selectFace(4)"><div style="font-size:2.5rem;">😐</div><div style="font-weight:700; color:#ffc107; font-size:1.2rem;">4</div><div style="font-size:0.7rem; color:#555;">Hurts Little More</div></div>
+            <div class="faces-option" onclick="selectFace(6)"><div style="font-size:2.5rem;">😟</div><div style="font-weight:700; color:#ff9800; font-size:1.2rem;">6</div><div style="font-size:0.7rem; color:#555;">Hurts Even More</div></div>
+            <div class="faces-option" onclick="selectFace(8)"><div style="font-size:2.5rem;">😢</div><div style="font-weight:700; color:#f44336; font-size:1.2rem;">8</div><div style="font-size:0.7rem; color:#555;">Hurts Whole Lot</div></div>
+            <div class="faces-option" onclick="selectFace(10)"><div style="font-size:2.5rem;">😭</div><div style="font-weight:700; color:#b71c1c; font-size:1.2rem;">10</div><div style="font-size:0.7rem; color:#555;">Hurts Worst</div></div>
+          </div>
+        </div>
+
+        <div id="facesResult" class="hidden" style="margin-top:16px;">
+          <div id="facesScoreBox" class="result-box">
+            <div class="result-label">Selected Pain Score</div>
+            <div id="facesScoreEmoji" style="font-size:3rem;"></div>
+            <div id="facesScoreValue" class="result-value"></div>
+            <div id="facesScoreLabel" class="result-sub"></div>
+          </div>
+          <div style="text-align:center; margin-top:12px;">
+            <button type="button" class="secondary-btn" onclick="clearFaces()">Clear Selection</button>
+          </div>
+        </div>
+              <div class="note orange" style="margin-top:16px;">
+          <strong>Instructions for use:</strong>
+          <ol>
+            <li>Explain to the child that each face shows a person who has no pain (hurt), some, or a lot of pain.</li>
+            <li>Point to each face and describe: "This face has no hurt... this face has a little bit of hurt... this face has the worst hurt."</li>
+            <li>Ask the child to choose the face that best describes how much hurt they have <strong>right now</strong>.</li>
+          </ol>
+        </div>
+
+        <div class="note blue" style="margin-top:12px;">
+          <strong>Interpretation &amp; Action:</strong>
+          <ul>
+            <li><strong>0:</strong> No pain — continue to monitor</li>
+            <li><strong>2:</strong> Mild pain — non-pharmacological measures, consider simple analgesia</li>
+            <li><strong>4:</strong> Mild–moderate pain — simple analgesia (paracetamol, NSAIDs)</li>
+            <li><strong>6:</strong> Moderate pain — combination analgesia, consider weak opioid</li>
+            <li><strong>8–10:</strong> Severe pain — strong analgesia indicated, escalate care</li>
+          </ul>
+        </div>
+        <div class="note" style="margin-top:12px;">
+          <strong>Reference:</strong> Wong-Baker FACES Foundation. <a href="https://wongbakerfaces.org" target="_blank" rel="noopener noreferrer" style="color:#1565c0;">wongbakerfaces.org</a>. Used with permission.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       PANEL 2 — COMMON POST-OP ANALGESICS (reused)
+       ══════════════════════════════════════════════ -->
+  <div class="hub-panel" id="hubPanelPostOp">
+    <div class="section-card">
+      <h2 class="section-title">💊 Common Post-Operative Analgesics</h2>
+      <p class="subtitle-line">Enter weight and age to calculate weight-based post-op analgesic doses. Caution messages appear if age/weight criteria are not met.</p>
+
+      <div class="section-card" style="box-shadow:none; border:1.5px solid #c5cae9; background:#f3f6fb; padding:16px; margin-bottom:16px;">
+        <div class="weight-input-row">
+          <div>
+            <label for="poWeight">Weight (kg):</label>
+            <input type="number" id="poWeight" min="0" step="0.1" placeholder="e.g. 15" oninput="calcPostOpDoses()">
+          </div>
+          <div>
+            <label>Age:</label>
+            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+              <input type="number" id="poAgeYears" min="0" step="1" placeholder="yrs" style="width:80px;" oninput="calcPostOpDoses()">
+              <span style="color:#555; font-size:0.9rem;">y</span>
+              <input type="number" id="poAgeMonths" min="0" max="11" step="1" placeholder="mo" style="width:80px;" oninput="calcPostOpDoses()">
+              <span style="color:#555; font-size:0.9rem;">m</span>
+            </div>
+          </div>
+          <button type="button" class="primary-btn" onclick="calcPostOpDoses()">Calculate</button>
+        </div>
+        <div id="poPatientSummary" style="margin-top:10px; font-size:0.9rem; color:#555;"></div>
+      </div>
+
+      <div class="note orange">
+        ⚠️ These are suggested starting doses. Always consider individual patient factors, renal/hepatic function, and co-medications. Set duration limits as indicated.
+      </div>
+
+      <div class="table-wrapper">
+        <table id="postOpAnalgesicTable">
+          <thead>
+            <tr><th style="width:20%;">Drug</th><th style="width:28%;">Dose &amp; Regimen</th><th style="width:18%;">Age / Weight Criteria</th><th style="width:34%;">Calculated Dose &amp; Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="4" class="group-header">💊 Opioids</td></tr>
+            <tr style="background:#fce8e8;">
+              <td><strong>Oxycodone IR</strong><br><small>Immediate-release — prescribe with naloxone</small></td>
+              <td><strong>6 m–1 y:</strong> 0.05–0.1 mg/kg PO q4h PRN<br><strong>&gt;1 y:</strong> 0.1–0.2 mg/kg PO q4h PRN<br><strong>&gt;12 y:</strong> 2.5–5 mg PO q4h PRN (max 5–10 mg)<br><small>Limit: <strong>3 days</strong>. Always co-prescribe oral naloxone.</small></td>
+              <td>≥ 6 months</td>
+              <td id="poOxycodone" style="font-size:0.85rem;">—</td>
+            </tr>
+            <tr style="background:#f9e0e0;">
+              <td><strong>Naloxone PO</strong><br><small>Co-prescribed with oxycodone</small></td>
+              <td><strong>6 m–1 y:</strong> 0.05–0.1 mg/kg PO q4h<br><strong>&gt;1 y:</strong> 0.1–0.2 mg/kg PO q4h</td>
+              <td>≥ 6 months</td>
+              <td id="poNaloxone" style="font-size:0.85rem;">—</td>
+            </tr>
+            <tr><td colspan="4" class="group-header">💊 NSAIDs / COX-2 Inhibitors</td></tr>
+            <tr style="background:#e8f5e9;">
+              <td><strong>Celecoxib</strong><br><small>COX-2 inhibitor — capsule/suspension</small></td>
+              <td><strong>Initial:</strong> 3 mg/kg PO q12h PRN<br><strong>Repeated dosing:</strong> 2–4 mg/kg q12h<br><small>Max 200 mg/dose. Limit: <strong>3 days</strong>.</small></td>
+              <td>≥ 2 years</td>
+              <td id="poCelecoxib" style="font-size:0.85rem;">—</td>
+            </tr>
+            <tr><td colspan="4" class="group-header">💊 Adjuncts (Neuropathic / Sleep)</td></tr>
+            <tr style="background:#e8eaf6;">
+              <td><strong>Gabapentin</strong><br><small>Capsule — nocte</small></td>
+              <td>5 mg/kg PO nocte PRN<br><small>Duration: <strong>5 days</strong>.</small></td>
+              <td>≥ 3 years</td>
+              <td id="poGabapentin" style="font-size:0.85rem;">—</td>
+            </tr>
+            <tr style="background:#ede7f6;">
+              <td><strong>Pregabalin</strong><br><small>Capsule — nocte</small></td>
+              <td>1 mg/kg PO nocte PRN<br><small>Max <strong>75 mg/dose</strong>.</small></td>
+              <td>≥ 2 years <strong>AND</strong> ≥ 11 kg</td>
+              <td id="poPregabalin" style="font-size:0.85rem;">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note blue" style="margin-top:16px;">
+        <strong>Multimodal Analgesia — Suggested Combinations:</strong>
+        <ul>
+          <li>Mild pain: Paracetamol IV/PO ± Celecoxib</li>
+          <li>Moderate pain: Paracetamol + Celecoxib + Oxycodone IR PRN (with naloxone)</li>
+          <li>Neuropathic / disturbed sleep: Add Gabapentin nocte (≥3 y) or Pregabalin nocte (≥2 y, ≥11 kg)</li>
+          <li>Limit opioids to 3 days where possible; reassess daily</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       PANEL 3 — PCA / NCA WORKFLOW (new)
+       ══════════════════════════════════════════════ -->
+  <div class="hub-panel" id="hubPanelPCA">
+    <div class="section-card">
+      <h2 class="section-title">🧭 PCA / NCA Workflow</h2>
+      <p class="subtitle-line">Stepwise pathway: risk assessment → opioid selection → weight basis for dosing.</p>
+
+      <!-- PHASE 1 -->
+      <div class="phase-card">
+        <div class="phase-header" onclick="togglePhase('phase1')" style="cursor:pointer;">
+          <span class="phase-badge">Phase 1</span>
+          <span class="phase-title">Patient Risk Assessment — Opioid-Induced Ventilatory Impairment (OIVI)</span>
+        </div>
+        <div class="phase-body open" id="phase1Body">
+          <p style="color:#555; font-size:0.92rem; margin-bottom:10px;">Check all risk factors that apply to this patient:</p>
+          <div class="risk-grid">
+            <label class="risk-item"><input type="checkbox" class="oivi-risk" value="infant"> Infant &lt; 6 months</label>
+            <label class="risk-item"><input type="checkbox" class="oivi-risk" value="obese-osa"> Obese with OSA</label>
+            <label class="risk-item"><input type="checkbox" class="oivi-risk" value="ndi"> Neurodevelopmental impairment</label>
+            <label class="risk-item"><input type="checkbox" class="oivi-risk" value="renal-liver"> Severe renal/liver impairment</label>
+            <label class="risk-item"><input type="checkbox" class="oivi-risk" value="sedatives"> On other sedative medications</label>
+          </div>
+          <button type="button" class="primary-btn" onclick="evaluatePhase1()">Assess Risk</button>
+
+          <div id="phase1HighRisk" class="decision-box risk-high">
+            <strong>⚠️ Higher risk of OIVI identified.</strong>
+            <p style="margin-top:8px;">Risk mitigation strategy:</p>
+            <ul style="margin:8px 0 0 18px;">
+              <li>Reduce opioid dose by <strong>50%</strong></li>
+              <li>Avoid continuous background infusion</li>
+              <li>Use opioid-sparing adjuncts</li>
+              <li>Closer ward monitoring (e.g. increased frequency of sedation/respiratory observations)</li>
+            </ul>
+          </div>
+
+          <div id="phase1LowRisk" class="decision-box risk-low">
+            <strong>✅ No higher-risk features identified.</strong> Proceed with standard PCA/NCA dosing pathway — continue to Phase 2.
+          </div>
+        </div>
+      </div>
+
+      <!-- PHASE 2 -->
+      <div class="phase-card">
+        <div class="phase-header" onclick="togglePhase('phase2')" style="cursor:pointer;">
+          <span class="phase-badge">Phase 2</span>
+          <span class="phase-title">Opioid Selection</span>
+        </div>
+        <div class="phase-body" id="phase2Body">
+          <p style="color:#555; font-size:0.92rem; margin-bottom:10px;">Does the patient have any of the following?</p>
+          <div class="risk-grid">
+        <label class="risk-item"><input type="checkbox" class="opioid-select-factor" value="renal" onchange="evaluatePhase2()"> Chronic renal dysfunction</label>
+        <label class="risk-item"><input type="checkbox" class="opioid-select-factor" value="transplant" onchange="evaluatePhase2()"> Recent renal transplant</label>
+        <label class="risk-item"><input type="checkbox" class="opioid-select-factor" value="allergy" onchange="evaluatePhase2()"> Morphine allergy / intolerance</label>
+        </div>
+
+          <div id="phase2Fentanyl" class="decision-box info">
+            <strong>💉 Recommended opioid: Fentanyl</strong>
+            <p style="margin-top:6px;">Selected due to chronic renal dysfunction, recent renal transplant, or morphine allergy/intolerance.</p>
+          </div>
+          <div id="phase2Morphine" class="decision-box risk-low">
+            <strong>💉 Recommended opioid: Morphine</strong>
+            <p style="margin-top:6px;">No contraindicating factors identified — morphine is the standard first-line choice.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHASE 3 -->
+      <div class="phase-card">
+        <div class="phase-header" onclick="togglePhase('phase3')" style="cursor:pointer;">
+          <span class="phase-badge">Phase 3</span>
+          <span class="phase-title">Body Weight for Dosing</span>
+        </div>
+        <div class="phase-body" id="phase3Body">
+
+         <div class="weight-input-row">
+            <div>
+                <label for="pcaTBW">Total body weight (kg):</label>
+                <input type="number" id="pcaTBW" min="0" step="0.1" placeholder="e.g. 42" oninput="handleTBWChange()">
+        </div>
+        <div>
+                <label for="pcaHeight">Height (cm) <span style="font-weight:400; color:#888;">(for IBW)</span>:</label>
+                <input type="number" id="pcaHeight" min="0" step="0.1" placeholder="e.g. 145" oninput="handleHeightChange()">
+        </div>
+         <div>
+                <label for="pcaSex">Sex <span style="font-weight:400; color:#888;">(for Devine formula)</span>:</label>
+                <select id="pcaSex" onchange="autoCalculateAll()">
+                 <option value="male">Male</option>
+                 <option value="female">Female</option>
+                </select>
+        </div>
+        </div>
+
+          <!-- Branch A: TBW < 50kg -->
+          <div id="pcaUnder50Branch" class="hidden">
+            <div class="note orange">
+              Total body weight is <strong>&lt; 50 kg</strong>. Is the patient obese / heavily overweight?
+            </div>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="obeseUnder50" value="yes" onchange="handleObeseChoice()"> Yes — obese/heavily overweight</label>
+              <label class="radio-option"><input type="radio" name="obeseUnder50" value="no" onchange="handleObeseChoice()"> No — use measured body weight</label>
+            </div>
+
+            <div id="under50ObeseYes" class="decision-box info">
+              <strong>Use Ideal Body Weight (IBW) for dosing.</strong>
+              <p style="margin-top:6px;">Enter the patient's exact age below, then calculate IBW using the HK2020 50th-percentile weight-for-age (Dept. of Health Hong Kong Growth References). Sex is taken from the selector above.</p>
+              <div class="weight-input-row" style="margin-top:10px;">
+  <div>
+    <label for="pcaAgeYears">Age (years):</label>
+    <input type="number" id="pcaAgeYears" min="0" step="1" placeholder="e.g. 4" oninput="autoCalculateUnder50()">
+  </div>
+  <div>
+    <label for="pcaAgeMonths">Age (additional months):</label>
+    <input type="number" id="pcaAgeMonths" min="0" max="11" step="1" placeholder="e.g. 6" oninput="autoCalculateUnder50()">
+  </div>
+</div>
+              <div id="under50IBWResult" class="result-box hidden" style="margin-top:12px;">
+                <div class="result-label">Ideal Body Weight (HK2020 P50 weight-for-age)</div>
+                <div id="under50IBWValue" class="result-value"></div>
+              </div>
+              <div id="under50DosingResult" class="result-box hidden" style="margin-top:12px; background: linear-gradient(135deg, #e0f7ea 0%, #eafaf1 100%); border-color:#a7e8c4;">
+                <div class="result-label">Final Dosing Weight</div>
+                <div id="under50DosingValue" class="result-value" style="color:#1b5e20;"></div>
+                <div id="under50DosingMethod" class="result-sub"></div>
+              </div>
+
+            <div id="under50ObeseNo" class="decision-box risk-low">
+              <strong>Use measured body weight for dosing:</strong>
+              <span id="under50MeasuredBW" style="font-weight:700;"></span> kg
+            </div>
+          </div>
+
+          <!-- Branch B: TBW >= 50kg -->
+          <div id="pcaOver50Branch" class="hidden">
+            <div class="note blue">
+              Total body weight is <strong>≥ 50 kg</strong>.
+            </div>
+
+            <div class="decision-box show info" style="margin-top:10px;">
+              <strong>Morphine:</strong> Use fixed dilution of <strong>1 mg/mL in 100 mL NS</strong> regardless of weight-based calculation.
+            </div>
+
+            <div class="note orange" style="margin-top:12px;">
+              <strong>Fentanyl:</strong> Calculate Ideal Body Weight using the <strong>Devine formula</strong> (requires height and sex, entered above).
+            </div>
+        
+            <div id="over50IBWResult" class="result-box hidden" style="margin-top:12px;">
+              <div class="result-label">Ideal Body Weight (Devine) — for Fentanyl dosing</div>
+              <div id="over50IBWValue" class="result-value"></div>
+            </div>
+            <div id="over50DosingResult" class="result-box hidden" style="margin-top:12px; background: linear-gradient(135deg, #e0f7ea 0%, #eafaf1 100%); border-color:#a7e8c4;">
+              <div class="result-label">Final Dosing Weight — Fentanyl</div>
+              <div id="over50DosingValue" class="result-value" style="color:#1b5e20;"></div>
+              <div id="over50DosingMethod" class="result-sub"></div>
+            </div>
+
+          <div id="pcaWeightPrompt" class="note">
+            Enter total body weight above to determine the dosing weight pathway.
+          </div>
+
+                    <div class="note" style="margin-top:16px;">
+            <strong>HK2020 P50 weight-for-age (for &lt; 50 kg, obese/overweight branch):</strong><br>
+            Ideal body weight is interpolated from the Hong Kong Department of Health 2020 Growth Reference 50th-percentile weight-for-age charts, using the patient's exact age (years + months) and sex.<br><br>
+            <strong>Devine formula (for ≥ 50 kg branch, Fentanyl only):</strong><br>
+            Male IBW (kg) = 50 + 2.3 × (height in inches − 60)<br>
+            Female IBW (kg) = 45.5 + 2.3 × (height in inches − 60)<br>
+            <small>Height entered in cm is auto-converted to inches for this calculation. Devine is classically an adult formula — used here only for patients ≥ 50 kg.</small><br><br>
+            <strong>Final Dosing Weight decision rule (applied after IBW calculation):</strong>
+            <ul style="margin:8px 0 0 18px;">
+              <li>If IBW &gt; BW: use <strong>BW</strong></li>
+              <li>If IBW &lt; BW and BW &lt; 140 kg: use <strong>Adjusted Body Weight (ABW) = IBW + 0.4 × (BW − IBW)</strong></li>
+              <li>If ABW &gt; 100 kg, or BW ≥ 140 kg: <strong>cap dosing weight at 100 kg</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+
+           <!-- SUMMARY -->
+      <div class="phase-card" style="background: linear-gradient(135deg, #0f2942 0%, #123a4d 100%); border-color: #14818c;">
+        <div class="phase-header">
+          <span class="phase-badge" style="background: linear-gradient(135deg, #0b2540 0%, #14818c 100%);">Summary</span>
+          <span class="phase-title" style="color: #eafcfc;">PCA / NCA Workflow Summary</span>
+        </div>
+        <div class="phase-body open">
+          <button type="button" class="primary-btn" onclick="generatePCASummary()">Generate Summary</button>
+
+          <div id="pcaSummaryResult" class="hidden" style="margin-top:16px;">
+            <div style="background: white; border-radius: 12px; padding: 18px; box-shadow: 0 4px 14px rgba(0,0,0,0.12);">
+              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+                <div>
+                  <div style="font-size:0.82rem; color:#888; font-weight:600; text-transform:uppercase; letter-spacing:0.4px;">OIVI Risk</div>
+                  <div id="summaryRisk" style="font-size:1.05rem; font-weight:700; margin-top:4px;"></div>
+                </div>
+                <div>
+                  <div style="font-size:0.82rem; color:#888; font-weight:600; text-transform:uppercase; letter-spacing:0.4px;">Recommended Opioid</div>
+                  <div id="summaryOpioid" style="font-size:1.05rem; font-weight:700; margin-top:4px;"></div>
+                </div>
+                <div>
+                  <div style="font-size:0.82rem; color:#888; font-weight:600; text-transform:uppercase; letter-spacing:0.4px;">Total Body Weight</div>
+                  <div id="summaryTBW" style="font-size:1.05rem; font-weight:700; margin-top:4px;"></div>
+                </div>
+                <div>
+                  <div style="font-size:0.82rem; color:#888; font-weight:600; text-transform:uppercase; letter-spacing:0.4px;">Final Dosing Weight</div>
+                  <div id="summaryDosingWeight" style="font-size:1.05rem; font-weight:700; margin-top:4px; color:#0f4c5c;"></div>
+                </div>
+              </div>
+              <div id="summaryDosingMethod" style="margin-top:10px; font-size:0.88rem; color:#666; font-style:italic;"></div>
+              <div id="summaryWarning" class="note orange" style="margin-top:14px; display:none;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DILUTION INSTRUCTIONS -->
+      <div class="phase-card" style="background: linear-gradient(135deg, #0f2942 0%, #123a4d 100%); border-color: #14818c;">
+        <div class="phase-header">
+          <span class="phase-badge" style="background: linear-gradient(135deg, #0b2540 0%, #14818c 100%);">Dilution</span>
+          <span class="phase-title" style="color: #eafcfc;">PCA / NCA Dilution Instructions</span>
+        </div>
+        <div class="phase-body open">
+          <p style="color:#dceef0; font-size:0.92rem; margin-bottom:10px;">
+            Calculated from the <strong>final dosing weight</strong> determined in Phase 3. Complete Phase 3 first.
+          </p>
+
+          <div class="weight-input-row" style="align-items:flex-end;">
+            <div>
+              <label for="dilutionRoundWeight" style="color:#eafcfc;">Round dosing weight to (kg) <span style="font-weight:400; color:#a9c9ce;">(optional, for easier dilution)</span>:</label>
+              <input type="number" id="dilutionRoundWeight" min="0" step="0.5" placeholder="e.g. 20">
+            </div>
+            <button type="button" class="primary-btn" onclick="calculateDilutions()">Calculate Dilution Instructions</button>
+          </div>
+          <p style="color:#a9c9ce; font-size:0.82rem; margin-top:6px;">Leave blank to use the exact final dosing weight from Phase 3.</p>
+
+          <div id="dilutionResult" class="hidden" style="margin-top:16px;">
+            <div id="morphineDilutionCard" style="background:white; border-radius:12px; padding:18px; box-shadow:0 4px 14px rgba(0,0,0,0.12); margin-bottom:14px; border:3px solid transparent; transition: all 0.25s ease;">
+              <h4 style="color:#0f4c5c; margin-bottom:10px; display:flex; align-items:center; gap:8px;">
+                💧 Morphine PCA/NCA Dilution
+                <span id="morphRecommendedBadge" class="hidden" style="font-size:0.7rem; background:#2e7d32; color:white; padding:3px 10px; border-radius:999px; font-weight:700; letter-spacing:0.3px;">✓ RECOMMENDED</span>
+              </h4>
+              <div class="table-wrapper">
+                <table>
+                  <tbody>
+                   <tr><td style="text-align:left; font-weight:600;">Target morphine dose</td><td id="morphTargetDose"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">Final concentration (in 100 mL NS)</td><td id="morphFinalConc"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">Morphine ampules required (15 mg/mL, 1 mL/ampule)</td><td id="morphAmpules"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">Volume of undiluted 15 mg/mL stock to draw up</td><td id="morphWholeDraw"></td></tr>
+                    <tr id="morphFractionalRow"><td style="text-align:left; font-weight:600;">Volume of diluted stock to draw up (1 ampule + 14 mL NS = 1 mg/mL)</td><td id="morphFractionalDraw"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">NS to withdraw from bag first</td><td id="morphNSWithdraw"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">Discard</td><td id="morphLeftover"></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div id="morphCapNote" class="note orange hidden" style="margin-top:10px;"></div>
+            </div>
+
+            <div id="fentanylDilutionCard" style="background:white; border-radius:12px; padding:18px; box-shadow:0 4px 14px rgba(0,0,0,0.12); border:3px solid transparent; transition: all 0.25s ease;">
+              <h4 style="color:#0f4c5c; margin-bottom:10px; display:flex; align-items:center; gap:8px;">
+                💧 Fentanyl PCA/NCA Dilution
+                <span id="fentRecommendedBadge" class="hidden" style="font-size:0.7rem; background:#2e7d32; color:white; padding:3px 10px; border-radius:999px; font-weight:700; letter-spacing:0.3px;">✓ RECOMMENDED</span>
+              </h4>
+              <div class="table-wrapper">
+                <table>
+                  <tbody>
+                    <tr><td style="text-align:left; font-weight:600;">Target fentanyl dose</td><td id="fentTargetDose"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">Final concentration (in 100 mL NS)</td><td id="fentFinalConc"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">Large ampules required (500 mcg/10 mL)</td><td id="fentAmpules"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">Small ampules required (100 mcg/2 mL)</td><td id="fentSmallAmpules"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">Total volume drawn up (undiluted 50 mcg/mL)</td><td id="fentWholeDraw"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">NS to withdraw from bag first</td><td id="fentNSWithdraw"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">Discard</td><td id="fentLeftover"></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div id="fentCapNote" class="note orange hidden" style="margin-top:10px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+        <!-- PCA/NCA REGIMEN -->
+      <div class="phase-card" style="background: linear-gradient(135deg, #0f2942 0%, #123a4d 100%); border-color: #14818c;">
+        <div class="phase-header">
+          <span class="phase-badge" style="background: linear-gradient(135deg, #0b2540 0%, #14818c 100%);">Regimen</span>
+          <span class="phase-title" style="color: #eafcfc;">Recommended PCA / NCA Settings</span>
+        </div>
+        <div class="phase-body open">
+                    <div style="display:flex; gap:16px; align-items:center; margin-bottom:14px;">
+            <label style="font-weight:600; color:#eafcfc;">Regimen type:</label>
+            <label style="color:#eafcfc; font-weight:400;"><input type="radio" name="regimenMode" value="PCA" checked onchange="calculateRegimen()"> PCA</label>
+            <label style="color:#eafcfc; font-weight:400;"><input type="radio" name="regimenMode" value="NCA" onchange="calculateRegimen()"> NCA</label>
+          </div>
+          <button type="button" class="primary-btn" onclick="calculateRegimen()">Calculate Recommended Regimen</button>
+
+          <div id="regimenResult" class="hidden" style="margin-top:16px;">
+            <div id="regimenCard" style="background:white; border-radius:12px; padding:18px; box-shadow:0 4px 14px rgba(0,0,0,0.12); border:3px solid transparent; transition: all 0.25s ease;">
+              <h4 id="regimenDrugTitle" style="color:#0f4c5c; margin-bottom:10px; display:flex; align-items:center; gap:8px;"></h4>
+              <div class="table-wrapper">
+                <table>
+                  <tbody>
+                    <tr><td style="text-align:left; font-weight:600;">Concentration</td><td id="regimenConc"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">Continuous infusion</td><td id="regimenContinuous"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">Bolus dose</td><td id="regimenBolus"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">Lockout interval</td><td id="regimenLockout"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">Maximum hourly dose</td><td id="regimenMaxHourly"></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div id="regimenCapNote" class="note orange hidden" style="margin-top:10px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>      
+    </div>
+  </div>
+
+</main>
+
+<script>
+  /* ═══════════ Back to dashboard ═══════════ */
+  document.getElementById('hubBackBtn').addEventListener('click', function () {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = 'index.html';
+    }
+  });
+
+  /* ═══════════ Sticky header compact on scroll ═══════════ */
+  const appShell = document.getElementById('appShell');
+  window.addEventListener('scroll', function () {
+    if (window.scrollY > 20) {
+      appShell.classList.add('compact');
+    } else {
+      appShell.classList.remove('compact');
+    }
+  });
+
+  /* ═══════════ Hub top-level nav (Scales / Post-Op / PCA) ═══════════ */
+  const hubNavButtons = {
+    hubNavScales: 'hubPanelScales',
+    hubNavPostOp: 'hubPanelPostOp',
+    hubNavPCA: 'hubPanelPCA'
+  };
+
+  Object.keys(hubNavButtons).forEach(function (btnId) {
+    document.getElementById(btnId).addEventListener('click', function () {
+      Object.keys(hubNavButtons).forEach(function (id) {
+        document.getElementById(id).classList.remove('active');
+        document.getElementById(hubNavButtons[id]).classList.remove('active');
+      });
+      this.classList.add('active');
+      document.getElementById(hubNavButtons[btnId]).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  /* ═══════════ Pain scale sub-tabs (FLACC / FACES) ═══════════ */
+  function showPainTab(tab) {
+    document.getElementById('painPanelFLACC').classList.remove('active-panel');
+    document.getElementById('painPanelFACES').classList.remove('active-panel');
+    document.getElementById('painTabBtnFLACC').classList.remove('pals-tab-active');
+    document.getElementById('painTabBtnFACES').classList.remove('pals-tab-active');
+
+    if (tab === 'flacc') {
+      document.getElementById('painPanelFLACC').classList.add('active-panel');
+      document.getElementById('painTabBtnFLACC').classList.add('pals-tab-active');
+    } else {
+      document.getElementById('painPanelFACES').classList.add('active-panel');
+      document.getElementById('painTabBtnFACES').classList.add('pals-tab-active');
+    }
+  }
+
+  /* ═══════════ FLACC calculator ═══════════ */
+  function calculateFLACC() {
+    const face = parseInt(document.getElementById('flaccFace').value);
+    const legs = parseInt(document.getElementById('flaccLegs').value);
+    const activity = parseInt(document.getElementById('flaccActivity').value);
+    const cry = parseInt(document.getElementById('flaccCry').value);
+    const consolability = parseInt(document.getElementById('flaccConsolability').value);
+    const total = face + legs + activity + cry + consolability;
+
+    let label = '', bg = '', color = '';
+    if (total === 0) { label = 'Relaxed & comfortable'; bg = '#e8f5e9'; color = '#2e7d32'; }
+    else if (total <= 3) { label = 'Mild discomfort'; bg = '#fff9c4'; color = '#9e7d00'; }
+    else if (total <= 6) { label = 'Moderate pain'; bg = '#ffe0b2'; color = '#e65100'; }
+    else { label = 'Severe pain/discomfort'; bg = '#ffcdd2'; color = '#c62828'; }
+
+    document.getElementById('flaccScoreValue').textContent = total + ' / 10';
+    document.getElementById('flaccScoreLabel').textContent = label;
+    document.getElementById('flaccScoreBox').style.background = bg;
+    document.getElementById('flaccScoreValue').style.color = color;
+    document.getElementById('flaccScoreLabel').style.color = color;
+    document.getElementById('flaccResult').classList.remove('hidden');
+  }
+
+  function resetFLACC() {
+    ['flaccFace','flaccLegs','flaccActivity','flaccCry','flaccConsolability'].forEach(function (id) {
+      document.getElementById(id).selectedIndex = 0;
+    });
+    document.getElementById('flaccResult').classList.add('hidden');
+  }
+
+  /* ═══════════ FACES calculator ═══════════ */
+  const facesData = {
+    0: { emoji: '😊', label: 'No Hurt', color: '#4caf50' },
+    2: { emoji: '🙂', label: 'Hurts Little Bit', color: '#8bc34a' },
+    4: { emoji: '😐', label: 'Hurts Little More', color: '#ffc107' },
+    6: { emoji: '😟', label: 'Hurts Even More', color: '#ff9800' },
+    8: { emoji: '😢', label: 'Hurts Whole Lot', color: '#f44336' },
+    10: { emoji: '😭', label: 'Hurts Worst', color: '#b71c1c' }
+  };
+
+  function selectFace(score) {
+    const data = facesData[score];
+    document.getElementById('facesScoreEmoji').textContent = data.emoji;
+    document.getElementById('facesScoreValue').textContent = score;
+    document.getElementById('facesScoreLabel').textContent = data.label;
+    document.getElementById('facesScoreValue').style.color = data.color;
+    document.getElementById('facesScoreLabel').style.color = data.color;
+    document.getElementById('facesResult').classList.remove('hidden');
+  }
+
+  function clearFaces() {
+    document.getElementById('facesResult').classList.add('hidden');
+  }
+
+  /* ═══════════ Post-Op Analgesics calculator ═══════════ */
+  function calcPostOpDoses() {
+    const weight = parseFloat(document.getElementById('poWeight').value);
+    const years = parseInt(document.getElementById('poAgeYears').value) || 0;
+    const months = parseInt(document.getElementById('poAgeMonths').value) || 0;
+    const totalMonths = years * 12 + months;
+
+    if (!weight || weight <= 0) {
+      document.getElementById('poPatientSummary').textContent = '';
+      return;
+    }
+
+    document.getElementById('poPatientSummary').textContent =
+      'Patient: ' + weight + ' kg, ' + years + 'y ' + months + 'm (' + totalMonths + ' months total)';
+
+    // Oxycodone (>= 6 months)
+    if (totalMonths >= 6) {
+      let low, high, note;
+      if (totalMonths < 12) { low = 0.05; high = 0.1; note = '6m–1y dosing band'; }
+      else if (years < 12) { low = 0.1; high = 0.2; note = '>1y dosing band'; }
+      else { 
+        const fixedLow = 2.5, fixedHigh = 5;
+        document.getElementById('poOxycodone').innerHTML = fixedLow + '–' + fixedHigh + ' mg PO q4h PRN (max 5–10 mg)';
+        low = null;
+      }
+      if (low !== null) {
+        const doseLow = (weight * low).toFixed(2);
+        const doseHigh = (weight * high).toFixed(2);
+        document.getElementById('poOxycodone').innerHTML = doseLow + '–' + doseHigh + ' mg PO q4h PRN <br><small>(' + note + ')</small>';
+      }
+    } else {
+      document.getElementById('poOxycodone').innerHTML = '<span style="color:#c62828;">⚠️ Below minimum age (6 months)</span>';
+    }
+
+    // Naloxone (>= 6 months)
+    if (totalMonths >= 6) {
+      let low, high;
+      if (totalMonths < 12) { low = 0.05; high = 0.1; }
+      else { low = 0.1; high = 0.2; }
+      const doseLow = (weight * low).toFixed(2);
+      const doseHigh = (weight * high).toFixed(2);
+      document.getElementById('poNaloxone').innerHTML = doseLow + '–' + doseHigh + ' mg PO q4h';
+    } else {
+      document.getElementById('poNaloxone').innerHTML = '<span style="color:#c62828;">⚠️ Below minimum age (6 months)</span>';
+    }
+
+    // Celecoxib (>= 2 years)
+    if (years >= 2) {
+      const doseInitial = (weight * 3).toFixed(1);
+      const maxDose = Math.min(weight * 3, 200).toFixed(1);
+      document.getElementById('poCelecoxib').innerHTML = 'Initial: ' + maxDose + ' mg PO q12h PRN <br><small>(max 200 mg/dose)</small>';
+    } else {
+      document.getElementById('poCelecoxib').innerHTML = '<span style="color:#c62828;">⚠️ Below minimum age (2 years)</span>';
+    }
+
+    // Gabapentin (>= 3 years)
+    if (years >= 3) {
+      const dose = (weight * 5).toFixed(1);
+      document.getElementById('poGabapentin').innerHTML = dose + ' mg PO nocte PRN';
+    } else {
+      document.getElementById('poGabapentin').innerHTML = '<span style="color:#c62828;">⚠️ Below minimum age (3 years)</span>';
+    }
+
+    // Pregabalin (>= 2 years AND >= 11 kg)
+    if (years >= 2 && weight >= 11) {
+      const dose = Math.min(weight * 1, 75).toFixed(1);
+      document.getElementById('poPregabalin').innerHTML = dose + ' mg PO nocte PRN <br><small>(max 75 mg/dose)</small>';
+    } else {
+      document.getElementById('poPregabalin').innerHTML = '<span style="color:#c62828;">⚠️ Criteria not met (≥2y AND ≥11kg)</span>';
+    }
+  }
+
+  /* ═══════════ PCA / NCA — Phase accordion ═══════════ */
+  function togglePhase(phase) {
+    const body = document.getElementById(phase + 'Body');
+    body.classList.toggle('open');
+  }
+
+    /* ═══════════ Shared state for summary ═══════════ */
+  let pcaState = { highRisk: null, opioid: 'Morphine', dosingWeight: null, dosingMethod: null };
+
+  /* ═══════════ Phase 1: OIVI risk assessment ═══════════ */
+  function evaluatePhase1() {
+    const checkboxes = document.querySelectorAll('.oivi-risk');
+    let anyChecked = false;
+    checkboxes.forEach(function (cb) { if (cb.checked) anyChecked = true; });
+
+    const highBox = document.getElementById('phase1HighRisk');
+    const lowBox = document.getElementById('phase1LowRisk');
+
+    highBox.classList.remove('show');
+    lowBox.classList.remove('show');
+
+    if (anyChecked) {
+      highBox.classList.add('show');
+      pcaState.highRisk = true;
+    } else {
+      lowBox.classList.add('show');
+      pcaState.highRisk = false;
+    }
+  }
+
+  /* ═══════════ Phase 2: Opioid selection ═══════════ */
+    function evaluatePhase2() {
+    const checkboxes = document.querySelectorAll('.opioid-select-factor');
+    let anyChecked = false;
+    checkboxes.forEach(function (cb) { if (cb.checked) anyChecked = true; });
+
+    const fentanylBox = document.getElementById('phase2Fentanyl');
+    const morphineBox = document.getElementById('phase2Morphine');
+
+    fentanylBox.classList.remove('show');
+    morphineBox.classList.remove('show');
+
+    if (anyChecked) {
+      fentanylBox.classList.add('show');
+      pcaState.opioid = 'Fentanyl';
+    } else {
+      morphineBox.classList.add('show');
+      pcaState.opioid = 'Morphine';
+    }
+
+    resyncPhase3ForOpioidChange();
+  }
+
+  function resyncPhase3ForOpioidChange() {
+    const tbw = parseFloat(document.getElementById('pcaTBW').value);
+    if (!tbw || tbw <= 0) return;
+
+    if (tbw >= 50) {
+      handleTBWChange();
+    } else {
+      const choice = document.querySelector('input[name="obeseUnder50"]:checked');
+      if (choice) {
+        handleObeseChoice();
+      }
+    }
+  }
+
+  /* ═══════════ Phase 3: Weight basis for dosing ═══════════ */
+  
+  function handleTBWChange() {
+    const tbw = parseFloat(document.getElementById('pcaTBW').value);
+    const under50Branch = document.getElementById('pcaUnder50Branch');
+    const over50Branch = document.getElementById('pcaOver50Branch');
+    const prompt = document.getElementById('pcaWeightPrompt');
+
+    under50Branch.classList.add('hidden');
+    over50Branch.classList.add('hidden');
+    document.getElementById('under50ObeseYes').classList.remove('show');
+    document.getElementById('under50ObeseNo').classList.remove('show');
+    document.getElementById('under50IBWResult').classList.add('hidden');
+    document.getElementById('over50IBWResult').classList.add('hidden');
+    pcaState.dosingWeight = null;
+    pcaState.dosingMethod = null;
+
+    if (!tbw || tbw <= 0) {
+      prompt.classList.remove('hidden');
+      return;
+    }
+
+    prompt.classList.add('hidden');
+
+       if (tbw < 50) {
+      under50Branch.classList.remove('hidden');
+      document.querySelectorAll('input[name="obeseUnder50"]').forEach(function (r) { r.checked = false; });
+    } else {
+      over50Branch.classList.remove('hidden');
+      if (pcaState.opioid === 'Fentanyl') {
+        const heightCm = parseFloat(document.getElementById('pcaHeight').value);
+        if (heightCm && heightCm > 0) {
+          calculateIBW('over50');
+        } else {
+          pcaState.dosingWeight = null;
+          pcaState.dosingMethod = 'Fentanyl requires Devine IBW — enter height above to calculate final dosing weight.';
+        }
+      } else {
+        pcaState.dosingWeight = tbw;
+        pcaState.dosingMethod = 'Morphine fixed dilution 1mg/mL (TBW basis)';
+      }
+    }
+  }
+    function handleHeightChange() {
+    const tbw = parseFloat(document.getElementById('pcaTBW').value);
+    const heightCm = parseFloat(document.getElementById('pcaHeight').value);
+    if (tbw && tbw >= 50 && heightCm && heightCm > 0) {
+      calculateIBW('over50');
+    }
+  }
+  function handleObeseChoice() {
+    const choice = document.querySelector('input[name="obeseUnder50"]:checked');
+    const yesBox = document.getElementById('under50ObeseYes');
+    const noBox = document.getElementById('under50ObeseNo');
+
+    yesBox.classList.remove('show');
+    noBox.classList.remove('show');
+
+    if (!choice) return;
+
+    if (choice.value === 'yes') {
+      yesBox.classList.add('show');
+      pcaState.dosingWeight = null;
+      pcaState.dosingMethod = null;
+    } else {
+      const tbw = parseFloat(document.getElementById('pcaTBW').value);
+      document.getElementById('under50MeasuredBW').textContent = tbw;
+      noBox.classList.add('show');
+      pcaState.dosingWeight = tbw;
+      pcaState.dosingMethod = 'Measured Body Weight (not obese/overweight)';
+    }
+  }
+
+  /* ═══════════ HK2020 P50 weight-for-age lookup (official Dept. of Health HK Growth References) ═══════════ */
+  const HK2020_P50_MALE = {0:3.15, 1:4.28, 2:5.48, 3:6.33, 4:6.97, 5:7.45, 6:7.87, 7:8.22, 8:8.53, 9:8.8, 10:9.03, 11:9.25, 12:9.45, 13:9.65, 14:9.84, 15:10.05, 16:10.26, 17:10.48, 18:10.71, 19:10.92, 20:11.14, 21:11.35, 22:11.54, 23:11.72, 24:11.89, 25:12.05, 26:12.21, 27:12.37, 28:12.53, 29:12.7, 30:12.88, 31:13.07, 32:13.25, 33:13.45, 34:13.65, 35:13.85, 36:14.05, 37:14.25, 38:14.44, 39:14.62, 40:14.8, 41:14.96, 42:15.12, 43:15.27, 44:15.41, 45:15.56, 46:15.7, 47:15.84, 48:15.98, 49:16.12, 50:16.28, 51:16.43, 52:16.59, 53:16.75, 54:16.91, 55:17.08, 56:17.25, 57:17.42, 58:17.59, 59:17.76, 60:17.93, 66:18.94, 72:19.97, 78:21.15, 84:22.5, 90:23.91, 96:25.35, 102:26.79, 108:28.24, 114:29.76, 120:31.38, 126:33.2, 132:35.24, 138:37.52, 144:40.08, 150:42.82, 156:45.52, 162:48.01, 168:50.15, 174:52.01, 180:53.71, 186:55.31, 192:56.76, 198:57.93, 204:58.71, 210:59.07, 216:59.16};
+  const HK2020_P50_FEMALE = {0:3.04, 1:4.01, 2:5.01, 3:5.78, 4:6.39, 5:6.88, 6:7.32, 7:7.69, 8:8.03, 9:8.31, 10:8.57, 11:8.8, 12:9.01, 13:9.21, 14:9.39, 15:9.57, 16:9.74, 17:9.92, 18:10.1, 19:10.28, 20:10.47, 21:10.66, 22:10.87, 23:11.07, 24:11.28, 25:11.5, 26:11.71, 27:11.92, 28:12.12, 29:12.32, 30:12.51, 31:12.69, 32:12.87, 33:13.04, 34:13.22, 35:13.38, 36:13.55, 37:13.71, 38:13.88, 39:14.04, 40:14.2, 41:14.35, 42:14.5, 43:14.65, 44:14.8, 45:14.95, 46:15.09, 47:15.24, 48:15.38, 49:15.53, 50:15.67, 51:15.82, 52:15.97, 53:16.12, 54:16.27, 55:16.43, 56:16.58, 57:16.74, 58:16.9, 59:17.07, 60:17.23, 66:18.27, 72:19.38, 78:20.55, 84:21.78, 90:23.02, 96:24.31, 102:25.72, 108:27.34, 114:29.22, 120:31.33, 126:33.66, 132:36.08, 138:38.38, 144:40.38, 150:42.04, 156:43.46, 162:44.78, 168:46.04, 174:47.2, 180:48.25, 186:49.14, 192:49.89, 198:50.5, 204:51.0, 210:51.4, 216:51.7};
+
+  function interpolateHKP50(sex, totalMonths) {
+    const table = sex === 'male' ? HK2020_P50_MALE : HK2020_P50_FEMALE;
+    const keys = Object.keys(table).map(Number).sort((a,b)=>a-b);
+    if (totalMonths <= keys[0]) return table[keys[0]];
+    if (totalMonths >= keys[keys.length-1]) return table[keys[keys.length-1]];
+    for (let i=0; i<keys.length-1; i++) {
+      if (totalMonths >= keys[i] && totalMonths <= keys[i+1]) {
+        const w0 = table[keys[i]], w1 = table[keys[i+1]];
+        const frac = (totalMonths - keys[i]) / (keys[i+1] - keys[i]);
+        return +(w0 + frac * (w1 - w0)).toFixed(2);
+      }
+    }
+  }
+  /* ═══════════ Auto-calculate triggers (no button clicks needed) ═══════════ */
+  function autoCalculateUnder50() {
+    const years = parseInt(document.getElementById('pcaAgeYears').value) || 0;
+    const months = parseInt(document.getElementById('pcaAgeMonths').value) || 0;
+    if (years > 0 || months > 0) {
+      calculateHKIBW('under50');
+    }
+  }
+
+  function autoCalculateOver50() {
+    const heightCm = parseFloat(document.getElementById('pcaHeight').value);
+    if (heightCm && heightCm > 0) {
+      calculateIBW('over50');
+    }
+  }
+
+  function autoCalculateAll() {
+    autoCalculateUnder50();
+    autoCalculateOver50();
+  }
+
+/* ═══════════ Final Dosing Weight decision (IBW vs BW vs ABW, capped at 100kg) ═══════════ */
+  function calculateDosingWeight(ibw, bw) {
+    let dosingWeight, method;
+
+    if (ibw > bw) {
+      dosingWeight = bw;
+      method = 'Body Weight (BW) — IBW exceeds BW';
+    } else if (bw < 140) {
+      const abw = ibw + 0.4 * (bw - ibw);
+      if (abw > 100) {
+        dosingWeight = 100;
+        method = 'Capped at 100 kg — Adjusted Body Weight (ABW) exceeded 100 kg';
+      } else {
+        dosingWeight = abw;
+        method = 'Adjusted Body Weight (ABW = IBW + 0.4 × (BW − IBW))';
+      }
+    } else {
+      dosingWeight = 100;
+      method = 'Capped at 100 kg — BW ≥ 140 kg';
+    }
+
+    return { dosingWeight: +dosingWeight.toFixed(1), method: method };
+  }
+
+  function calculateHKIBW(branch) {
+    const sex = document.getElementById('pcaSex').value;
+    const years = parseInt(document.getElementById('pcaAgeYears').value) || 0;
+    const months = parseInt(document.getElementById('pcaAgeMonths').value) || 0;
+    const bw = parseFloat(document.getElementById('pcaTBW').value);
+
+    if (years === 0 && months === 0) {
+      alert('Please enter a valid age (years and/or months) before calculating IBW.');
+      return;
+    }
+
+    const totalMonths = years * 12 + months;
+    const ibw = interpolateHKP50(sex, totalMonths);
+
+    document.getElementById('under50IBWValue').textContent = ibw + ' kg';
+    document.getElementById('under50IBWResult').classList.remove('hidden');
+
+        if (bw && bw > 0) {
+      const result = calculateDosingWeight(ibw, bw);
+      document.getElementById('under50DosingValue').textContent = result.dosingWeight + ' kg';
+      document.getElementById('under50DosingMethod').textContent = result.method;
+      document.getElementById('under50DosingResult').classList.remove('hidden');
+      pcaState.dosingWeight = result.dosingWeight;
+      pcaState.dosingMethod = result.method;
+    }
+  }
+
+/* ═══════════ Devine IBW calculation (used for ≥ 50 kg branch, Fentanyl only) ═══════════ */
+    function calculateIBW(branch) {
+    const heightCm = parseFloat(document.getElementById('pcaHeight').value);
+    const sex = document.getElementById('pcaSex').value;
+    const bw = parseFloat(document.getElementById('pcaTBW').value);
+
+    if (!heightCm || heightCm <= 0) {
+      alert('Please enter a valid height (cm) before calculating IBW.');
+      return;
+    }
+
+    const heightInches = heightCm / 2.54;
+    const inchesOver60 = heightInches - 60;
+
+    let ibw;
+    if (sex === 'male') {
+      ibw = 50 + 2.3 * inchesOver60;
+    } else {
+      ibw = 45.5 + 2.3 * inchesOver60;
+    }
+
+    ibw = Math.max(ibw, 0);
+    const ibwRounded = ibw.toFixed(1);
+
+    document.getElementById('over50IBWValue').textContent = ibwRounded + ' kg';
+    document.getElementById('over50IBWResult').classList.remove('hidden');
+
+    if (bw && bw > 0) {
+      const result = calculateDosingWeight(ibw, bw);
+      document.getElementById('over50DosingValue').textContent = result.dosingWeight + ' kg';
+      document.getElementById('over50DosingMethod').textContent = result.method + ' (for Fentanyl only)';
+      document.getElementById('over50DosingResult').classList.remove('hidden');
+
+      const currentOpioidCheck = document.querySelectorAll('.opioid-select-factor:checked').length > 0 ? 'Fentanyl' : 'Morphine';
+      if (currentOpioidCheck === 'Fentanyl') {
+        pcaState.opioid = 'Fentanyl';
+        pcaState.dosingWeight = result.dosingWeight;
+        pcaState.dosingMethod = result.method;
+      }
+    }
+  }
+    
+  
+  /* ═══════════ Morphine & Fentanyl PCA/NCA Dilution Calculator ═══════════ */
+    function calculateDrugDilution(targetDose, stockConc, ampuleVol) {
+    const finalConc = targetDose / 100;
+    const ampuleDose = stockConc * ampuleVol;
+    const theoreticalVol = targetDose / stockConc;
+    const wholeMl = Math.floor(theoreticalVol);
+    const wholeDose = wholeMl * stockConc;
+    const remainderDose = +(targetDose - wholeDose).toFixed(3);
+    const needsSplit = remainderDose > 0.01;
+    const ampulesRequired = Math.ceil(+(theoreticalVol / ampuleVol).toFixed(4));
+
+    let dilutedAmpuleTotalVol = 0;
+    let remainderDrawVol = 0;
+    let discardFromDilutedAmpule = 0;
+
+    if (needsSplit) {
+      dilutedAmpuleTotalVol = +(ampuleDose / finalConc).toFixed(2);
+      remainderDrawVol = +(remainderDose / finalConc).toFixed(2);
+      discardFromDilutedAmpule = +(dilutedAmpuleTotalVol - remainderDrawVol).toFixed(2);
+    }
+
+    const nsWithdraw = +(wholeMl + remainderDrawVol).toFixed(2);
+
+    return {
+      targetDose: +targetDose.toFixed(3),
+      finalConc: +finalConc.toFixed(3),
+      ampulesRequired,
+      wholeMl,
+      wholeDose,
+      remainderDose,
+      needsSplit,
+      dilutedAmpuleTotalVol,
+      remainderDrawVol,
+      discardFromDilutedAmpule,
+      nsWithdraw
+    };
+  }
+      function calculateMorphineDilution(weight) {
+    let targetDoseMg = weight * 2;
+    let capped = false;
+    if (targetDoseMg > 100) { targetDoseMg = 100; capped = true; }
+
+    const finalConc = targetDoseMg / 100;
+    const ampuleDose = 15;
+    const dilutedConc = 1.0;
+    const dilutedTotalVol = 15;
+
+    const fullAmpules = Math.floor(targetDoseMg / ampuleDose);
+    const remainderDose = +(targetDoseMg - (fullAmpules * ampuleDose)).toFixed(3);
+    const needsSplit = remainderDose > 0.01;
+
+    let remainderDrawVol = 0, discardVol = 0, discardDose = 0;
+    if (needsSplit) {
+      remainderDrawVol = +(remainderDose / dilutedConc).toFixed(2);
+      discardVol = +(dilutedTotalVol - remainderDrawVol).toFixed(2);
+      discardDose = +(discardVol * dilutedConc).toFixed(2);
+    }
+
+    const totalUndilutedVol = fullAmpules;
+    const nsWithdraw = +(totalUndilutedVol + remainderDrawVol).toFixed(2);
+    const totalAmpulesOpened = fullAmpules + (needsSplit ? 1 : 0);
+
+    return {
+      targetDose: +targetDoseMg.toFixed(2),
+      finalConc: +finalConc.toFixed(3),
+      fullAmpules,
+      remainderDose,
+      needsSplit,
+      dilutedConc,
+      remainderDrawVol,
+      discardVol,
+      discardDose,
+      totalUndilutedVol,
+      nsWithdraw,
+      totalAmpulesOpened,
+      capped
+    };
+  }
+
+    function calculateFentanylDilution(weight) {
+    let targetDoseMcg = weight * 50;
+    let capped = false;
+    if (targetDoseMcg > 5000) { targetDoseMcg = 5000; capped = true; }
+
+    const finalConc = targetDoseMcg / 100;
+    const stockConc = 50;
+    const largeAmpuleVol = 10;
+    const smallAmpuleVol = 2;
+    const largeAmpuleDose = stockConc * largeAmpuleVol;
+    const smallAmpuleDose = stockConc * smallAmpuleVol;
+
+    const largeAmpules = Math.floor(targetDoseMcg / largeAmpuleDose);
+    const remainderAfterLarge = +(targetDoseMcg - (largeAmpules * largeAmpuleDose)).toFixed(2);
+    const smallAmpules = remainderAfterLarge > 0.01 ? Math.ceil(+(remainderAfterLarge / smallAmpuleDose).toFixed(4)) : 0;
+
+    const totalVolDrawn = +(largeAmpules * largeAmpuleVol + smallAmpules * smallAmpuleVol).toFixed(2);
+    const actualDoseDrawn = largeAmpules * largeAmpuleDose + smallAmpules * smallAmpuleDose;
+    const discardDose = +(actualDoseDrawn - targetDoseMcg).toFixed(2);
+    const discardVol = +(discardDose / stockConc).toFixed(2);
+
+    return {
+      targetDose: +targetDoseMcg.toFixed(1),
+      finalConc: +finalConc.toFixed(2),
+      largeAmpules,
+      smallAmpules,
+      totalVolDrawn,
+      nsWithdraw: totalVolDrawn,
+      discardVol,
+      discardDose,
+      capped
+    };
+  }
+
+  function calculateDilutions() {
+    if (!pcaState.dosingWeight) {
+      alert('Please complete Phase 3 to determine the final dosing weight first.');
+      return;
+    }
+
+    const roundedInput = parseFloat(document.getElementById('dilutionRoundWeight').value);
+    const weight = (roundedInput && roundedInput > 0) ? roundedInput : pcaState.dosingWeight;
+    const morphine = calculateMorphineDilution(weight);
+    document.getElementById('morphTargetDose').textContent = morphine.targetDose + ' mg';
+    document.getElementById('morphFinalConc').textContent = morphine.finalConc + ' mg/mL';
+    document.getElementById('morphAmpules').textContent = morphine.fullAmpules + ' ampule(s)';
+    document.getElementById('morphWholeDraw').textContent = morphine.totalUndilutedVol + ' mL (' + (morphine.fullAmpules * 15) + ' mg)';
+    document.getElementById('morphNSWithdraw').textContent = morphine.nsWithdraw + ' mL';
+    const morphFracRow = document.getElementById('morphFractionalRow');
+    if (morphine.needsSplit) {
+      document.getElementById('morphFractionalDraw').innerHTML =
+        morphine.remainderDrawVol + ' mL <small>(dilute 1 ampule [1 mL, 15 mg] + 14 mL NS = 15 mL at 1 mg/mL — draw up ' + morphine.remainderDrawVol + ' mL = ' + morphine.remainderDose + ' mg)</small>';
+      morphFracRow.style.display = '';
+      document.getElementById('morphLeftover').textContent = morphine.discardVol + ' mL (' + morphine.discardDose + ' mg) of diluted solution — discard';
+    } else {
+      morphFracRow.style.display = 'none';
+      document.getElementById('morphLeftover').textContent = '0 mL — no discard needed';
+    }
+    const morphCapNote = document.getElementById('morphCapNote');
+    if (morphine.capped) {
+      morphCapNote.textContent = '⚠️ Calculated dose exceeded 100 mg — capped at maximum 100 mg (1 mg/mL in 100 mL NS).';
+      morphCapNote.classList.remove('hidden');
+    } else {
+      morphCapNote.classList.add('hidden');
+    }
+    
+    const fentanyl = calculateFentanylDilution(weight);
+    document.getElementById('fentTargetDose').textContent = fentanyl.targetDose + ' mcg';
+    document.getElementById('fentFinalConc').textContent = fentanyl.finalConc + ' mcg/mL';
+    document.getElementById('fentAmpules').textContent = fentanyl.largeAmpules + ' large ampule(s)';
+    document.getElementById('fentSmallAmpules').textContent = fentanyl.smallAmpules + ' small ampule(s)';
+    document.getElementById('fentWholeDraw').textContent = fentanyl.totalVolDrawn + ' mL';
+    document.getElementById('fentNSWithdraw').textContent = fentanyl.nsWithdraw + ' mL';
+    if (fentanyl.discardVol > 0) {
+      document.getElementById('fentLeftover').textContent = fentanyl.discardVol + ' mL (' + fentanyl.discardDose + ' mcg) — discard';
+    } else {
+      document.getElementById('fentLeftover').textContent = '0 mL — no discard needed';
+    }
+    const fentCapNote = document.getElementById('fentCapNote');
+    if (fentanyl.capped) {
+      fentCapNote.textContent = '⚠️ Calculated dose exceeded 5000 mcg (5 mg) — capped at maximum concentration 50 mcg/mL in 100 mL NS.';
+      fentCapNote.classList.remove('hidden');
+    } else {
+      fentCapNote.classList.add('hidden');
+    }
+
+    const morphCard = document.getElementById('morphineDilutionCard');
+    const fentCard = document.getElementById('fentanylDilutionCard');
+    const morphBadge = document.getElementById('morphRecommendedBadge');
+    const fentBadge = document.getElementById('fentRecommendedBadge');
+
+    morphCard.classList.remove('dilution-card-recommended', 'dilution-card-dimmed');
+    fentCard.classList.remove('dilution-card-recommended', 'dilution-card-dimmed');
+    morphBadge.classList.add('hidden');
+    fentBadge.classList.add('hidden');
+
+    if (pcaState.opioid === 'Fentanyl') {
+      fentCard.classList.add('dilution-card-recommended');
+      morphCard.classList.add('dilution-card-dimmed');
+      fentBadge.classList.remove('hidden');
+    } else if (pcaState.opioid === 'Morphine') {
+      morphCard.classList.add('dilution-card-recommended');
+      fentCard.classList.add('dilution-card-dimmed');
+      morphBadge.classList.remove('hidden');
+    }
+
+    document.getElementById('dilutionResult').classList.remove('hidden');
+    document.getElementById('dilutionResult').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+    /* ═══════════ Recommended PCA/NCA Regimen Calculator ═══════════ */
+  function calculateMorphineRegimen(tbw, dosingWeight) {
+    if (tbw < 50) {
+      return {
+        conc: '2 mg/kg made up to 100 mL (max 1 mg/mL)',
+        continuous: '0–0.5 mL/h (0–10 mcg/kg/h)',
+        bolus: '1 mL (20 mcg/kg)',
+        lockout: '5 minutes',
+        maxHourly: '6 mL/h (120 mcg/kg/h)',
+        capped: false
+      };
+    } else {
+      return {
+        conc: '1 mg/mL (fixed dilution)',
+        continuous: '0–0.5 mL/h (0–0.5 mg/h)',
+        bolus: '1 mL (1 mg)',
+        lockout: '5 minutes',
+        maxHourly: '6 mL/h (6 mg/h)',
+        capped: false
+      };
+    }
+  }
+
+  function calculateFentanylRegimen(dosingWeight) {
+    let concMcgPerMl = 0.5 * dosingWeight;
+    let concCapped = false;
+    if (concMcgPerMl > 50) { concMcgPerMl = 50; concCapped = true; }
+
+    const contMinMcg = 0;
+    const contMaxMcg = +(0.2 * dosingWeight).toFixed(2);
+    const contMaxVol = +(contMaxMcg / concMcgPerMl).toFixed(2);
+
+    const bolusMcg = +(0.4 * dosingWeight).toFixed(2);
+    const bolusVol = +(bolusMcg / concMcgPerMl).toFixed(2);
+
+    let maxHourlyMcg = +(2.5 * dosingWeight).toFixed(2);
+    let maxHourlyCapped = false;
+    if (maxHourlyMcg > 250) { maxHourlyMcg = 250; maxHourlyCapped = true; }
+    const maxHourlyVol = +(maxHourlyMcg / concMcgPerMl).toFixed(2);
+
+    return {
+      conc: concMcgPerMl.toFixed(1) + ' mcg/mL' + (concCapped ? ' (capped at max 50 mcg/mL)' : ' (0.5 mcg/kg/mL)'),
+      continuous: '0–' + contMaxVol + ' mL/h (0–' + contMaxMcg + ' mcg/h, 0.2 mcg/kg/h)',
+      bolus: bolusVol + ' mL (' + bolusMcg + ' mcg, 0.4 mcg/kg)',
+      lockout: '5 minutes',
+      maxHourly: maxHourlyVol + ' mL/h (' + maxHourlyMcg + ' mcg/h' + (maxHourlyCapped ? ', capped at 250 mcg' : ', 2.5 mcg/kg/h') + ')',
+      capped: concCapped || maxHourlyCapped
+    };
+  }
+  function calculateMorphineNCA(tbw) {
+    if (tbw < 50) {
+      return {
+        conc: '2 mg/kg made up to 100 mL (max 1 mg/mL)',
+        continuous: '0.5 mL/h (10 mcg/kg/h) — not recommended for infants <5 kg',
+        bolus: '1 mL (20 mcg/kg)',
+        lockout: '20–30 minutes',
+        maxHourly: '4 mL/h (80 mcg/kg/h)',
+        capped: false
+      };
+    } else {
+      return {
+        conc: '1 mg/mL (fixed dilution)',
+        continuous: '0.5 mL/h (0.5 mg/h)',
+        bolus: '1 mL (1 mg)',
+        lockout: '20–30 minutes',
+        maxHourly: '4 mL/h (4 mg/h)',
+        capped: false
+      };
+    }
+  }
+
+  function calculateFentanylNCA(dosingWeight) {
+    let concMcgPerMl = 0.5 * dosingWeight;
+    let concCapped = false;
+    if (concMcgPerMl > 50) { concMcgPerMl = 50; concCapped = true; }
+
+    const contLowMcg = +(0.1 * dosingWeight).toFixed(2);
+    const contHighMcg = +(0.2 * dosingWeight).toFixed(2);
+    const contVol = +(contHighMcg / concMcgPerMl).toFixed(2);
+
+    const bolusMcg = +(0.4 * dosingWeight).toFixed(2);
+    const bolusVol = +(bolusMcg / concMcgPerMl).toFixed(2);
+
+    const maxHourlyMcg = +(2 * dosingWeight).toFixed(2);
+    const maxHourlyVol = +(maxHourlyMcg / concMcgPerMl).toFixed(2);
+
+    return {
+      conc: concMcgPerMl.toFixed(1) + ' mcg/mL' + (concCapped ? ' (capped at max 50 mcg/mL)' : ' (0.5 mcg/kg/mL)'),
+      continuous: contVol + ' mL/h (' + contLowMcg + '–' + contHighMcg + ' mcg/h, 0.1–0.2 mcg/kg/h) — not recommended for infants <5 kg',
+      bolus: bolusVol + ' mL (' + bolusMcg + ' mcg, 0.4 mcg/kg)',
+      lockout: '20–30 minutes',
+      maxHourly: maxHourlyVol + ' mL/h (' + maxHourlyMcg + ' mcg/h, 2 mcg/kg/h)',
+      capped: concCapped
+    };
+  }
+
+  function calculateRegimen() {
+    if (!pcaState.dosingWeight) {
+      alert('Please complete Phase 3 to determine the final dosing weight first.');
+      return;
+    }
+
+    const tbw = parseFloat(document.getElementById('pcaTBW').value);
+    const dosingWeight = pcaState.dosingWeight;
+    const drugTitle = document.getElementById('regimenDrugTitle');
+    const capNote = document.getElementById('regimenCapNote');
+    let regimen;
+
+        const mode = document.querySelector('input[name="regimenMode"]:checked').value;
+
+    if (mode === 'NCA') {
+      if (pcaState.opioid === 'Fentanyl') {
+        regimen = calculateFentanylNCA(dosingWeight);
+        drugTitle.innerHTML = '💉 Fentanyl NCA Regimen';
+      } else {
+        regimen = calculateMorphineNCA(tbw);
+        drugTitle.innerHTML = '💉 Morphine NCA Regimen';
+      }
+    } else {
+      if (pcaState.opioid === 'Fentanyl') {
+        regimen = calculateFentanylRegimen(dosingWeight);
+        drugTitle.innerHTML = '💉 Fentanyl PCA Regimen';
+      } else {
+        regimen = calculateMorphineRegimen(tbw, dosingWeight);
+        drugTitle.innerHTML = '💉 Morphine PCA Regimen';
+      }
+    }
+
+    document.getElementById('regimenConc').textContent = regimen.conc;
+    document.getElementById('regimenContinuous').textContent = regimen.continuous;
+    document.getElementById('regimenBolus').textContent = regimen.bolus;
+    document.getElementById('regimenLockout').textContent = regimen.lockout;
+    document.getElementById('regimenMaxHourly').textContent = regimen.maxHourly;
+
+    if (regimen.capped) {
+      capNote.textContent = '⚠️ One or more values were capped due to patient weight — see notes above.';
+      capNote.classList.remove('hidden');
+    } else {
+      capNote.classList.add('hidden');
+    }
+
+    document.getElementById('regimenResult').classList.remove('hidden');
+    document.getElementById('regimenResult').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /* ═══════════ Final Summary Generator ═══════════ */
+  function generatePCASummary() {
+    const tbw = parseFloat(document.getElementById('pcaTBW').value);
+    const summaryBox = document.getElementById('pcaSummaryResult');
+    const warningBox = document.getElementById('summaryWarning');
+    let missing = [];
+
+    if (pcaState.highRisk === null) missing.push('Phase 1 (Risk Assessment)');
+    if (pcaState.opioid === null) missing.push('Phase 2 (Opioid Selection)');
+    if (pcaState.dosingWeight === null) missing.push('Phase 3 (Dosing Weight)');
+
+    document.getElementById('summaryRisk').textContent = pcaState.highRisk === null
+      ? '—' : (pcaState.highRisk ? '⚠️ Higher risk (reduce dose 50%)' : '✅ Standard risk');
+    document.getElementById('summaryRisk').style.color = pcaState.highRisk ? '#c62828' : '#2e7d32';
+
+    document.getElementById('summaryOpioid').textContent = pcaState.opioid || '—';
+    document.getElementById('summaryTBW').textContent = tbw ? tbw + ' kg' : '—';
+    document.getElementById('summaryDosingWeight').textContent = pcaState.dosingWeight !== null
+      ? pcaState.dosingWeight + ' kg' : '—';
+    document.getElementById('summaryDosingMethod').textContent = pcaState.dosingMethod || '';
+
+    if (missing.length > 0) {
+      warningBox.style.display = 'block';
+      warningBox.textContent = '⚠️ Incomplete: please complete ' + missing.join(', ') + ' before finalizing.';
+    } else {
+      warningBox.style.display = 'none';
+    }
+
+    summaryBox.classList.remove('hidden');
+    summaryBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+    /* ═══════════ Initialize default states on page load ═══════════ */
+  document.getElementById('phase2Morphine').classList.add('show');
+</script>
+
+</body>
+</html>
