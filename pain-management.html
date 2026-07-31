@@ -692,11 +692,11 @@
                 <table>
                   <tbody>
                    <tr><td style="text-align:left; font-weight:600;">Target morphine dose</td><td id="morphTargetDose"></td></tr>
-                    <tr><td style="text-align:left; font-weight:600;">Final concentration (in 100 mL NS)</td><td id="morphFinalConc"></td></tr>
-                    <tr><td style="text-align:left; font-weight:600;">Morphine ampules required (15 mg/mL, 1 mL/ampule)</td><td id="morphAmpules"></td></tr>
-                    <tr><td style="text-align:left; font-weight:600;">Volume of undiluted 15 mg/mL stock to draw up</td><td id="morphWholeDraw"></td></tr>
-                    <tr id="morphFractionalRow"><td style="text-align:left; font-weight:600;">Volume of diluted stock to draw up (1 ampule + 14 mL NS = 1 mg/mL)</td><td id="morphFractionalDraw"></td></tr>
-                    <tr><td style="text-align:left; font-weight:600;">NS to withdraw from bag first</td><td id="morphNSWithdraw"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">Final concentration</td><td id="morphFinalConc"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">Total ampules required</td><td id="morphAmpules"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">Volume of <strong>undiluted</strong> stock (15 mg/mL)</td><td id="morphUndilutedVol"></td></tr>
+                    <tr id="morphFractionalRow"><td style="text-align:left; font-weight:600;">Volume of <strong>diluted</strong> stock (1 mg/mL, from 1 mL ampule + 14 mL NS)</td><td id="morphDilutedVol"></td></tr>
+                    <tr><td style="text-align:left; font-weight:600;">NS to withdraw from bag</td><td id="morphNSWithdraw"></td></tr>
                     <tr><td style="text-align:left; font-weight:600;">Discard</td><td id="morphLeftover"></td></tr>
                   </tbody>
                 </table>
@@ -1241,18 +1241,21 @@
 
     const nsWithdraw = +(wholeMl + remainderDrawVol).toFixed(2);
 
+    const totalAmpulesUsed = ampulesRequired + (needsSplit ? 1 : 0);
+
     return {
-      targetDose: +targetDose.toFixed(3),
-      finalConc: +finalConc.toFixed(3),
+      targetDose,
+      finalConc,
       ampulesRequired,
       wholeMl,
       wholeDose,
-      remainderDose,
+      nsWithdraw,
       needsSplit,
-      dilutedAmpuleTotalVol,
       remainderDrawVol,
-      discardFromDilutedAmpule,
-      nsWithdraw
+      remainderDose,
+      discardVol,
+      discardDose,
+      capped
     };
   }
       function calculateMorphineDilution(weight) {
@@ -1342,15 +1345,14 @@
     const morphine = calculateMorphineDilution(weight);
     document.getElementById('morphTargetDose').textContent = morphine.targetDose + ' mg';
     document.getElementById('morphFinalConc').textContent = morphine.finalConc + ' mg/mL';
-    document.getElementById('morphAmpules').textContent = morphine.fullAmpules + ' ampule(s)';
-    document.getElementById('morphWholeDraw').textContent = morphine.totalUndilutedVol + ' mL (' + (morphine.fullAmpules * 15) + ' mg)';
+    document.getElementById('morphAmpules').textContent = morphine.totalAmpulesOpened + ' ampule(s)';
+    document.getElementById('morphUndilutedVol').textContent = morphine.totalUndilutedVol + ' mL (' + (morphine.fullAmpules * 15) + ' mg)';
     document.getElementById('morphNSWithdraw').textContent = morphine.nsWithdraw + ' mL';
     const morphFracRow = document.getElementById('morphFractionalRow');
     if (morphine.needsSplit) {
-      document.getElementById('morphFractionalDraw').innerHTML =
-        morphine.remainderDrawVol + ' mL <small>(dilute 1 ampule [1 mL, 15 mg] + 14 mL NS = 15 mL at 1 mg/mL — draw up ' + morphine.remainderDrawVol + ' mL = ' + morphine.remainderDose + ' mg)</small>';
+      document.getElementById('morphDilutedVol').textContent = morphine.remainderDrawVol + ' mL (' + morphine.remainderDose + ' mg)';
       morphFracRow.style.display = '';
-      document.getElementById('morphLeftover').textContent = morphine.discardVol + ' mL (' + morphine.discardDose + ' mg) of diluted solution — discard';
+      document.getElementById('morphLeftover').textContent = morphine.discardVol + ' mL (' + morphine.discardDose + ' mg)';
     } else {
       morphFracRow.style.display = 'none';
       document.getElementById('morphLeftover').textContent = '0 mL — no discard needed';
